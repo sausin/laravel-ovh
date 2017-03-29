@@ -295,6 +295,18 @@ class SwiftAdapter extends AbstractAdapter
      */
     public function getUrl($path)
     {
+        $urlBasePath = sprintf('https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/', $this->urlBasePathVars[0], $this->urlBasePathVars[1], $this->urlBasePathVars[2]);
+
+        return $urlBasePath . $path;
+    }
+
+    /**
+     * Custom function to comply with the Storage::url() function
+     * @param  string $path
+     * @return string
+     */
+    public function getUrlConfirm($path)
+    {
         // check if object exists
         try {
             $this->getTimestamp($path);
