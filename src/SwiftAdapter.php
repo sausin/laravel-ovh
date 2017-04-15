@@ -65,7 +65,20 @@ class SwiftAdapter extends AbstractAdapter
 
         $data[$type] = $contents;
 
-        $response = $this->container->createObject($data);
+        // Check large object >300M
+        $metadata = $this->getSize($path);
+
+        if ($metadata && isset($metadata['size']) && $metadata['size'] > 314572800) {
+            // optional: specify the size of each segment in bytes - 100M
+            $data['segmentSize'] = 104857600;
+            
+            // optional: specify the container where the segments live. This does not necessarily have to be the
+            // same as the container which holds the manifest file
+            $data['segmentContainer'] = $this->container->name;
+            $response = $this->container->createLargeObject($data);
+        } else {
+            $response = $this->container->createObject($data);
+        }
 
         return $this->normalizeObject($response);
     }
