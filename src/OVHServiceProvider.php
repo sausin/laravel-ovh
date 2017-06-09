@@ -15,6 +15,13 @@ use OpenStack\Common\Transport\Utils as TransportUtils;
 class OVHServiceProvider extends ServiceProvider
 {
     /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
+
+    /**
      * Bootstrap the application services.
      *
      * @return void
@@ -55,5 +62,14 @@ class OVHServiceProvider extends ServiceProvider
     {
         //
     }
+    
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [Filesystem::class];
+    }
 }
-
