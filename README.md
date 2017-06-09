@@ -41,3 +41,4 @@ Refere to extensive laravel [documentation](https://laravel.com/docs/5.4/filesys
 - cyberx86 did the hard work of figuring out how to get the Openstack setup going with OVH (https://www.thatsgeeky.com/2016/08/openstack-php-and-ovh/)
 - rackspace for maintaining the Openstack repo (https://github.com/php-opencloud/openstack)
 - obviously the creator of league flysystem!
+- @anhphamt for providing the [pull request](https://github.com/nimbusoftltd/flysystem-openstack-swift/pull/3) for large object support
