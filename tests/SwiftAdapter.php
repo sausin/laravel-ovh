@@ -275,4 +275,12 @@ class SwiftAdapterTest extends \PHPUnit_Framework_TestCase
             ]);
         }
     }
+
+    public function testUrlMethod()
+    {
+    }
+
+    public function testBigObject()
+    {
+    }
 }
