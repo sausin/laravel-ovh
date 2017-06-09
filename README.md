@@ -1,5 +1,7 @@
 # laravel-ovh
-Wrapper to combine others' work to integrate with laravel
+Laravel `Storage` facade provides support for many different filesystems.
+
+This is a wrapper to combine others' work to integrate with laravel and provide support for [OVH Object Storage](https://www.ovh.ie/public-cloud/storage/object-storage/).
 
 # Installing
 
@@ -29,6 +31,10 @@ as below
 ```
 
 define the correct env variables above in your .env file and you should now have a working OVH Object Storage setup :)
+
+# Usage
+
+Refere to extensive laravel [documentation](https://laravel.com/docs/5.4/filesystem) for usage. Of note - this package includes support for the `Storage::url()` method.
 
 # Credits
 - the SwiftAdapter was created by Nimbusoft (https://github.com/nimbusoftltd/flysystem-openstack-swift) and I have just modified it to provide the url function
