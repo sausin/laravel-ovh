@@ -9,6 +9,9 @@ Install the package via composer
 
 `composer require sausin/laravel-ovh`
 
+and make sure to allow all versions in `composer.json`
+`"sausin/laravel-ovh": "0.*",`
+
 Then include the service provider in config/app.php
 ```php
 Sausin\LaravelOvh\OVHServiceProvider::class
