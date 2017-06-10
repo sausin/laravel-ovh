@@ -52,15 +52,29 @@ class SwiftAdapter extends AbstractAdapter
     {
         $path = $this->applyPathPrefix($path);
 
-        $data = [
-            'name' => $path
-        ];
+        $data = ['name' => $path];
 
-        $type = is_a($contents, 'GuzzleHttp\Psr7\Stream') ? 'stream' : 'content';
+        $type = 'content';
+        
+        $size = 0;
+        if (is_a($contents, 'GuzzleHttp\Psr7\Stream')) {
+            $type = 'stream';
+        } else {
+            $size = file_exists($contents) ? filesize($contents) : mb_strlen(serialize($contents));
+        }
 
         $data[$type] = $contents;
 
-        $response = $this->container->createObject($data);
+        if ($size > 314572800) {
+            // set the segment size to 100MB
+            // as suggested in OVH docs
+            $data['segmentSize'] = 104857600;
+            $data['segmentContainer'] = $this->container->name;
+
+            $response = $this->container->createLargeObject($data);
+        } else {
+            $response = $this->container->createObject($data);
+        }
 
         return $this->normalizeObject($response);
     }
@@ -96,7 +110,11 @@ class SwiftAdapter extends AbstractAdapter
     {
         $object = $this->getObject($path);
         $newLocation = $this->applyPathPrefix($newpath);
-        $destination = '/'.$this->container->name.'/'.ltrim($newLocation, '/');
+        $destination = sprintf(
+            '/%s/%s', 
+            $this->container->name, 
+            ltrim($newLocation, '/')
+        );
 
         try {
             $response = $object->copy(compact('destination'));
