@@ -8,8 +8,6 @@ class SwiftAdapterTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        parent::setUp();
-        
         $this->config = new Config([]);
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
         $this->container->name = 'container-name';
@@ -104,7 +102,7 @@ class SwiftAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $times = rand(1, 10);
 
-        $generator = function() use ($times) {
+        $generator = function () use ($times) {
             for ($i = 1; $i <= $times; $i++) {
                 yield $this->object;
             }
@@ -212,7 +210,7 @@ class SwiftAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $times = rand(1, 10);
 
-        $generator = function() use ($times) {
+        $generator = function () use ($times) {
             for ($i = 1; $i <= $times; $i++) {
                 yield $this->object;
             }
@@ -276,13 +274,5 @@ class SwiftAdapterTest extends \PHPUnit_Framework_TestCase
                 'size' => 1234,
             ]);
         }
-    }
-
-    public function testUrlMethod()
-    {
-    }
-
-    public function testBigObject()
-    {
     }
 }

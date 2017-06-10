@@ -5,7 +5,6 @@ namespace Sausin\LaravelOvh;
 use League\Flysystem\Util;
 use GuzzleHttp\Psr7\Stream;
 use League\Flysystem\Config;
-use League\Flysystem\Exception;
 use GuzzleHttp\Psr7\StreamWrapper;
 use OpenStack\ObjectStore\v1\Models\Object;
 use OpenStack\Common\Error\BadResponseError;
@@ -42,7 +41,7 @@ class SwiftAdapter extends AbstractAdapter
     {
         $this->setPathPrefix($prefix);
         $this->container = $container;
-        
+
         $this->urlBasePathVars = $urlBasePathVars;
     }
 
@@ -61,21 +60,7 @@ class SwiftAdapter extends AbstractAdapter
 
         $data[$type] = $contents;
 
-        // Check large object >300M
-        $metadata = $this->getSize($path);
-
-        if ($metadata && isset($metadata['size']) && $metadata['size'] > 314572800) {
-            // optional: specify the size of each segment in bytes - 100M
-            $data['segmentSize'] = 104857600;
-            
-            // optional: specify the container where the segments live.
-            // This does not necessarily have to be the same as the
-            // container which holds the manifest file
-            $data['segmentContainer'] = $this->container->name;
-            $response = $this->container->createLargeObject($data);
-        } else {
-            $response = $this->container->createObject($data);
-        }
+        $response = $this->container->createObject($data);        
 
         return $this->normalizeObject($response);
     }
@@ -151,6 +136,7 @@ class SwiftAdapter extends AbstractAdapter
 
         try {
             foreach ($objects as $object) {
+                $object->containerName = $this->container->name;
                 $object->delete();
             }
         } catch (BadResponseError $e) {
@@ -307,11 +293,16 @@ class SwiftAdapter extends AbstractAdapter
      */
     public function getUrl($path)
     {
-        $urlBasePath = sprintf('https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/', $this->urlBasePathVars[0], $this->urlBasePathVars[1], $this->urlBasePathVars[2]);
+        $urlBasePath = sprintf(
+            'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/', 
+            $this->urlBasePathVars[0], 
+            $this->urlBasePathVars[1], 
+            $this->urlBasePathVars[2]
+        );
 
         return $urlBasePath . $path;
     }
-
+    
     /**
      * Custom function to comply with the Storage::url() function
      * @param  string $path
@@ -325,13 +316,10 @@ class SwiftAdapter extends AbstractAdapter
         } catch (BadResponseError $e) {
             throw $e;
         }
-
         if (!$this->urlBasePathVars) {
             throw new Exception("Empty array", 1);
         }
-
         $urlBasePath = sprintf('https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/', $this->urlBasePathVars[0], $this->urlBasePathVars[1], $this->urlBasePathVars[2]);
-
         return $urlBasePath . $path;
     }
 }
