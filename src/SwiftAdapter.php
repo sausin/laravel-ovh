@@ -60,7 +60,7 @@ class SwiftAdapter extends AbstractAdapter
 
         $data[$type] = $contents;
 
-        $response = $this->container->createObject($data);        
+        $response = $this->container->createObject($data);
 
         return $this->normalizeObject($response);
     }
@@ -293,10 +293,14 @@ class SwiftAdapter extends AbstractAdapter
      */
     public function getUrl($path)
     {
+        if (!$this->urlBasePathVars) {
+            throw new Exception("Empty array", 1);
+        }
+        
         $urlBasePath = sprintf(
-            'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/', 
-            $this->urlBasePathVars[0], 
-            $this->urlBasePathVars[1], 
+            'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
+            $this->urlBasePathVars[0],
+            $this->urlBasePathVars[1],
             $this->urlBasePathVars[2]
         );
 
@@ -316,10 +320,18 @@ class SwiftAdapter extends AbstractAdapter
         } catch (BadResponseError $e) {
             throw $e;
         }
+
         if (!$this->urlBasePathVars) {
             throw new Exception("Empty array", 1);
         }
-        $urlBasePath = sprintf('https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/', $this->urlBasePathVars[0], $this->urlBasePathVars[1], $this->urlBasePathVars[2]);
+
+        $urlBasePath = sprintf(
+            'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
+            $this->urlBasePathVars[0],
+            $this->urlBasePathVars[1],
+            $this->urlBasePathVars[2]
+        );
+
         return $urlBasePath . $path;
     }
 }
