@@ -8,6 +8,8 @@ class SwiftAdapterTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
+        parent::setUp();
+        
         $this->config = new Config([]);
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
         $this->container->name = 'container-name';

@@ -57,11 +57,7 @@ class SwiftAdapter extends AbstractAdapter
             'name' => $path
         ];
 
-        $type = 'content';
-
-        if (is_a($contents, 'GuzzleHttp\Psr7\Stream')) {
-            $type = 'stream';
-        }
+        $type = is_a($contents, 'GuzzleHttp\Psr7\Stream') ? 'stream' : 'content';
 
         $data[$type] = $contents;
 
@@ -72,8 +68,9 @@ class SwiftAdapter extends AbstractAdapter
             // optional: specify the size of each segment in bytes - 100M
             $data['segmentSize'] = 104857600;
             
-            // optional: specify the container where the segments live. This does not necessarily have to be the
-            // same as the container which holds the manifest file
+            // optional: specify the container where the segments live.
+            // This does not necessarily have to be the same as the
+            // container which holds the manifest file
             $data['segmentContainer'] = $this->container->name;
             $response = $this->container->createLargeObject($data);
         } else {
@@ -181,7 +178,9 @@ class SwiftAdapter extends AbstractAdapter
         } catch (BadResponseError $e) {
             $code = $e->getResponse()->getStatusCode();
 
-            if ($code == 404) return false;
+            if ($code == 404) {
+                return false;
+            }
 
             throw $e;
         }
@@ -206,11 +205,11 @@ class SwiftAdapter extends AbstractAdapter
     */
     public function readStream($path)
     {
-       $object = $this->getObject($path);
-       $data = $this->normalizeObject($object);
-       $data['stream'] = StreamWrapper::getResource($object->download());
+        $object = $this->getObject($path);
+        $data = $this->normalizeObject($object);
+        $data['stream'] = StreamWrapper::getResource($object->download());
 
-       return $data;
+        return $data;
     }
 
     /**
