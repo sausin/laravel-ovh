@@ -8,8 +8,8 @@ use OpenStack\OpenStack;
 use GuzzleHttp\HandlerStack;
 use League\Flysystem\Filesystem;
 use OpenStack\Identity\v2\Service;
+use Sausin\LaravelOvh\OVHSwiftAdapter;
 use Illuminate\Support\ServiceProvider;
-use Sausin\LaravelOvh\SwiftAdapter;
 use OpenStack\Common\Transport\Utils as TransportUtils;
 
 class OVHServiceProvider extends ServiceProvider
@@ -49,7 +49,7 @@ class OVHServiceProvider extends ServiceProvider
 
             $urlBasePathVars = [$config['region'], $config['projectId'], $config['container']];
 
-            return new Filesystem(new SwiftAdapter($container, $urlBasePathVars));
+            return new Filesystem(new OVHSwiftAdapter($container, $urlBasePathVars));
         });
     }
 
