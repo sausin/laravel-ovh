@@ -1,4 +1,11 @@
-# laravel-ovh
+# Laravel OVH Object Storage driver
+
+[![Build Status](https://travis-ci.org/sausin/laravel-ovh.svg?branch=master)](https://travis-ci.org/sausin/laravel-ovh)
+[![Total Downloads](https://poser.pugx.org/brayniverse/laravel-route-macros/d/total.svg)](https://packagist.org/packages/sausin/laravel-ovh)
+[![Latest Stable Version](https://poser.pugx.org/brayniverse/laravel-route-macros/v/stable.svg)](https://packagist.org/packages/sausin/laravel-ovh)
+[![License](https://poser.pugx.org/brayniverse/laravel-route-macros/license.svg)](https://opensource.org/licenses/MIT)
+
+
 Laravel `Storage` facade provides support for many different filesystems.
 
 This is a wrapper to combine others' work to integrate with laravel and provide support for [OVH Object Storage](https://www.ovh.ie/public-cloud/storage/object-storage/).

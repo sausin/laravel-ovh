@@ -2,9 +2,9 @@
     "name": "sausin/laravel-ovh",
     "description": "OVH Object Storage driver for laravel",
     "keywords": [
-        "filesystem", "filesystems", "files", "chrisnharvey",
-        "storage", "flysystem", "openstack", "opencloud", "swift",
-	"ovh", "laravel", "driver"
+        "filesystem", "filesystems", "files", "storage",
+        "flysystem", "openstack", "opencloud", "swift",
+        "ovh", "laravel", "driver"
     ],
     "license": "MIT",
     "authors": [
@@ -18,6 +18,11 @@
             "Sausin\\LaravelOvh\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Sausin\\LaravelOvh\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php-opencloud/openstack": "^2.0",
         "illuminate/support": "^5.4",
@@ -26,8 +31,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^5.5",
-        "mockery/mockery": "^0.9.5",
-        "mikey179/vfsStream": "^1.6.4"
+        "mockery/mockery": "^0.9.5"
     },
     "extra": {
         "laravel": {
@@ -35,5 +39,8 @@
                 "Sausin\\LaravelOvh\\OVHServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
