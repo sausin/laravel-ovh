@@ -1,8 +1,8 @@
 # Laravel OVH Object Storage driver
 
 [![Build Status](https://travis-ci.org/sausin/laravel-ovh.svg?branch=master)](https://travis-ci.org/sausin/laravel-ovh)
-[![Total Downloads](https://poser.pugx.org/brayniverse/laravel-route-macros/d/total.svg)](https://packagist.org/packages/sausin/laravel-ovh)
-[![Latest Stable Version](https://poser.pugx.org/brayniverse/laravel-route-macros/v/stable.svg)](https://packagist.org/packages/sausin/laravel-ovh)
+[![Total Downloads](https://poser.pugx.org/sausin/laravel-ovh/d/total.svg)](https://packagist.org/packages/sausin/laravel-ovh)
+[![Latest Stable Version](https://poser.pugx.org/sausin/laravel-ovh/v/stable.svg)](https://packagist.org/packages/sausin/laravel-ovh)
 [![License](https://poser.pugx.org/brayniverse/laravel-route-macros/license.svg)](https://opensource.org/licenses/MIT)
 
 
