@@ -81,7 +81,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * Custom function to comply with the Storage::url() function in laravel
      * without checking the existence of a file (faster).
-     * 
+     *
      * @param  string $path
      * @return string
      */
@@ -90,7 +90,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         if (! $this->urlBasePathVars) {
             throw new \Exception('Empty array', 1);
         }
-        
+
         $urlBasePath = sprintf(
             'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
             $this->urlBasePathVars[0],
@@ -100,10 +100,10 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         return $urlBasePath.$path;
     }
-    
+
     /**
      * Custom function to get a url with confirmed file existence.
-     * 
+     *
      * @param  string $path
      * @return string
      */
