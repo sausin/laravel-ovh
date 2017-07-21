@@ -15,12 +15,10 @@ This is a wrapper to combine others' work to integrate with laravel and provide 
 
 # Installing
 
-Install the package via composer
-
-`composer require sausin/laravel-ovh`
-
-and make sure to allow all versions in `composer.json`
-`"sausin/laravel-ovh": "0.*",`
+Install via composer:
+```
+composer require sausin/laravel-ovh
+```
 
 Then include the service provider in config/app.php
 ```php
