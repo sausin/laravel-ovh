@@ -38,14 +38,14 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
                               ->at($this->root);
 
             $stream = fopen(vfsStream::url('home/large.txt'), 'r');
-            
+
             $psrStream = new Stream($stream);
 
             $this->container->shouldReceive('createLargeObject')->once()->with([
                 'name' => 'hello',
                 'stream' => $psrStream,
                 'segmentSize' => 104857600,
-                'segmentContainer' => $this->container->name
+                'segmentContainer' => $this->container->name,
             ])->andReturn($this->object);
 
             $response = $this->adapter->$method('hello', $stream, $this->config);

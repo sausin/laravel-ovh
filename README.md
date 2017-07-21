@@ -1,9 +1,12 @@
 # Laravel OVH Object Storage driver
 
-[![Build Status](https://travis-ci.org/sausin/laravel-ovh.svg?branch=master)](https://travis-ci.org/sausin/laravel-ovh)
-[![Total Downloads](https://poser.pugx.org/sausin/laravel-ovh/d/total.svg)](https://packagist.org/packages/sausin/laravel-ovh)
-[![Latest Stable Version](https://poser.pugx.org/sausin/laravel-ovh/v/stable.svg)](https://packagist.org/packages/sausin/laravel-ovh)
-[![License](https://poser.pugx.org/brayniverse/laravel-route-macros/license.svg)](https://opensource.org/licenses/MIT)
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/sausin/laravel-ovh.svg?style=flat-square)](https://packagist.org/packages/sausin/laravel-ovh)
+[![Build Status](https://img.shields.io/travis/sausin/laravel-ovh/master.svg?style=flat-square)](https://travis-ci.org/sausin/laravel-ovh)
+[![Quality Score](https://img.shields.io/scrutinizer/g/sausin/laravel-ovh.svg?style=flat-square)](https://scrutinizer-ci.com/g/sausin/laravel-ovh)
+[![StyleCI](https://styleci.io/repos/85194981/shield?branch=master)](https://styleci.io/repos/85194981)
+[![Total Downloads](https://img.shields.io/packagist/dt/sausin/laravel-ovh.svg?style=flat-square)](https://packagist.org/packages/sausin/laravel-ovh)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square](https://opensource.org/licenses/MIT)
 
 
 Laravel `Storage` facade provides support for many different filesystems.

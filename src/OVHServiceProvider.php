@@ -8,7 +8,6 @@ use OpenStack\OpenStack;
 use GuzzleHttp\HandlerStack;
 use League\Flysystem\Filesystem;
 use OpenStack\Identity\v2\Service;
-use Sausin\LaravelOvh\OVHSwiftAdapter;
 use Illuminate\Support\ServiceProvider;
 use OpenStack\Common\Transport\Utils as TransportUtils;
 

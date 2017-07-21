@@ -4,7 +4,6 @@ namespace Sausin\LaravelOvh;
 
 use GuzzleHttp\Psr7\Stream;
 use League\Flysystem\Config;
-use GuzzleHttp\Psr7\LimitStream;
 use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
@@ -14,13 +13,13 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * URL base path variables for OVH service
      * the HTTPS url is typically of the format
-     * https://storage.[REGION].cloud.ovh.net/v1/AUTH_[PROJECT_ID]/[CONTAINER_NAME]
+     * https://storage.[REGION].cloud.ovh.net/v1/AUTH_[PROJECT_ID]/[CONTAINER_NAME].
      * @var array
      */
     protected $urlBasePathVars;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Container $container
      * @param string    $prefix
@@ -39,14 +38,14 @@ class OVHSwiftAdapter extends SwiftAdapter
     public function write($path, $contents, Config $config, $size = 0)
     {
         $path = $this->applyPathPrefix($path);
-        
+
         $data = ['name' => $path];
         $type = 'content';
 
         if (is_a($contents, 'GuzzleHttp\Psr7\Stream')) {
             $type = 'stream';
         }
-        
+
         $data[$type] = $contents;
 
         if ($type === 'stream' && $size > 314572800) {
@@ -78,16 +77,18 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         return $this->write($path, new Stream($resource), $config, fstat($resource)['size']);
     }
-    
+
     /**
-     * Custom function to comply with the Storage::url() function
+     * Custom function to comply with the Storage::url() function in laravel
+     * without checking the existence of a file (faster).
+     * 
      * @param  string $path
      * @return string
      */
     public function getUrl($path)
     {
-        if (!$this->urlBasePathVars) {
-            throw new \Exception("Empty array", 1);
+        if (! $this->urlBasePathVars) {
+            throw new \Exception('Empty array', 1);
         }
         
         $urlBasePath = sprintf(
@@ -97,11 +98,12 @@ class OVHSwiftAdapter extends SwiftAdapter
             $this->urlBasePathVars[2]
         );
 
-        return $urlBasePath . $path;
+        return $urlBasePath.$path;
     }
     
     /**
-     * Custom function to comply with the Storage::url() function
+     * Custom function to get a url with confirmed file existence.
+     * 
      * @param  string $path
      * @return string
      */
@@ -114,8 +116,8 @@ class OVHSwiftAdapter extends SwiftAdapter
             throw $e;
         }
 
-        if (!$this->urlBasePathVars) {
-            throw new \Exception("Empty array", 1);
+        if (! $this->urlBasePathVars) {
+            throw new \Exception('Empty array', 1);
         }
 
         $urlBasePath = sprintf(
@@ -125,6 +127,6 @@ class OVHSwiftAdapter extends SwiftAdapter
             $this->urlBasePathVars[2]
         );
 
-        return $urlBasePath . $path;
+        return $urlBasePath.$path;
     }
 }
