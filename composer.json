@@ -31,7 +31,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^5.5",
-        "mockery/mockery": "^0.9.5"
+        "mockery/mockery": "^0.9.5",
+        "mikey179/vfsStream": "^1.6.4"
     },
     "extra": {
         "laravel": {

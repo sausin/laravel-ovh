@@ -46,9 +46,10 @@ define the correct env variables above in your .env file and you should now have
 
 Refere to extensive laravel [documentation](https://laravel.com/docs/5.4/filesystem) for usage. Of note - this package includes support for the `Storage::url()` method.
 
+In addition, the [large object support](https://www.ovh.com/us/g1951.optimised_method_uploading_files_object_storage) in OVH has also been implemented. Note that the large object support only works for stream resources (the object obtained from `fopen` for example).
+
 # Credits
 - the SwiftAdapter was created by Nimbusoft (https://github.com/nimbusoftltd/flysystem-openstack-swift) and I have just modified it to provide the url function
 - cyberx86 did the hard work of figuring out how to get the Openstack setup going with OVH (https://www.thatsgeeky.com/2016/08/openstack-php-and-ovh/)
 - rackspace for maintaining the Openstack repo (https://github.com/php-opencloud/openstack)
 - obviously the creator of league flysystem!
-- @anhphamt for providing the [pull request](https://github.com/nimbusoftltd/flysystem-openstack-swift/pull/3) for large object support
