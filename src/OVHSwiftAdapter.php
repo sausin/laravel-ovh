@@ -2,8 +2,6 @@
 
 namespace Sausin\LaravelOvh;
 
-use GuzzleHttp\Psr7\Stream;
-use League\Flysystem\Config;
 use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;

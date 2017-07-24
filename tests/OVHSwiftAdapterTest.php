@@ -3,8 +3,6 @@
 namespace Sausin\LaravelOvh\Tests;
 
 use Mockery;
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Psr7\Stream;
 use League\Flysystem\Config;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
