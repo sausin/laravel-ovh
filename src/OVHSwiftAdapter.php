@@ -33,52 +33,6 @@ class OVHSwiftAdapter extends SwiftAdapter
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function write($path, $contents, Config $config, $size = 0)
-    {
-        $path = $this->applyPathPrefix($path);
-
-        $data = ['name' => $path];
-        $type = 'content';
-
-        if (is_a($contents, 'GuzzleHttp\Psr7\Stream')) {
-            $type = 'stream';
-        }
-
-        $data[$type] = $contents;
-
-        if ($type === 'stream' && $size > 314572800) {
-            // set the segment size to 100MB
-            // as suggested in OVH docs
-            $data['segmentSize'] = 104857600;
-            $data['segmentContainer'] = $this->container->name;
-
-            $response = $this->container->createLargeObject($data);
-        } else {
-            $response = $this->container->createObject($data);
-        }
-
-        return $this->normalizeObject($response);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function writeStream($path, $resource, Config $config)
-    {
-        return $this->write($path, new Stream($resource), $config, fstat($resource)['size']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function updateStream($path, $resource, Config $config)
-    {
-        return $this->write($path, new Stream($resource), $config, fstat($resource)['size']);
-    }
-
-    /**
      * Custom function to comply with the Storage::url() function in laravel
      * without checking the existence of a file (faster).
      *
