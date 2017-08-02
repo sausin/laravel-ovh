@@ -89,18 +89,23 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Generate a temporary URL for private containers.
      *
      * @param  string   $path
-     * @param  int      $expiry
-     * @param  string   $method
+     * @param  int      $expiration
+     * @param  array    $options
      * @return string
      */
-    public function getTemporaryUrl($path, $expiry = 60 * 60, $method = 'GET')
+    public function getTemporaryUrl($path, $expiration = 60 * 60, $options)
     {
         if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
 
-        $expiresAt = (int) (time() + $expiry);
+        // expiry is relative to current time
+        $expiresAt = (int) (time() + $expiration);
 
+        // get the method
+        $method = isset($options['method']) ? $options['method'] : 'GET';
+
+        // the url on the OVH host
         $codePath = sprintf(
             '/v1/AUTH_%s/%s/%s',
             $this->urlVars[1],
@@ -108,10 +113,13 @@ class OVHSwiftAdapter extends SwiftAdapter
             $path
         );
 
+        // body for the HMAC hash
         $body = sprintf("%s\n%s\n%s", $method, $expiresAt, $codePath);
 
+        // the actual hash signature
         $signature = hash_hmac('sha1', $body, $this->urlVars[3]);
 
+        // return the url
         return sprintf(
             '%s%s?temp_url_sig=%s&temp_url_expires=%s',
             sprintf('https://storage.%s.cloud.ovh.net', $this->urlVars[0]),
