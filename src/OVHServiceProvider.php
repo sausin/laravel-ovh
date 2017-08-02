@@ -53,7 +53,7 @@ class OVHServiceProvider extends ServiceProvider
                 $config['region'],
                 $config['projectId'],
                 $config['container'],
-                isset($config['urlKey']) ? $config['urlKey'] : null
+                isset($config['urlKey']) ? $config['urlKey'] : null,
             ];
 
             return new Filesystem(new OVHSwiftAdapter($container, $urlVars));

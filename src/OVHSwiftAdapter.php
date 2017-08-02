@@ -42,7 +42,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     public function getUrl($path)
     {
-        if (! is_array($this->urlVars) || sizeof($this->urlVars) !== 4) {
+        if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
 
@@ -71,7 +71,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             throw $e;
         }
 
-        if (! is_array($this->urlVars) || sizeof($this->urlVars) !== 4) {
+        if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
 
@@ -93,9 +93,9 @@ class OVHSwiftAdapter extends SwiftAdapter
      * @param  string   $method
      * @return string
      */
-    public function getTemporaryUrl($path, $expiry = 60*60, $method = 'GET')
+    public function getTemporaryUrl($path, $expiry = 60 * 60, $method = 'GET')
     {
-        if (! is_array($this->urlVars) || sizeof($this->urlVars) !== 4) {
+        if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
 
