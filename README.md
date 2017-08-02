@@ -38,6 +38,7 @@ as below
             'tenantName' => env('OVH_TENANT_NAME'),
             'container' => env('OVH_CONTAINER'),
             'projectId' => env('OVH_PROJECT_ID'),
+            'urlKey' => env('OVH_URL_KEY'),
         ],
 ```
 
@@ -45,9 +46,17 @@ define the correct env variables above in your .env file and you should now have
 
 # Usage
 
-Refere to extensive laravel [documentation](https://laravel.com/docs/5.4/filesystem) for usage. Of note - this package includes support for the `Storage::url()` method.
+Refere to extensive laravel [documentation](https://laravel.com/docs/5.4/filesystem) for usage. Of note - this package includes support for the following additional methods:
 
-In addition, the [large object support](https://www.ovh.com/us/g1951.optimised_method_uploading_files_object_storage) in OVH has also been implemented. Note that the large object support only works for stream resources (the object obtained from `fopen` for example).
+`Storage::url()`
+
+and
+
+`Storage::temporaryUrl()`
+
+The temporary url is relevant for private containers where files are not publicly accessible under normal conditions. This generates a temporary url with expiry (see details [here](https://github.com/laravel/framework/pull/20375) for usage).
+
+Note that this requires the container to have a proper header. The key in the header should match the `urlKey` specified in `filesystems.php`. For details on how to setup the header on your OVH container, see [here](https://www.ovh.com/us/g2007.share_object_via_temporary_url#generate_your_temporary_url).
 
 # Credits
 - the SwiftAdapter was created by Nimbusoft (https://github.com/nimbusoftltd/flysystem-openstack-swift) and I have just modified it to provide the url function
