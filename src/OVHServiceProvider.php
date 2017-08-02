@@ -35,6 +35,7 @@ class OVHServiceProvider extends ServiceProvider
                 'handler'  => HandlerStack::create(),
             ]);
 
+            // setup the client for OpenStack v1
             $client = new OpenStack([
                 'authUrl' => $config['server'],
                 'region' => $config['region'],
@@ -44,11 +45,18 @@ class OVHServiceProvider extends ServiceProvider
                 'identityService' => Service::factory($httpClient),
             ]);
 
-            $container = $client->objectStoreV1()->getContainer($config['container']);
+            // get the container
+            $container = $client->$client->objectStoreV1()->getContainer($config['container']);
 
-            $urlBasePathVars = [$config['region'], $config['projectId'], $config['container']];
+            // provide the url generating variables
+            $urlVars = [
+                $config['region'],
+                $config['projectId'],
+                $config['container'],
+                isset($config['urlKey']) ? $config['urlKey'] : null
+            ];
 
-            return new Filesystem(new OVHSwiftAdapter($container, $urlBasePathVars));
+            return new Filesystem(new OVHSwiftAdapter($container, $urlVars));
         });
     }
 

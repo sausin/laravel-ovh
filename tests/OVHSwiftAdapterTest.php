@@ -11,11 +11,13 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->config = new Config([]);
-        $this->urlBasePathVars = ['region', 'projectId', 'container'];
+        $this->urlVars = ['region', 'projectId', 'container', 'meykey'];
+
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
+
         $this->container->name = 'container-name';
         $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\Object');
-        $this->adapter = new OVHSwiftAdapter($this->container, $this->urlBasePathVars);
+        $this->adapter = new OVHSwiftAdapter($this->container, $this->urlVars);
     }
 
     public function tearDown()
@@ -50,5 +52,15 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
         $url = $this->adapter->getUrl('hello');
 
         $this->assertEquals($url, 'https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello');
+    }
+
+    public function testTemporaryUrlMethod()
+    {
+        $this->object->shouldNotReceive('retrieve');
+        $this->container->shouldNotReceive('getObject');
+
+        $url = $this->adapter->getTemporaryUrl('hello.jpg');
+
+        $this->assertNotNull($url);
     }
 }
