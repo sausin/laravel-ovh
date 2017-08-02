@@ -2,6 +2,7 @@
 
 namespace Sausin\LaravelOvh;
 
+use Carbon\Carbon;
 use BadMethodCallException;
 use OpenStack\ObjectStore\v1\Service;
 use OpenStack\Common\Error\BadResponseError;
@@ -89,18 +90,18 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Generate a temporary URL for private containers.
      *
      * @param  string   $path
-     * @param  int      $expiration
+     * @param  Carbon   $expiration
      * @param  array    $options
      * @return string
      */
-    public function getTemporaryUrl($path, $expiration = 60 * 60, $options)
+    public function getTemporaryUrl($path, $expiration, $options = [])
     {
         if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
 
         // expiry is relative to current time
-        $expiresAt = (int) (time() + $expiration);
+        $expiresAt = $expiration instanceof Carbon ? $expiration->timestamp : (int) (time() + 60 * 60);
 
         // get the method
         $method = isset($options['method']) ? $options['method'] : 'GET';

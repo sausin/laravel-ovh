@@ -3,6 +3,7 @@
 namespace Sausin\LaravelOvh\Tests;
 
 use Mockery;
+use Carbon\Carbon;
 use League\Flysystem\Config;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
@@ -59,7 +60,7 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
         $this->object->shouldNotReceive('retrieve');
         $this->container->shouldNotReceive('getObject');
 
-        $url = $this->adapter->getTemporaryUrl('hello.jpg');
+        $url = $this->adapter->getTemporaryUrl('hello.jpg', Carbon::now()->addMinutes(10));
 
         $this->assertNotNull($url);
     }
