@@ -46,7 +46,7 @@ class OVHServiceProvider extends ServiceProvider
             ]);
 
             // get the container
-            $container = $client->$client->objectStoreV1()->getContainer($config['container']);
+            $container = $client->objectStoreV1()->getContainer($config['container']);
 
             // provide the url generating variables
             $urlVars = [
