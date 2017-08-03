@@ -43,9 +43,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     public function getUrl($path)
     {
-        if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
-            throw new BadMethodCallException('Insufficient Url Params', 1);
-        }
+        $this->checkParams();
 
         $urlBasePath = sprintf(
             'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
@@ -72,9 +70,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             throw $e;
         }
 
-        if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
-            throw new BadMethodCallException('Insufficient Url Params', 1);
-        }
+        $this->checkParams();
 
         $urlBasePath = sprintf(
             'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
@@ -96,9 +92,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     public function getTemporaryUrl($path, $expiration, $options = [])
     {
-        if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
-            throw new BadMethodCallException('Insufficient Url Params', 1);
-        }
+        $this->checkParams();
 
         // expiry is relative to current time
         $expiresAt = $expiration instanceof Carbon ? $expiration->timestamp : (int) (time() + 60 * 60);
@@ -128,5 +122,18 @@ class OVHSwiftAdapter extends SwiftAdapter
             $signature,
             $expiresAt
         );
+    }
+
+    /**
+     * Check if the url support variables have
+     * been correctly defined.
+     *
+     * @return void|BadMethodCallException
+     */
+    protected function checkParams()
+    {
+        if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
+            throw new BadMethodCallException('Insufficient Url Params', 1);
+        }
     }
 }
