@@ -59,7 +59,7 @@ The temporary url is relevant for private containers where files are not publicl
 Note that this requires the container to have a proper header. The key in the header should match the `urlKey` specified in `filesystems.php`. For details on how to setup the header on your OVH container, see [here](https://www.ovh.com/us/g2007.share_object_via_temporary_url#generate_your_temporary_url).
 
 # Credits
-- the SwiftAdapter was created by Nimbusoft (https://github.com/nimbusoftltd/flysystem-openstack-swift) and I have just modified it to provide the url function
-- cyberx86 did the hard work of figuring out how to get the Openstack setup going with OVH (https://www.thatsgeeky.com/2016/08/openstack-php-and-ovh/)
-- rackspace for maintaining the Openstack repo (https://github.com/php-opencloud/openstack)
-- obviously the creator of league flysystem!
+- thephpleage for the awesome [flysystem](https://github.com/thephpleague/flysystem)!
+- [SwiftAdapter](https://github.com/nimbusoftltd/flysystem-openstack-swift) by Nimbusoft
+- cyberx86 for [figuring out](https://www.thatsgeeky.com/2016/08/openstack-php-and-ovh/) how to get the Openstack setup going with OVH
+- Rackspace for maintaining the [Openstack repo](https://github.com/php-opencloud/openstack)
