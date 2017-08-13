@@ -2,12 +2,12 @@
 
 namespace Sausin\LaravelOvh;
 
-use Storage;
 use GuzzleHttp\Client;
 use OpenStack\OpenStack;
 use GuzzleHttp\HandlerStack;
 use League\Flysystem\Filesystem;
 use OpenStack\Identity\v2\Service;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use OpenStack\Common\Transport\Utils as TransportUtils;
 
