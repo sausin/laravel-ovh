@@ -44,6 +44,13 @@ as below
 
 define the correct env variables above in your .env file and you should now have a working OVH Object Storage setup :)
 
+Be sure to run
+```
+php artisan config:cache
+```
+again if you've been using the caching on your config file.
+
+
 # Usage
 
 Refere to extensive laravel [documentation](https://laravel.com/docs/5.4/filesystem) for usage. Of note - this package includes support for the following additional methods:
