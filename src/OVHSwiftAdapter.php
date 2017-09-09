@@ -28,10 +28,9 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     public function __construct(Container $container, $urlVars = [], $prefix = null)
     {
-        $this->container = $container;
+        parent::__construct($container, $prefix);
 
         $this->urlVars = $urlVars;
-        $this->setPathPrefix($prefix);
     }
 
     /**
