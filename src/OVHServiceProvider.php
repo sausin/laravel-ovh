@@ -46,7 +46,7 @@ class OVHServiceProvider extends ServiceProvider
         // needed keys
         $needKeys = ['server', 'region', 'user', 'pass', 'tenantName', 'projectId', 'container'];
 
-        if (sizeof(array_intersect($needKeys, array_keys($config))) === sizeof($needKeys)) {
+        if (count(array_intersect($needKeys, array_keys($config))) === count($needKeys)) {
             return;
         }
 
