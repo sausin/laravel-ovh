@@ -1,5 +1,5 @@
 {
-    "name": "sausin/laravel-ovh",
+    "name": "kslr/laravel-ovh",
     "description": "OVH Object Storage driver for laravel",
     "keywords": [
         "filesystem", "filesystems", "files", "storage",
@@ -11,6 +11,10 @@
         {
             "name": "Saurabh Singhvi",
             "email": "saurabh.singhvi@gmail.com"
+        },
+        {
+            "name": "kslr",
+            "email": "kslrwang@gmail.com"
         }
     ],
     "autoload": {
