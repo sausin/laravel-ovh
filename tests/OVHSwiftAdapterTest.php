@@ -17,7 +17,7 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
 
         $this->container->name = 'container-name';
-        $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\Object');
+        $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
         $this->adapter = new OVHSwiftAdapter($this->container, $this->urlVars);
     }
 
