@@ -13,6 +13,10 @@ Laravel `Storage` facade provides support for many different filesystems.
 
 This is a wrapper to combine others' work to integrate with laravel and provide support for [OVH Object Storage](https://www.ovh.ie/public-cloud/storage/object-storage/).
 
+# What's new?
+
+Support php 7.2.2
+
 # Installing
 
 Install via composer:
