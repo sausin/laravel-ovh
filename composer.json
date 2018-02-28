@@ -24,7 +24,7 @@
         }
     },
     "require": {
-        "php-opencloud/openstack": "^2.0",
+        "php-opencloud/openstack": "^3.0",
         "illuminate/support": "^5.4",
         "league/flysystem": "^1.0",
         "nimbusoft/flysystem-openstack-swift": "^0.2.0",
