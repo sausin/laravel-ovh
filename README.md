@@ -19,6 +19,8 @@ Install via composer:
 ```
 composer require sausin/laravel-ovh
 ```
+Note: Branch 1.2.x works for PHP versions < 7.2
+
 
 Then include the service provider in config/app.php
 ```php
@@ -29,17 +31,17 @@ in the providers array
 Define the ovh driver in the config/filesystems.php
 as below
 ```php
-        'ovh' => [
-            'server' => env('OVH_URL'),
-            'driver' => 'ovh',
-            'user' => env('OVH_USER'),
-            'pass' => env('OVH_PASS'),
-            'region' => env('OVH_REGION'),
-            'tenantName' => env('OVH_TENANT_NAME'),
-            'container' => env('OVH_CONTAINER'),
-            'projectId' => env('OVH_PROJECT_ID'),
-            'urlKey' => env('OVH_URL_KEY'),
-        ],
+'ovh' => [
+    'server' => env('OVH_URL'),
+    'driver' => 'ovh',
+    'user' => env('OVH_USER'),
+    'pass' => env('OVH_PASS'),
+    'region' => env('OVH_REGION'),
+    'tenantName' => env('OVH_TENANT_NAME'),
+    'container' => env('OVH_CONTAINER'),
+    'projectId' => env('OVH_PROJECT_ID'),
+    'urlKey' => env('OVH_URL_KEY'),
+],
 ```
 
 define the correct env variables above in your .env file and you should now have a working OVH Object Storage setup :)
@@ -53,7 +55,7 @@ again if you've been using the caching on your config file.
 
 # Usage
 
-Refere to extensive laravel [documentation](https://laravel.com/docs/5.4/filesystem) for usage. Of note - this package includes support for the following additional methods:
+Refer to extensive laravel [documentation](https://laravel.com/docs/5.5/filesystem) for usage. Of note - this package includes support for the following additional methods:
 
 `Storage::url()`
 
