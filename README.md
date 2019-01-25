@@ -44,7 +44,7 @@ as below
 ],
 ```
 
-define the correct env variables above in your .env file and you should now have a working OVH Object Storage setup :)
+define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :)
 
 Be sure to run
 ```
