@@ -12,7 +12,12 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->config = new Config([]);
-        $this->urlVars = ['region', 'projectId', 'container', 'meykey'];
+        $this->urlVars = [
+            'region' => 'region',
+            'projectId' => 'projectId',
+            'container' => 'container',
+            'urlKey' => 'meykey'
+        ];
 
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
 

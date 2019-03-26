@@ -89,10 +89,10 @@ class OVHServiceProvider extends ServiceProvider
     protected function getVars(&$config)
     {
         return [
-            $config['region'],
-            $config['projectId'],
-            $config['container'],
-            isset($config['urlKey']) ? $config['urlKey'] : null,
+            'region' => $config['region'],
+            'projectId' => $config['projectId'],
+            'container' => $config['container'],
+            'urlKey' => isset($config['urlKey']) ? $config['urlKey'] : null,
         ];
     }
 }

@@ -46,9 +46,9 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         $urlBasePath = sprintf(
             'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
-            $this->urlVars[0],
-            $this->urlVars[1],
-            $this->urlVars[2]
+            $this->urlVars['region'],
+            $this->urlVars['projectId'],
+            $this->urlVars['container']
         );
 
         return $urlBasePath.$path;
@@ -73,9 +73,9 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         $urlBasePath = sprintf(
             'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
-            $this->urlVars[0],
-            $this->urlVars[1],
-            $this->urlVars[2]
+            $this->urlVars['region'],
+            $this->urlVars['projectId'],
+            $this->urlVars['container']
         );
 
         return $urlBasePath.$path;
@@ -102,8 +102,8 @@ class OVHSwiftAdapter extends SwiftAdapter
         // the url on the OVH host
         $codePath = sprintf(
             '/v1/AUTH_%s/%s/%s',
-            $this->urlVars[1],
-            $this->urlVars[2],
+            $this->urlVars['projectId'],
+            $this->urlVars['container'],
             $path
         );
 
@@ -111,12 +111,12 @@ class OVHSwiftAdapter extends SwiftAdapter
         $body = sprintf("%s\n%s\n%s", $method, $expiresAt, $codePath);
 
         // the actual hash signature
-        $signature = hash_hmac('sha1', $body, $this->urlVars[3]);
+        $signature = hash_hmac('sha1', $body, $this->urlVars['urlKey']);
 
         // return the url
         return sprintf(
             '%s%s?temp_url_sig=%s&temp_url_expires=%s',
-            sprintf('https://storage.%s.cloud.ovh.net', $this->urlVars[0]),
+            sprintf('https://storage.%s.cloud.ovh.net', $this->urlVars['region']),
             $codePath,
             $signature,
             $expiresAt
