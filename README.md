@@ -41,6 +41,7 @@ as below
     'container' => env('OVH_CONTAINER'),
     'projectId' => env('OVH_PROJECT_ID'),
     'urlKey' => env('OVH_URL_KEY'),
+    'endpoint' => env('OVH_CUSTOM_ENDPOINT'),
 ],
 ```
 
