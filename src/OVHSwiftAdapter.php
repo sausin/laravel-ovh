@@ -44,7 +44,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->checkParams();
 
-        return $this->getEndpoint() . $path;
+        return $this->getEndpoint().$path;
     }
 
     /**
@@ -64,7 +64,7 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         $this->checkParams();
 
-        return $this->getEndpoint() . $path;
+        return $this->getEndpoint().$path;
     }
 
     /**
@@ -102,7 +102,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         // return the url
         return sprintf(
             '%s?temp_url_sig=%s&temp_url_expires=%s',
-            $this->getEndpoint() . $path,
+            $this->getEndpoint().$path,
             $signature,
             $expiresAt
         );
@@ -129,7 +129,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             );
 
         // ensures there's one trailing slash for endpoint
-        return rtrim($endpoint, '/') . '/';
+        return rtrim($endpoint, '/').'/';
     }
 
     /**

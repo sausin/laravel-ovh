@@ -17,7 +17,7 @@ class CustomEndpointTest extends \PHPUnit_Framework_TestCase
             'projectId' => 'projectId',
             'container' => 'container',
             'urlKey' => 'meykey',
-            'endpoint' => 'http://custom.endpoint'
+            'endpoint' => 'http://custom.endpoint',
         ];
 
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
