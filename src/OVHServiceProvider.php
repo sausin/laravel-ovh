@@ -38,10 +38,10 @@ class OVHServiceProvider extends ServiceProvider
     /**
      * Check that the config is properly setup.
      *
-     * @param  array &$config
+     * @param  array $config
      * @return void|BadMethodCallException
      */
-    protected function checkConfig(&$config)
+    protected function checkConfig($config)
     {
         // needed keys
         $needKeys = ['server', 'region', 'user', 'pass', 'tenantName', 'projectId', 'container'];
@@ -57,10 +57,10 @@ class OVHServiceProvider extends ServiceProvider
     /**
      * Make the client needed for interaction with OVH OpenStack.
      *
-     * @param  array &$config
+     * @param  array $config
      * @return \OpenStack\OpenStack
      */
-    protected function makeClient(&$config)
+    protected function makeClient($config)
     {
         // this is needed because default setup of openstack leads to authentication
         // going to wrong path of the auth url as OVH uses deprecated version
@@ -93,6 +93,7 @@ class OVHServiceProvider extends ServiceProvider
             'projectId' => $config['projectId'],
             'container' => $config['container'],
             'urlKey' => isset($config['urlKey']) ? $config['urlKey'] : null,
+            'endpoint' => isset($config['endpoint']) ? $config['endpoint'] : null,
         ];
     }
 }

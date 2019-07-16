@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use League\Flysystem\Config;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
-class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
+class CustomEndpointTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -17,6 +17,7 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
             'projectId' => 'projectId',
             'container' => 'container',
             'urlKey' => 'meykey',
+            'endpoint' => 'http://custom.endpoint'
         ];
 
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
@@ -47,7 +48,7 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
 
         $url = $this->adapter->getUrlConfirm('hello');
 
-        $this->assertEquals($url, 'https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello');
+        $this->assertEquals($url, 'http://custom.endpoint/hello');
     }
 
     public function testUrlMethod()
@@ -57,7 +58,7 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
 
         $url = $this->adapter->getUrl('hello');
 
-        $this->assertEquals($url, 'https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello');
+        $this->assertEquals($url, 'http://custom.endpoint/hello');
     }
 
     public function testTemporaryUrlMethod()
