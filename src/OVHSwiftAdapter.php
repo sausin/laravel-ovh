@@ -44,14 +44,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->checkParams();
 
-        $urlBasePath = sprintf(
-            'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
-            $this->urlVars['region'],
-            $this->urlVars['projectId'],
-            $this->urlVars['container']
-        );
-
-        return $urlBasePath.$path;
+        return $this->getEndpoint().$path;
     }
 
     /**
@@ -71,14 +64,7 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         $this->checkParams();
 
-        $urlBasePath = sprintf(
-            'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
-            $this->urlVars['region'],
-            $this->urlVars['projectId'],
-            $this->urlVars['container']
-        );
-
-        return $urlBasePath.$path;
+        return $this->getEndpoint().$path;
     }
 
     /**
@@ -115,12 +101,35 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         // return the url
         return sprintf(
-            '%s%s?temp_url_sig=%s&temp_url_expires=%s',
-            sprintf('https://storage.%s.cloud.ovh.net', $this->urlVars['region']),
-            $codePath,
+            '%s?temp_url_sig=%s&temp_url_expires=%s',
+            $this->getEndpoint().$path,
             $signature,
             $expiresAt
         );
+    }
+
+    /**
+     * Gets the endpoint url of the bucket.
+     *
+     * @return string
+     */
+    protected function getEndpoint()
+    {
+        $this->checkParams();
+
+        $endpoint = isset($this->urlVars['endpoint'])
+            // allows assigning custom endpoint url
+            ? $this->urlVars['endpoint']
+            // if no custom endpoint assigned, use traditional swift v1 endpoint
+            : sprintf(
+                'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
+                $this->urlVars['region'],
+                $this->urlVars['projectId'],
+                $this->urlVars['container']
+            );
+
+        // ensures there's one trailing slash for endpoint
+        return rtrim($endpoint, '/').'/';
     }
 
     /**
@@ -131,7 +140,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function checkParams()
     {
-        if (! is_array($this->urlVars) || count($this->urlVars) !== 4) {
+        if (! is_array($this->urlVars) || count($this->urlVars) !== 5) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
     }

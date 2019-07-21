@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use League\Flysystem\Config;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
-class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
+class BasicAdapterTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -17,6 +17,7 @@ class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
             'projectId' => 'projectId',
             'container' => 'container',
             'urlKey' => 'meykey',
+            'endpoint' => null,
         ];
 
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
