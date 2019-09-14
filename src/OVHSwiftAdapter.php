@@ -44,7 +44,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->checkParams();
 
-        return $this->getEndpoint().$path;;
+        return $this->getEndpoint().$path;
     }
 
     /**
