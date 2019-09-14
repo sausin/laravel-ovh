@@ -57,10 +57,10 @@ class OVHServiceProvider extends ServiceProvider
     /**
      * Make the client needed for interaction with OVH OpenStack.
      *
-     * @param  array &$config
+     * @param  array $config
      * @return \OpenStack\OpenStack
      */
-    protected function makeClient(&$config)
+    protected function makeClient($config)
     {
         // this is needed because default setup of openstack leads to authentication
         // going to wrong path of the auth url as OVH uses deprecated version
@@ -83,16 +83,17 @@ class OVHServiceProvider extends ServiceProvider
     /**
      * Return the config variables required by the adapter.
      *
-     * @param  array &$config
+     * @param  array $config
      * @return array
      */
-    protected function getVars(&$config)
+    protected function getVars($config)
     {
         return [
-            $config['region'],
-            $config['projectId'],
-            $config['container'],
-            isset($config['urlKey']) ? $config['urlKey'] : null,
+            'region' => $config['region'],
+            'projectId' => $config['projectId'],
+            'container' => $config['container'],
+            'urlKey' => isset($config['urlKey']) ? $config['urlKey'] : null,
+            'endpoint' => isset($config['endpoint']) ? $config['endpoint'] : null,
         ];
     }
 }
