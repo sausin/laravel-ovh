@@ -20,7 +20,6 @@ class BasicAdapterTest extends \PHPUnit_Framework_TestCase
             'endpoint' => null,
         ];
 
-
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
 
         $this->container->name = 'container-name';
