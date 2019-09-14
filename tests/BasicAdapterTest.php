@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use League\Flysystem\Config;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
-class OVHSwiftAdapterTest extends \PHPUnit_Framework_TestCase
+class BasicAdapterTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
