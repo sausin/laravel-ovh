@@ -88,8 +88,8 @@ class OVHSwiftAdapter extends SwiftAdapter
         // the url on the OVH host
         $codePath = sprintf(
             '/v1/AUTH_%s/%s/%s',
-            $this->urlVars[1],
-            $this->urlVars[2],
+            $this->urlVars['projectId'],
+            $this->urlVars['container'],
             $path
         );
 
@@ -97,13 +97,12 @@ class OVHSwiftAdapter extends SwiftAdapter
         $body = sprintf("%s\n%s\n%s", $method, $expiresAt, $codePath);
 
         // the actual hash signature
-        $signature = hash_hmac('sha1', $body, $this->urlVars[3]);
+        $signature = hash_hmac('sha1', $body, $this->urlVars['urlKey']);
 
         // return the url
         return sprintf(
-            '%s%s?temp_url_sig=%s&temp_url_expires=%s',
-            sprintf('https://storage.%s.cloud.ovh.net', $this->urlVars[0]),
-            $codePath,
+            '%s?temp_url_sig=%s&temp_url_expires=%s',
+            $this->getEndpoint().$path,
             $signature,
             $expiresAt
         );
@@ -117,6 +116,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     protected function getEndpoint()
     {
         $this->checkParams();
+
         $endpoint = isset($this->urlVars['endpoint'])
             // allows assigning custom endpoint url
             ? $this->urlVars['endpoint']
@@ -127,6 +127,7 @@ class OVHSwiftAdapter extends SwiftAdapter
                 $this->urlVars['projectId'],
                 $this->urlVars['container']
             );
+
         // ensures there's one trailing slash for endpoint
         return rtrim($endpoint, '/').'/';
     }
