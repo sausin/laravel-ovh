@@ -89,7 +89,7 @@ class OVHServiceProvider extends ServiceProvider
     protected function getVars(&$config)
     {
         $largeObjectConfig = [];
-        
+
         $passThroughConfig = [
             'swiftLargeObjectThreshold',
             'swiftSegmentSize',
