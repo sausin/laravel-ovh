@@ -88,12 +88,26 @@ class OVHServiceProvider extends ServiceProvider
      */
     protected function getVars(&$config)
     {
+        $largeObjectConfig = [];
+        
+        $passThroughConfig = [
+            'swiftLargeObjectThreshold',
+            'swiftSegmentSize',
+            'swiftSegmentContainer',
+        ];
+
+        foreach ($passThroughConfig as $key) {
+            if (isset($config[$key])) {
+                $largeObjectConfig[$key] = $config[$key];
+            }
+        }
+
         return [
             'region' => $config['region'],
             'projectId' => $config['projectId'],
             'container' => $config['container'],
             'urlKey' => isset($config['urlKey']) ? $config['urlKey'] : null,
             'endpoint' => isset($config['endpoint']) ? $config['endpoint'] : null,
-        ];
+        ] + $largeObjectConfig;
     }
 }
