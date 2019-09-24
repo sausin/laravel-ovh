@@ -81,6 +81,8 @@ For eg, below code will upload a file which expires after one hour:
 Storage::disk('ovh')->put('path/to/file.jpg', $contents, ['deleteAfter' => 60*60])
 ```
 
+Usage of these variables is explained in the OVH documentation [here](https://github.com/ovh/docs/blob/develop/pages/platform/public-cloud/setup_automatic_deletion_of_objects/guide.en-gb.md)
+
 # Credits
 - thephpleage for the awesome [flysystem](https://github.com/thephpleague/flysystem)!
 - [SwiftAdapter](https://github.com/mzur/flysystem-openstack-swift) by mzur (fork of adapter from [Nimbusoft](https://github.com/nimbusoftltd/flysystem-openstack-swift)
