@@ -42,6 +42,10 @@ as below
     'projectId' => env('OVH_PROJECT_ID'),
     'urlKey' => env('OVH_URL_KEY'),
     'endpoint' => env('OVH_CUSTOM_ENDPOINT'),
+    // optional variables for handling large objects
+    'swiftLargeObjectThreshold' => env('OVH_LARGE_OBJECT_THRESHOLD'),
+    'swiftSegmentSize' => env('OVH_SEGMENT_SIZE'),
+    'swiftSegmentContainer' => env('OVH_SEGMENT_CONTAINER'),
 ],
 ```
 
@@ -67,6 +71,15 @@ and
 The temporary url is relevant for private containers where files are not publicly accessible under normal conditions. This generates a temporary url with expiry (see details [here](https://github.com/laravel/framework/pull/20375) for usage).
 
 Note that this requires the container to have a proper header. The key in the header should match the `urlKey` specified in `filesystems.php`. For details on how to setup the header on your OVH container, see [here](https://docs.ovh.com/gb/en/public-cloud/share_an_object_via_a_temporary_url/#generate-the-key).
+
+## Uploading expiring objects
+
+If you would like to upload objects which expire (is auto deleted) at a certain time in future, you can add `deleteAt` or `deleteAfter` configuration options when uploading the object.
+
+For eg, below code will upload a file which expires after one hour:
+```php
+Storage::disk('ovh')->put('path/to/file.jpg', $contents, ['deleteAfter' => 60*60])
+```
 
 # Credits
 - thephpleage for the awesome [flysystem](https://github.com/thephpleague/flysystem)!
