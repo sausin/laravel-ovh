@@ -117,9 +117,9 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->checkParams();
 
-        $endpoint = isset($this->urlVars['endpoint'])
+        return isset($this->urlVars['endpoint'])
             // allows assigning custom endpoint url
-            ? $this->urlVars['endpoint']
+            ? rtrim($this->urlVars['endpoint'], '/').'/'
             // if no custom endpoint assigned, use traditional swift v1 endpoint
             : sprintf(
                 'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
@@ -127,9 +127,6 @@ class OVHSwiftAdapter extends SwiftAdapter
                 $this->urlVars['projectId'],
                 $this->urlVars['container']
             );
-
-        // ensures there's one trailing slash for endpoint
-        return rtrim($endpoint, '/').'/';
     }
 
     /**
