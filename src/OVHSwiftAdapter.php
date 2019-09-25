@@ -137,7 +137,9 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function checkParams()
     {
-        if (! is_array($this->urlVars) || count($this->urlVars) !== 5) {
+        $needKeys = ['region', 'projectId', 'container', 'urlKey', 'endpoint'];
+
+        if (! is_array($this->urlVars) || count(array_intersect($needKeys, array_keys($config))) !== count($needKeys)) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
     }
