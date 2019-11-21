@@ -2,15 +2,15 @@
 
 namespace Sausin\LaravelOvh;
 
-use GuzzleHttp\Client;
-use OpenStack\OpenStack;
 use BadMethodCallException;
+use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
-use League\Flysystem\Filesystem;
-use OpenStack\Identity\v2\Service;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use League\Flysystem\Filesystem;
 use OpenStack\Common\Transport\Utils as TransportUtils;
+use OpenStack\Identity\v2\Service;
+use OpenStack\OpenStack;
 
 class OVHServiceProvider extends ServiceProvider
 {
