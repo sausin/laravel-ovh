@@ -2,12 +2,11 @@
 
 namespace Sausin\LaravelOvh;
 
-
-use OpenStack\OpenStack;
 use BadMethodCallException;
-use League\Flysystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use League\Flysystem\Filesystem;
+use OpenStack\OpenStack;
 
 class OVHServiceProvider extends ServiceProvider
 {
@@ -70,8 +69,8 @@ class OVHServiceProvider extends ServiceProvider
             ],
             'scope' => [
                 'project' => [
-                    'id' => $config['projectId']
-                ]
+                    'id' => $config['projectId'],
+                ],
             ],
         ]);
     }
