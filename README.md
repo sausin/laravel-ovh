@@ -71,5 +71,4 @@ Note that this requires the container to have a proper header. The key in the he
 # Credits
 - thephpleage for the awesome [flysystem](https://github.com/thephpleague/flysystem)!
 - [SwiftAdapter](https://github.com/nimbusoftltd/flysystem-openstack-swift) by Nimbusoft
-- cyberx86 for [figuring out](https://www.thatsgeeky.com/2016/08/openstack-php-and-ovh/) how to get the Openstack setup going with OVH
 - Rackspace for maintaining the [Openstack repo](https://github.com/php-opencloud/openstack)
