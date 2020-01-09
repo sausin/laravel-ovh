@@ -20,7 +20,7 @@ Install via composer:
 composer require sausin/laravel-ovh
 ```
 Note: Branch 1.2.x works for PHP versions < 7.2
-
+Note: Branch 2.x works with soon to be deprecated v2 of the OVH keystone API
 
 Then include the service provider in config/app.php
 ```php
@@ -36,8 +36,8 @@ as below
     'driver' => 'ovh',
     'user' => env('OVH_USER'),
     'pass' => env('OVH_PASS'),
+    'userDomain' => env('OVH_USER_DOMAIN', 'Default'),
     'region' => env('OVH_REGION'),
-    'tenantName' => env('OVH_TENANT_NAME'),
     'container' => env('OVH_CONTAINER'),
     'projectId' => env('OVH_PROJECT_ID'),
     'urlKey' => env('OVH_URL_KEY'),
