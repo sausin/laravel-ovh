@@ -7,7 +7,7 @@ use League\Flysystem\Config;
 use Mockery;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
-class BasicAdapterTest extends \PHPUnit_Framework_TestCase
+class BasicAdapterTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {
