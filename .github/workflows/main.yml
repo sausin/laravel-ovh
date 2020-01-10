@@ -1,0 +1,14 @@
+name: Continuous Integration Laravel 6
+on: [push]
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update composer
+      run: composer update -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      run: |
+        vendor/bin/phpunit --coverage-text --coverage-clover coverage.clover
+        wget https://scrutinizer-ci.com/ocular.phar
+        php ocular.phar code-coverage:upload --format=php-clover coverage.clover
