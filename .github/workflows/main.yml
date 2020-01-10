@@ -1,14 +1,25 @@
 name: Continuous Integration Laravel 6
 on: [push]
 jobs:
-  laravel-tests:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [7.1, 7.2, 7.3, 7.4]
+        illuminate: [5.4.*, 5.5.*, 5.6.*, 5.7.*, 5.8.*, 6.*]
+        dependency-version: [prefer-lowest, prefer-stable]
+
+    name: P${{ matrix.php }}
+
     steps:
-    - uses: actions/checkout@v1
-    - name: Update composer
-      run: composer update -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      run: |
-        vendor/bin/phpunit --coverage-text --coverage-clover coverage.clover
-        wget https://scrutinizer-ci.com/ocular.phar
-        php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Install dependencies
+        run: |
+          composer require "illuminate/support:${{ matrix.illuminate }}" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        run: vendor/bin/phpunit
