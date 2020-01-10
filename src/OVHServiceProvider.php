@@ -66,7 +66,7 @@ class OVHServiceProvider extends ServiceProvider
                 'name' => $config['user'],
                 'password' => $config['pass'],
                 'domain' => [
-                    'name' => $config['userDomain']
+                    'name' => $config['userDomain'],
                 ],
             ],
             'scope' => [
