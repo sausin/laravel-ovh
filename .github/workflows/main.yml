@@ -1,4 +1,4 @@
-name: Continuous Integration laravel-ovh
+name: CI laravel-ovh
 on: [push]
 jobs:
   test:
