@@ -3,3 +3,4 @@ node_modules/
 laravel-ovh.sublime-project
 laravel-ovh.sublime-workspace
 composer.lock
+.idea/
