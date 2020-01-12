@@ -139,8 +139,39 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $needKeys = ['region', 'projectId', 'container', 'urlKey', 'endpoint'];
 
-        if (! is_array($this->urlVars) || count(array_intersect($needKeys, array_keys($config))) !== count($needKeys)) {
+        if (! is_array($this->urlVars) || count(array_intersect($needKeys, array_keys($this->urlVars))) !== count($needKeys)) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function write($path, $contents, Config $config, $size = 0)
+    {
+        $this->config = $config;
+        
+        parent::write();
+    }
+
+    /**
+     * Include support for object deletion.
+     *
+     * @param string $path
+     * @see Nimbusoft\Flysystem\OpenStack
+     *
+     * @return array
+     */
+    protected function getData($path)
+    {
+        $data = ['name' => $path];
+        
+        if (array_key_exists('deleteAfter', $this->config) ) {
+            $data += ['deleteAfter' => $this->config['deleteAfter']];
+        } elseif (array_key_exists('deleteAt', $this->config) ) {
+            $data += ['deleteAt' => $this->config['deleteAt']];
+        }
+
+        return $data;
     }
 }
