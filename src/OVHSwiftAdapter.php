@@ -144,14 +144,14 @@ class OVHSwiftAdapter extends SwiftAdapter
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function write($path, $contents, Config $config, $size = 0)
     {
         $this->config = $config;
-        
+
         parent::write();
     }
 
@@ -166,10 +166,10 @@ class OVHSwiftAdapter extends SwiftAdapter
     protected function getData($path)
     {
         $data = ['name' => $path];
-        
-        if (array_key_exists('deleteAfter', $this->config) ) {
+
+        if (array_key_exists('deleteAfter', $this->config)) {
             $data += ['deleteAfter' => $this->config['deleteAfter']];
-        } elseif (array_key_exists('deleteAt', $this->config) ) {
+        } elseif (array_key_exists('deleteAt', $this->config)) {
             $data += ['deleteAt' => $this->config['deleteAt']];
         }
 

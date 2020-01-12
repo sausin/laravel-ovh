@@ -96,7 +96,7 @@ class OVHServiceProvider extends ServiceProvider
             'endpoint' => isset($config['endpoint']) ? $config['endpoint'] : null,
         ];
     }
-    
+
     /**
      * Return the config variables required for large object.
      *
@@ -118,7 +118,7 @@ class OVHServiceProvider extends ServiceProvider
                 $largeObjConfig[$key] = $config[$key];
             }
         }
-        
+
         return $largeObjConfig;
     }
 }
