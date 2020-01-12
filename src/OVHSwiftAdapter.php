@@ -4,6 +4,7 @@ namespace Sausin\LaravelOvh;
 
 use BadMethodCallException;
 use Carbon\Carbon;
+use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
