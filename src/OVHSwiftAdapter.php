@@ -8,7 +8,6 @@ use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
-use OpenStack\ObjectStore\v1\Service;
 
 class OVHSwiftAdapter extends SwiftAdapter
 {
@@ -155,7 +154,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->specialParams = $config;
 
-        parent::write($path, $contents, Config $config, $size = 0);
+        parent::write($path, $contents, Config $config, $size);
     }
 
     /**
