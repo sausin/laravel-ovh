@@ -165,7 +165,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      *
      * @return array
      */
-    protected function getData($path)
+    protected function getWriteData($path)
     {
         $data = ['name' => $path];
 
