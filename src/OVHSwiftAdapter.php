@@ -2,12 +2,12 @@
 
 namespace Sausin\LaravelOvh;
 
-use Carbon\Carbon;
 use BadMethodCallException;
-use OpenStack\ObjectStore\v1\Service;
+use Carbon\Carbon;
+use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
-use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
+use OpenStack\ObjectStore\v1\Service;
 
 class OVHSwiftAdapter extends SwiftAdapter
 {

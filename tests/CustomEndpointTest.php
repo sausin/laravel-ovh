@@ -2,12 +2,12 @@
 
 namespace Sausin\LaravelOvh\Tests;
 
-use Mockery;
 use Carbon\Carbon;
 use League\Flysystem\Config;
+use Mockery;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
-class CustomEndpointTest extends \PHPUnit_Framework_TestCase
+class CustomEndpointTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {

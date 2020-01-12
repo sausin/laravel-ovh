@@ -2,7 +2,7 @@
 
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sausin/laravel-ovh.svg?style=flat-square)](https://packagist.org/packages/sausin/laravel-ovh)
-[![Build Status](https://img.shields.io/travis/sausin/laravel-ovh/master.svg?style=flat-square)](https://travis-ci.org/sausin/laravel-ovh)
+[![](https://github.com/sausin/laravel-ovh/workflows/CI%20laravel-ovh/badge.svg?branch=master)](https://github.com/sausin/laravel-ovh/actions?query=workflow%3A%22CI+laravel-ovh%22)
 [![Quality Score](https://img.shields.io/scrutinizer/g/sausin/laravel-ovh.svg?style=flat-square)](https://scrutinizer-ci.com/g/sausin/laravel-ovh)
 [![StyleCI](https://styleci.io/repos/85194981/shield?branch=master)](https://styleci.io/repos/85194981)
 [![Total Downloads](https://img.shields.io/packagist/dt/sausin/laravel-ovh.svg?style=flat-square)](https://packagist.org/packages/sausin/laravel-ovh)
@@ -19,8 +19,7 @@ Install via composer:
 ```
 composer require sausin/laravel-ovh
 ```
-Note: Branch 1.2.x works for PHP versions < 7.2
-
+Note: Branch 1.2.x works for PHP versions < 7.2 and branch 2.x works with soon to be deprecated v2 of the OVH keystone API
 
 Then include the service provider in config/app.php
 ```php
@@ -36,8 +35,8 @@ as below
     'driver' => 'ovh',
     'user' => env('OVH_USER'),
     'pass' => env('OVH_PASS'),
+    'userDomain' => env('OVH_USER_DOMAIN', 'Default'),
     'region' => env('OVH_REGION'),
-    'tenantName' => env('OVH_TENANT_NAME'),
     'container' => env('OVH_CONTAINER'),
     'projectId' => env('OVH_PROJECT_ID'),
     'urlKey' => env('OVH_URL_KEY'),
@@ -85,6 +84,5 @@ Usage of these variables is explained in the OVH documentation [here](https://gi
 
 # Credits
 - thephpleage for the awesome [flysystem](https://github.com/thephpleague/flysystem)!
-- [SwiftAdapter](https://github.com/mzur/flysystem-openstack-swift) by mzur (fork of adapter from [Nimbusoft](https://github.com/nimbusoftltd/flysystem-openstack-swift)
-- cyberx86 for [figuring out](https://www.thatsgeeky.com/2016/08/openstack-php-and-ovh/) how to get the Openstack setup going with OVH
+- [SwiftAdapter](https://github.com/nimbusoftltd/flysystem-openstack-swift) by Nimbusoft
 - Rackspace for maintaining the [Openstack repo](https://github.com/php-opencloud/openstack)
