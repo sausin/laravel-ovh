@@ -27,7 +27,10 @@ class OVHServiceProvider extends ServiceProvider
             // get the container
             $container = $client->objectStoreV1()->getContainer($config['container']);
 
-            return new Filesystem(new OVHSwiftAdapter($container, $this->getVars($config)));
+            return new Filesystem(
+                new OVHSwiftAdapter($container, $this->getVars($config)),
+                $this->getLargeObjectConfig(),
+            );
         });
     }
 
@@ -91,7 +94,7 @@ class OVHServiceProvider extends ServiceProvider
             'container' => $config['container'],
             'urlKey' => isset($config['urlKey']) ? $config['urlKey'] : null,
             'endpoint' => isset($config['endpoint']) ? $config['endpoint'] : null,
-        ] + $this->getLargeObjectConfig();
+        ];
     }
     
     /**
