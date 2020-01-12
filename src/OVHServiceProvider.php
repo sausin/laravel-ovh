@@ -29,7 +29,7 @@ class OVHServiceProvider extends ServiceProvider
 
             return new Filesystem(
                 new OVHSwiftAdapter($container, $this->getVars($config)),
-                $this->getLargeObjectConfig()
+                $this->getLargeObjectConfig($config)
             );
         });
     }
