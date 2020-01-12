@@ -155,7 +155,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->specialParams = $config;
 
-        parent::write();
+        parent::write($path, $contents, Config $config, $size = 0);
     }
 
     /**
