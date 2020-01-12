@@ -19,6 +19,9 @@ class OVHSwiftAdapter extends SwiftAdapter
      * @var array
      */
     protected $urlVars;
+    
+    /** Variables from the Filesystem class will be temporarily stored here */
+    protected $specialParams;
 
     /**
      * Constructor.
@@ -150,7 +153,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     public function write($path, $contents, Config $config, $size = 0)
     {
-        $this->config = $config;
+        $this->specialParams = $config;
 
         parent::write();
     }
@@ -167,10 +170,10 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $data = ['name' => $path];
 
-        if (array_key_exists('deleteAfter', $this->config)) {
-            $data += ['deleteAfter' => $this->config['deleteAfter']];
-        } elseif (array_key_exists('deleteAt', $this->config)) {
-            $data += ['deleteAt' => $this->config['deleteAt']];
+        if ($this->specialParams->has('deleteAfter')) {
+            $data += ['deleteAfter' => $this->specialParams->get('deleteAfter')];
+        } elseif ($this->specialParams->has('deleteAt')) {
+            $data += ['deleteAt' => $this->specialParams->get('deleteAt')];
         }
 
         return $data;
