@@ -19,7 +19,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      * @var array
      */
     protected $urlVars;
-    
+
     /** Variables from the Filesystem class will be temporarily stored here */
     protected $specialParams;
 
