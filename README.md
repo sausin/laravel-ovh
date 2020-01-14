@@ -21,13 +21,13 @@ composer require sausin/laravel-ovh
 ```
 Note: Branch 1.2.x works for PHP versions < 7.2 and branch 2.x works with soon to be deprecated v2 of the OVH keystone API
 
-Then include the service provider in config/app.php
+Then include the service provider in `config/app.php`
 ```php
 Sausin\LaravelOvh\OVHServiceProvider::class
 ```
 in the providers array. This step is not required for Laravel 5.5 and above as the service provider is automatically registered!
 
-Define the ovh driver in the config/filesystems.php
+Define the ovh driver in the `config/filesystems.php`
 as below
 ```php
 'ovh' => [
