@@ -27,7 +27,7 @@
         "php-opencloud/openstack": "^3.0",
         "illuminate/support": "^5.4|^6.0",
         "league/flysystem": "^1.0",
-        "nimbusoft/flysystem-openstack-swift": "^0.2.1",
+        "nimbusoft/flysystem-openstack-swift": "^0.3",
         "nesbot/carbon": "^1.26.3 || ^2.0"
     },
     "require-dev": {

@@ -27,7 +27,10 @@ class OVHServiceProvider extends ServiceProvider
             // get the container
             $container = $client->objectStoreV1()->getContainer($config['container']);
 
-            return new Filesystem(new OVHSwiftAdapter($container, $this->getVars($config)));
+            return new Filesystem(
+                new OVHSwiftAdapter($container, $this->getVars($config)),
+                $this->getLargeObjectConfig($config)
+            );
         });
     }
 
@@ -92,5 +95,30 @@ class OVHServiceProvider extends ServiceProvider
             'urlKey' => isset($config['urlKey']) ? $config['urlKey'] : null,
             'endpoint' => isset($config['endpoint']) ? $config['endpoint'] : null,
         ];
+    }
+
+    /**
+     * Return the config variables required for large object.
+     *
+     * @param  array &$config
+     * @return array
+     */
+    protected function getLargeObjectConfig(&$config)
+    {
+        $largeObjConfig = [];
+
+        $largeObjVars = [
+            'swiftLargeObjectThreshold',
+            'swiftSegmentSize',
+            'swiftSegmentContainer',
+        ];
+
+        foreach ($largeObjVars as $key) {
+            if (isset($config[$key])) {
+                $largeObjConfig[$key] = $config[$key];
+            }
+        }
+
+        return $largeObjConfig;
     }
 }

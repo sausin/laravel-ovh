@@ -4,10 +4,10 @@ namespace Sausin\LaravelOvh;
 
 use BadMethodCallException;
 use Carbon\Carbon;
+use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
-use OpenStack\ObjectStore\v1\Service;
 
 class OVHSwiftAdapter extends SwiftAdapter
 {
@@ -18,6 +18,9 @@ class OVHSwiftAdapter extends SwiftAdapter
      * @var array
      */
     protected $urlVars;
+
+    /** Variables from the Filesystem class will be temporarily stored here */
+    protected $specialParams;
 
     /**
      * Constructor.
@@ -117,9 +120,9 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->checkParams();
 
-        $endpoint = isset($this->urlVars['endpoint'])
+        return isset($this->urlVars['endpoint'])
             // allows assigning custom endpoint url
-            ? $this->urlVars['endpoint']
+            ? rtrim($this->urlVars['endpoint'], '/').'/'
             // if no custom endpoint assigned, use traditional swift v1 endpoint
             : sprintf(
                 'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
@@ -127,9 +130,6 @@ class OVHSwiftAdapter extends SwiftAdapter
                 $this->urlVars['projectId'],
                 $this->urlVars['container']
             );
-
-        // ensures there's one trailing slash for endpoint
-        return rtrim($endpoint, '/').'/';
     }
 
     /**
@@ -140,8 +140,41 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function checkParams()
     {
-        if (! is_array($this->urlVars) || count($this->urlVars) !== 5) {
+        $needKeys = ['region', 'projectId', 'container', 'urlKey', 'endpoint'];
+
+        if (! is_array($this->urlVars) || count(array_intersect($needKeys, array_keys($this->urlVars))) !== count($needKeys)) {
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function write($path, $contents, Config $config, $size = 0)
+    {
+        $this->specialParams = $config;
+
+        parent::write($path, $contents, $config, $size);
+    }
+
+    /**
+     * Include support for object deletion.
+     *
+     * @param string $path
+     * @see Nimbusoft\Flysystem\OpenStack
+     *
+     * @return array
+     */
+    protected function getWriteData($path)
+    {
+        $data = ['name' => $path];
+
+        if ($this->specialParams->has('deleteAfter')) {
+            $data += ['deleteAfter' => $this->specialParams->get('deleteAfter')];
+        } elseif ($this->specialParams->has('deleteAt')) {
+            $data += ['deleteAt' => $this->specialParams->get('deleteAt')];
+        }
+
+        return $data;
     }
 }
