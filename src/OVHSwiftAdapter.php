@@ -4,7 +4,6 @@ namespace Sausin\LaravelOvh;
 
 use BadMethodCallException;
 use Carbon\Carbon;
-use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
@@ -148,16 +147,6 @@ class OVHSwiftAdapter extends SwiftAdapter
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function write($path, $contents, Config $config, $size = 0)
-    {
-        $this->specialParams = $config;
-
-        parent::write($path, $contents, $config, $size);
-    }
-
-    /**
      * Include support for object deletion.
      *
      * @param string $path
@@ -165,14 +154,14 @@ class OVHSwiftAdapter extends SwiftAdapter
      *
      * @return array
      */
-    protected function getWriteData($path)
+    protected function getWriteData($path, $config)
     {
         $data = ['name' => $path];
 
-        if ($this->specialParams->has('deleteAfter')) {
-            $data += ['deleteAfter' => $this->specialParams->get('deleteAfter')];
-        } elseif ($this->specialParams->has('deleteAt')) {
-            $data += ['deleteAt' => $this->specialParams->get('deleteAt')];
+        if ($config->has('deleteAfter')) {
+            return $data += ['deleteAfter' => $config->get('deleteAfter')];
+        } elseif ($config->has('deleteAt')) {
+            return $data += ['deleteAt' => $config->get('deleteAt')];
         }
 
         return $data;
