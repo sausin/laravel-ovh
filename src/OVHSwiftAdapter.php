@@ -144,4 +144,25 @@ class OVHSwiftAdapter extends SwiftAdapter
             throw new BadMethodCallException('Insufficient Url Params', 1);
         }
     }
+
+    /**
+     * Include support for object deletion.
+     *
+     * @param string $path
+     * @see Nimbusoft\Flysystem\OpenStack
+     *
+     * @return array
+     */
+    protected function getWriteData($path, $config)
+    {
+        $data = ['name' => $path];
+
+        if ($config->has('deleteAfter')) {
+            return $data += ['deleteAfter' => $config->get('deleteAfter')];
+        } elseif ($config->has('deleteAt')) {
+            return $data += ['deleteAt' => $config->get('deleteAt')];
+        }
+
+        return $data;
+    }
 }
