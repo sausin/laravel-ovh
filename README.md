@@ -31,15 +31,16 @@ Define the ovh driver in the `config/filesystems.php`
 as below
 ```php
 'ovh' => [
-    'server' => env('OVH_URL'),
+    'server' => env('OVH_URL', 'https://auth.cloud.ovh.net/v3/'),
     'driver' => 'ovh',
     'user' => env('OVH_USER'),
     'pass' => env('OVH_PASS'),
     'userDomain' => env('OVH_USER_DOMAIN', 'Default'),
-    'region' => env('OVH_REGION'),
+    'region' => env('OVH_REGION', 'GRA'),
     'container' => env('OVH_CONTAINER'),
     'projectId' => env('OVH_PROJECT_ID'),
     'urlKey' => env('OVH_URL_KEY'),
+    // optional variable and only if you have setup a custom endpoint
     'endpoint' => env('OVH_CUSTOM_ENDPOINT'),
     // optional variables for handling large objects
     'swiftLargeObjectThreshold' => env('OVH_LARGE_OBJECT_THRESHOLD'),
@@ -48,7 +49,7 @@ as below
 ],
 ```
 
-define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :)
+define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :). The URL is normally not going to be any different for OVH users and hence doesn't need to be specified. To get the values for remaining variables (like `user`, `region`, `container` etc), you can download the configuration file with details in your OVH control panel (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`). 
 
 Be sure to run
 ```
@@ -73,7 +74,7 @@ Note that this requires the container to have a proper header. The key in the he
 
 ## Uploading expiring objects
 
-If you would like to upload objects which expire (is auto deleted) at a certain time in future, you can add `deleteAt` or `deleteAfter` configuration options when uploading the object.
+If you would like to upload objects which expire (i.e. get auto deleted) at a certain time in future, you can add `deleteAt` or `deleteAfter` configuration options when uploading the object.
 
 For eg, below code will upload a file which expires after one hour:
 ```php
