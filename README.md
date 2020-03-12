@@ -19,7 +19,14 @@ Install via composer:
 ```
 composer require sausin/laravel-ovh
 ```
-Note: Branch 1.2.x works for PHP versions < 7.2 and branch 2.x works with soon to be deprecated v2 of the OVH keystone API
+Please see below for the details on various branches. You can choose the version of the package which is suitable for your development.
+
+| Package version | PHP compatibility | Laravel versions | Spl. features of OVH                   | Status              |
+| --------------- | :---------------: | :--------------: | :------------------------------------: | :------------------ |
+| `1.2.x`         | `7.0`, `7.1`      | `>5.4`, `<5.8`   | `temporaryUrl()`                       | Deprecated          |
+| `2.x`           | `7.0`, `7.1`      | `>5.4`, `<=6.x`  | `temporaryUrl()`                       | Deprecated          |
+| `3.x`           | `7.0`, `7.1`      | `>5.4`, `<=7.x`  | `temporaryUrl()`, `expiring objects`   | Active (no support) |
+| `4.x`           | `7.0`, `7.1`      | `>=7.x`          | `temporaryUrl()`, `expiring objects`   | Active              |
 
 Then include the service provider in `config/app.php`
 ```php
@@ -49,7 +56,7 @@ as below
 ],
 ```
 
-define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :). The URL is normally not going to be any different for OVH users and hence doesn't need to be specified. To get the values for remaining variables (like `user`, `region`, `container` etc), you can download the configuration file with details in your OVH control panel (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`). 
+define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :). The URL is normally not going to be any different for OVH users and hence doesn't need to be specified. To get the values for remaining variables (like `user`, `region`, `container` etc), you can download the configuration file with details in your OVH control panel (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file (v3)`). 
 
 Be sure to run
 ```
@@ -70,7 +77,11 @@ and
 
 The temporary url is relevant for private containers where files are not publicly accessible under normal conditions. This generates a temporary url with expiry (see details [here](https://github.com/laravel/framework/pull/20375) for usage).
 
-Note that this requires the container to have a proper header. The key in the header should match the `urlKey` specified in `filesystems.php`. For details on how to setup the header on your OVH container, see [here](https://docs.ovh.com/gb/en/public-cloud/share_an_object_via_a_temporary_url/#generate-the-key).
+Note that this requires the container to have a proper header. The key in the header should match the `urlKey` specified in `filesystems.php`. For details on how to setup the header on your OVH container, see [here](https://docs.ovh.com/gb/en/public-cloud/share_an_object_via_a_temporary_url/#generate-the-key). Alternatively, you can use the commandline
+```php
+php artisan ovh:create-temp-url-key "your-private-key-without-quotes"
+```
+and the package will set the relevant key on your container. If a key has already been setup previously, the package will inform you of the same. If you'd like to setup a new key anyway, you may use the `--force` flag with the command. 
 
 ## Uploading expiring objects
 
