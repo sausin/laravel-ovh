@@ -23,10 +23,10 @@ Please see below for the details on various branches. You can choose the version
 
 | Package version | PHP compatibility | Laravel versions | Spl. features of OVH                   | Status              |
 | --------------- | :---------------: | :--------------: | :------------------------------------: | :------------------ |
-| `1.2.x`         | `7.0`, `7.1`      | `>5.4`, `<5.8`   | `temporaryUrl()`                       | Deprecated          |
-| `2.x`           | `7.0`, `7.1`      | `>5.4`, `<=6.x`  | `temporaryUrl()`                       | Deprecated          |
-| `3.x`           | `7.0`, `7.1`      | `>5.4`, `<=7.x`  | `temporaryUrl()`, `expiring objects`   | Active (no support) |
-| `4.x`           | `7.0`, `7.1`      | `>=7.x`          | `temporaryUrl()`, `expiring objects`   | Active              |
+| `1.2.x`         | `7.0 - 7.1`       | `>=5.4`, `<=5.8` | `temporaryUrl()`                       | Deprecated          |
+| `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | previous + `expiring objects`          | Deprecated          |
+| `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | previous                               | Active (no support) |
+| `4.x`           | `>=7.1`           | `>=7.x`          | previous + set pvt. key on container   | Active              |
 
 Then include the service provider in `config/app.php`
 ```php
