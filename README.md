@@ -38,25 +38,26 @@ Define the ovh driver in the `config/filesystems.php`
 as below
 ```php
 'ovh' => [
-    'server' => env('OVH_URL', 'https://auth.cloud.ovh.net/v3/'),
+    'server' => env('OS_AUTH_URL', 'https://auth.cloud.ovh.net/v3/'),
     'driver' => 'ovh',
-    'user' => env('OVH_USER'),
-    'pass' => env('OVH_PASS'),
-    'userDomain' => env('OVH_USER_DOMAIN', 'Default'),
-    'region' => env('OVH_REGION', 'GRA'),
-    'container' => env('OVH_CONTAINER'),
-    'projectId' => env('OVH_PROJECT_ID'),
-    'urlKey' => env('OVH_URL_KEY'),
+    'user' => env('OS_USERNAME'),
+    'pass' => env('OS_PASSWORD'),
+    'userDomain' => env('OS_USER_DOMAIN_NAME', 'Default'),
+    'region' => env('OS_REGION_NAME', 'GRA'),
+    'container' => env('OS_CONTAINER_NAME'),
+    'projectId' => env('OS_TENANT_ID'),
+    'urlKey' => env('OS_TEMP_URL_KEY'),
     // optional variable and only if you have setup a custom endpoint
-    'endpoint' => env('OVH_CUSTOM_ENDPOINT'),
+    'endpoint' => env('OS_CUSTOM_ENDPOINT'),
     // optional variables for handling large objects
-    'swiftLargeObjectThreshold' => env('OVH_LARGE_OBJECT_THRESHOLD'),
-    'swiftSegmentSize' => env('OVH_SEGMENT_SIZE'),
-    'swiftSegmentContainer' => env('OVH_SEGMENT_CONTAINER'),
+    'swiftLargeObjectThreshold' => env('OS_LARGE_OBJECT_THRESHOLD'),
+    'swiftSegmentSize' => env('OS_SEGMENT_SIZE'),
+    'swiftSegmentContainer' => env('OS_SEGMENT_CONTAINER'),
 ],
 ```
+define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :). Starting with `4.x` branch, the variables to be defined in the `.env` file have been renamed to reflect the names used by OVH in their configuration file. This is to remove any discrepancy in understanding of which variable should go where.
 
-define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :). The URL is normally not going to be any different for OVH users and hence doesn't need to be specified. To get the values for remaining variables (like `user`, `region`, `container` etc), you can download the configuration file with details in your OVH control panel (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file (v3)`). 
+The URL is normally not going to be any different for OVH users and hence doesn't need to be specified. To get the values for remaining variables (like `user`, `region`, `container` etc), you can download the configuration file with details in your OVH control panel (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`). 
 
 Be sure to run
 ```
