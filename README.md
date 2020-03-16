@@ -21,7 +21,7 @@ composer require sausin/laravel-ovh
 ```
 Please see below for the details on various branches. You can choose the version of the package which is suitable for your development.
 
-| Package version | PHP compatibility | Laravel versions | Spl. features of OVH                   | Status              |
+| Package version | PHP compatibility | Laravel versions | Special features of OVH                | Status              |
 | --------------- | :---------------: | :--------------: | :------------------------------------: | :------------------ |
 | `1.2.x`         | `7.0 - 7.1`       | `>=5.4`, `<=5.8` | `temporaryUrl()`                       | Deprecated          |
 | `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | above + `expiring objects`             | Deprecated          |
@@ -93,7 +93,7 @@ For eg, below code will upload a file which expires after one hour:
 Storage::disk('ovh')->put('path/to/file.jpg', $contents, ['deleteAfter' => 60*60])
 ```
 
-Usage of these variables is explained in the OVH documentation [here](https://github.com/ovh/docs/blob/develop/pages/platform/public-cloud/setup_automatic_deletion_of_objects/guide.en-gb.md)
+Usage of these variables is explained in the OVH documentation [here](https://docs.ovh.com/gb/en/storage/configure_automatic_object_deletion/)
 
 # Credits
 - thephpleage for the awesome [flysystem](https://github.com/thephpleague/flysystem)!
