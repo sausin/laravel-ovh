@@ -11,7 +11,7 @@
 
 Laravel `Storage` facade provides support for many different filesystems.
 
-This is a wrapper to combine others' work to integrate with laravel and provide support for [OVH Object Storage](https://www.ovh.ie/public-cloud/storage/object-storage/).
+This is a wrapper to provide support in Laravel for [OVH Object Storage](https://www.ovh.ie/public-cloud/storage/object-storage/).
 
 # Installing
 
@@ -24,9 +24,9 @@ Please see below for the details on various branches. You can choose the version
 | Package version | PHP compatibility | Laravel versions | Spl. features of OVH                   | Status              |
 | --------------- | :---------------: | :--------------: | :------------------------------------: | :------------------ |
 | `1.2.x`         | `7.0 - 7.1`       | `>=5.4`, `<=5.8` | `temporaryUrl()`                       | Deprecated          |
-| `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | previous + `expiring objects`          | Deprecated          |
-| `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | previous                               | Active (no support) |
-| `4.x`           | `>=7.1`           | `>=7.x`          | previous + set pvt. key on container   | Active              |
+| `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | above + `expiring objects`             | Deprecated          |
+| `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | above                                  | Active              |
+| `4.x`           | `>=7.2`           | `>=7.x`          | above + set private key on container   | Active              |
 
 Then include the service provider in `config/app.php`
 ```php
