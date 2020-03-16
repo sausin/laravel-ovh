@@ -68,7 +68,7 @@ again if you've been using the caching on your config file.
 
 # Usage
 
-Refer to extensive laravel [documentation](https://laravel.com/docs/5.5/filesystem) for usage. Of note - this package includes support for the following additional methods:
+Refer to extensive laravel [documentation](https://laravel.com/docs/7.x/filesystem) for usage. Of note - this package includes support for the following additional methods:
 
 `Storage::url()`
 
