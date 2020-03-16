@@ -26,7 +26,7 @@ Please see below for the details on various branches. You can choose the version
 | `1.2.x`         | `7.0 - 7.1`       | `>=5.4`, `<=5.8` | `temporaryUrl()`                       | Deprecated          |
 | `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | above + `expiring objects`             | Deprecated          |
 | `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | above                                  | Active              |
-| `4.x`           | `>=7.2`           | `>=7.x`          | above + set private key on container   | Active              |
+| `4.x`           | `>=7.2`           | `>=5.4`          | above + set private key on container   | Active              |
 
 Then include the service provider in `config/app.php`
 ```php
@@ -60,7 +60,7 @@ define the correct env variables above in your .env file (to correspond to the v
 The URL is normally not going to be any different for OVH users and hence doesn't need to be specified. To get the values for remaining variables (like `user`, `region`, `container` etc), you can download the configuration file with details in your OVH control panel (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`). 
 
 Be sure to run
-```
+```php
 php artisan config:cache
 ```
 again if you've been using the caching on your config file.
