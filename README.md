@@ -49,9 +49,9 @@ as below
     'urlKey' => env('OS_TEMP_URL_KEY'),
     // optional variable and only if you have setup a custom endpoint
     'endpoint' => env('OS_CUSTOM_ENDPOINT'),
-    // optional variables for handling large objects
-    'swiftLargeObjectThreshold' => env('OS_LARGE_OBJECT_THRESHOLD'),
-    'swiftSegmentSize' => env('OS_SEGMENT_SIZE'),
+    // optional variables for handling large objects. Defaults below are 300MB & 100MB
+    'swiftLargeObjectThreshold' => env('OS_LARGE_OBJECT_THRESHOLD', 300 * 1024 * 1024),
+    'swiftSegmentSize' => env('OS_SEGMENT_SIZE', 100 * 1024 * 1024),
     'swiftSegmentContainer' => env('OS_SEGMENT_CONTAINER'),
 ],
 ```
