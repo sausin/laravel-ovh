@@ -50,7 +50,7 @@ class OVHServiceProvider extends ServiceProvider
         }
 
         // if the configuration wasn't complete, throw an exception
-        throw new BadMethodCallException('Need following keys '.implode(', ', $needKeys));
+        throw new BadMethodCallException('Need following keys ' . implode(', ', $needKeys));
     }
 
     /**
