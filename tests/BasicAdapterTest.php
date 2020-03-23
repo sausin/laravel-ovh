@@ -61,6 +61,47 @@ class BasicAdapterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($url, 'https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello');
     }
 
+    public function testAutoDeleteObjectsWork()
+    {
+        // test for deleteAt property
+        $this->container->shouldReceive('createObject')->once()->with([
+            'name' => 'hello',
+            'content' => 'world',
+            'deleteAt' => 651234
+        ])->andReturn($this->object);
+
+        $this->config->set('deleteAt', 651234);
+        $response = $this->adapter->write('hello', 'world', $this->config);
+
+        $this->assertEquals($response, [
+            'type' => 'file',
+            'dirname' => null,
+            'path' => null,
+            'timestamp' =>  null,
+            'mimetype' => null,
+            'size' => null,
+        ]);
+
+        // test for deleteAfter property
+        $this->container->shouldReceive('createObject')->once()->with([
+            'name' => 'hello',
+            'content' => 'world',
+            'deleteAfter' => 60
+        ])->andReturn($this->object);
+
+        $this->config->set('deleteAfter', 60);
+        $response = $this->adapter->write('hello', 'world', $this->config);
+
+        $this->assertEquals($response, [
+            'type' => 'file',
+            'dirname' => null,
+            'path' => null,
+            'timestamp' =>  null,
+            'mimetype' => null,
+            'size' => null,
+        ]);
+    }
+
     public function testTemporaryUrlMethod()
     {
         $this->object->shouldNotReceive('retrieve');
