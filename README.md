@@ -19,13 +19,13 @@ Install via composer:
 ```
 composer require sausin/laravel-ovh
 ```
-Please see below for the details on various branches. You can choose the version of the package which is suitable for your development.
+Please see below for the details on various branches. You can choose the version of the package which is suitable for your development. Also take note of the upgrade
 
 | Package version | PHP compatibility | Laravel versions | Special features of OVH                | Status              |
 | --------------- | :---------------: | :--------------: | :------------------------------------: | :------------------ |
 | `1.2.x`         | `7.0 - 7.1`       | `>=5.4`, `<=5.8` | `temporaryUrl()`                       | Deprecated          |
 | `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | above + `expiring objects`             | Deprecated          |
-| `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | above                                  | Active              |
+| `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | above                                  | Maintained          |
 | `4.x`           | `>=7.2`           | `>=5.4`          | above + set private key on container   | Active              |
 
 Then include the service provider in `config/app.php`
@@ -55,7 +55,9 @@ as below
     'swiftSegmentContainer' => env('OS_SEGMENT_CONTAINER'),
 ],
 ```
-define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :). Starting with `4.x` branch, the variables to be defined in the `.env` file have been renamed to reflect the names used by OVH in their configuration file. This is to remove any discrepancy in understanding of which variable should go where.
+define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :).
+
+**IMPORTANT:** Starting with `4.x` branch, the variables to be defined in the `.env` file have been renamed to reflect the names used by OVH in their configuration file. This is to remove any discrepancy in understanding of which variable should go where. This also means that the package will fail to work unless the correct updated variables are defined in `.env` file.
 
 The URL is normally not going to be any different for OVH users and hence doesn't need to be specified. To get the values for remaining variables (like `user`, `region`, `container` etc), you can download the configuration file with details in your OVH control panel (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`). 
 
