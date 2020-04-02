@@ -46,7 +46,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->checkParams();
 
-        return $this->getEndpoint().$path;
+        return $this->getEndpoint() . $path;
     }
 
     /**
@@ -66,7 +66,7 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         $this->checkParams();
 
-        return $this->getEndpoint().$path;
+        return $this->getEndpoint() . $path;
     }
 
     /**
@@ -104,7 +104,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         // return the url
         return sprintf(
             '%s?temp_url_sig=%s&temp_url_expires=%s',
-            $this->getEndpoint().$path,
+            $this->getEndpoint() . $path,
             $signature,
             $expiresAt
         );
@@ -121,7 +121,7 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         return isset($this->urlVars['endpoint'])
             // allows assigning custom endpoint url
-            ? rtrim($this->urlVars['endpoint'], '/').'/'
+            ? rtrim($this->urlVars['endpoint'], '/') . '/'
             // if no custom endpoint assigned, use traditional swift v1 endpoint
             : sprintf(
                 'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',

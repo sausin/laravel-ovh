@@ -19,6 +19,7 @@ Install via composer:
 ```
 composer require sausin/laravel-ovh
 ```
+
 Please see below for the details on various branches. You can choose the version of the package which is suitable for your development. Also take note of the upgrade
 
 | Package version | PHP compatibility | Laravel versions | Special features of OVH                | Status              |
