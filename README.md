@@ -57,7 +57,7 @@ as below
 ```
 define the correct env variables above in your .env file (to correspond to the values above) and you should now have a working OVH Object Storage setup :).
 
-**IMPORTANT:** Starting with `4.x` branch, the variables to be defined in the `.env` file have been renamed to reflect the names used by OVH in their configuration file. This is to remove any discrepancy in understanding of which variable should go where. This also means that the package will fail to work unless the correct updated variables are defined in `.env` file.
+**IMPORTANT:** Starting with `4.x` branch, the variables to be defined in the `.env` file have been renamed to reflect the names used by OVH in their configuration file. This is to remove any discrepancy in understanding of which variable should go where. This also means that the package might fail to work unless the correct updated variables are defined in `.env` file if the above template is used.
 
 The URL is normally not going to be any different for OVH users and hence doesn't need to be specified. To get the values for remaining variables (like `user`, `region`, `container` etc), you can download the configuration file with details in your OVH control panel (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`). 
 
