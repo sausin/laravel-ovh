@@ -127,4 +127,14 @@ class OVHServiceProvider extends ServiceProvider
 
         return $largeObjConfig;
     }
+    
+    /**
+     * Expose the container to allow for modification to metadata
+     *
+     * @return \OpenStack\ObjectStore\v1\Models\Container;
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
 }
