@@ -166,4 +166,14 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         return $data;
     }
+
+    /**
+     * Expose the container to allow for modification to metadata
+     *
+     * @return \OpenStack\ObjectStore\v1\Models\Container;
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
 }
