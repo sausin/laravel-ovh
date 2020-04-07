@@ -82,7 +82,7 @@ The temporary url is relevant for private containers where files are not publicl
 
 Note that this requires the container to have a proper header. The key in the header should match the `urlKey` specified in `filesystems.php`. For details on how to setup the header on your OVH container, see [here](https://docs.ovh.com/gb/en/public-cloud/share_an_object_via_a_temporary_url/#generate-the-key). Alternatively, you can use the commandline (for version 4.x and above only)
 ```php
-php artisan ovh:create-temp-url-key "your-private-key-without-quotes"
+php artisan ovh:set-temp-url-key --key=your-private-key
 ```
 and the package will set the relevant key on your container. If a key has already been setup previously, the package will inform you of the same. If you'd like to setup a new key anyway, you may use the `--force` flag with the command. 
 
