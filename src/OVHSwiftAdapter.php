@@ -4,6 +4,7 @@ namespace Sausin\LaravelOvh;
 
 use BadMethodCallException;
 use Carbon\Carbon;
+use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
@@ -24,9 +25,9 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * Constructor.
      *
-     * @param Container $container
-     * @param array     $urlVars
-     * @param string    $prefix
+     * @param Container     $container
+     * @param array         $urlVars
+     * @param string|null   $prefix
      */
     public function __construct(Container $container, $urlVars = [], $prefix = null)
     {
@@ -46,16 +47,17 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->checkParams();
 
-        return $this->getEndpoint() . $path;
+        return $this->getEndpoint().$path;
     }
 
     /**
-     * Custom function to get a url with confirmed file existence.
+     * Custom function to get an url with confirmed file existence.
      *
      * @param  string $path
      * @return string
+     * @throws BadResponseError
      */
-    public function getUrlConfirm($path)
+    public function getUrlConfirm($path): string
     {
         // check if object exists
         try {
@@ -66,7 +68,7 @@ class OVHSwiftAdapter extends SwiftAdapter
 
         $this->checkParams();
 
-        return $this->getEndpoint() . $path;
+        return $this->getEndpoint().$path;
     }
 
     /**
@@ -77,7 +79,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      * @param  array    $options
      * @return string
      */
-    public function getTemporaryUrl($path, $expiration, $options = [])
+    public function getTemporaryUrl($path, $expiration, $options = []): string
     {
         $this->checkParams();
 
@@ -104,7 +106,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         // return the url
         return sprintf(
             '%s?temp_url_sig=%s&temp_url_expires=%s',
-            $this->getEndpoint() . $path,
+            $this->getEndpoint().$path,
             $signature,
             $expiresAt
         );
@@ -115,13 +117,13 @@ class OVHSwiftAdapter extends SwiftAdapter
      *
      * @return string
      */
-    protected function getEndpoint()
+    protected function getEndpoint(): string
     {
         $this->checkParams();
 
         return isset($this->urlVars['endpoint'])
             // allows assigning custom endpoint url
-            ? rtrim($this->urlVars['endpoint'], '/') . '/'
+            ? rtrim($this->urlVars['endpoint'], '/').'/'
             // if no custom endpoint assigned, use traditional swift v1 endpoint
             : sprintf(
                 'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
@@ -135,9 +137,10 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Check if the url support variables have
      * been correctly defined.
      *
-     * @return void|BadMethodCallException
+     * @throws BadMethodCallException
+     * @return void
      */
-    protected function checkParams()
+    protected function checkParams(): void
     {
         $needKeys = ['region', 'projectId', 'container', 'urlKey', 'endpoint'];
 
@@ -150,11 +153,11 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Include support for object deletion.
      *
      * @param string $path
-     * @see Nimbusoft\Flysystem\OpenStack
-     *
+     * @param Config $config
      * @return array
+     * @see Nimbusoft\Flysystem\OpenStack
      */
-    protected function getWriteData($path, $config)
+    protected function getWriteData($path, $config): array
     {
         $data = ['name' => $path];
 
@@ -168,11 +171,11 @@ class OVHSwiftAdapter extends SwiftAdapter
     }
 
     /**
-     * Expose the container to allow for modification to metadata
+     * Expose the container to allow for modification to metadata.
      *
-     * @return \OpenStack\ObjectStore\v1\Models\Container;
+     * @return Container
      */
-    public function getContainer()
+    public function getContainer(): Container
     {
         return $this->container;
     }

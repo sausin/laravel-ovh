@@ -15,7 +15,7 @@ class OVHServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Storage::extend('ovh', function ($app, $config) {
             // check if the config is complete
@@ -35,18 +35,19 @@ class OVHServiceProvider extends ServiceProvider
         
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Commands\SetTempUrlKey::class
+                Commands\SetTempUrlKey::class,
             ]);
         }
     }
 
     /**
-     * Check that the config is properly setup.
+     * Checks that the config is properly setup.
      *
      * @param  array $config
-     * @return void|BadMethodCallException
+     * @throws BadMethodCallException
+     * @return void
      */
-    protected function checkConfig($config)
+    protected function checkConfig($config): void
     {
         // needed keys
         $needKeys = ['server', 'region', 'user', 'pass', 'userDomain', 'projectId', 'container'];
@@ -56,16 +57,16 @@ class OVHServiceProvider extends ServiceProvider
         }
 
         // if the configuration wasn't complete, throw an exception
-        throw new BadMethodCallException('Need following keys ' . implode(', ', $needKeys));
+        throw new BadMethodCallException('Need following keys '.implode(', ', $needKeys));
     }
 
     /**
      * Make the client needed for interaction with OVH OpenStack.
      *
      * @param  array $config
-     * @return \OpenStack\OpenStack
+     * @return OpenStack
      */
-    protected function makeClient($config)
+    protected function makeClient($config): OpenStack
     {
         // setup the client for OpenStack
         return new OpenStack([
@@ -98,13 +99,13 @@ class OVHServiceProvider extends ServiceProvider
             'region' => $config['region'],
             'projectId' => $config['projectId'],
             'container' => $config['container'],
-            'urlKey' => isset($config['urlKey']) ? $config['urlKey'] : null,
-            'endpoint' => isset($config['endpoint']) ? $config['endpoint'] : null,
+            'urlKey' => $config['urlKey'] ?? null,
+            'endpoint' => $config['endpoint'] ?? null,
         ];
     }
 
     /**
-     * Return the config variables required for large object.
+     * Return the config variables required for large objects.
      *
      * @param  array &$config
      * @return array
