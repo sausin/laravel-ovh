@@ -13,7 +13,7 @@ class SetTempUrlKey extends Command
      * @var string
      */
     protected $signature = 'ovh:set-temp-url-key
-                            {--key= : The key you want to setup on your container}
+                            {--key= : The key you want to set up on your container}
                             {--force : Forcibly set a new key on the container}';
 
     /**
@@ -21,7 +21,7 @@ class SetTempUrlKey extends Command
      *
      * @var string
      */
-    protected $description = 'Set temp url key on private container, making the use of Storage::temporaryUrl() possible';
+    protected $description = 'Set temp url key on the private container, making the use of Storage::temporaryUrl() possible';
 
     /**
      * Create a new command instance.
@@ -65,7 +65,7 @@ class SetTempUrlKey extends Command
             ->getContainer()
             ->resetMetadata(['Temp-Url-Key' => $key]);
 
-            $this->info('Success! The key has been set as: ' . $key);
+            $this->info('Success! The key has been set as: '.$key);
             return 0;
         } catch (\Exception $e) {
             $this->info($e->getMessage());

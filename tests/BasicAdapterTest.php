@@ -5,14 +5,20 @@ namespace Sausin\LaravelOvh\Tests;
 use Carbon\Carbon;
 use League\Flysystem\Config;
 use Mockery;
+use PHPUnit\Framework\TestCase;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
-class BasicAdapterTest extends \PHPUnit\Framework\TestCase
+class BasicAdapterTest extends TestCase
 {
+    private $config;
+    private $container;
+    private $object;
+    private $adapter;
+
     public function setUp()
     {
         $this->config = new Config([]);
-        $this->urlVars = [
+        $urlVars = [
             'region' => 'region',
             'projectId' => 'projectId',
             'container' => 'container',
@@ -24,7 +30,7 @@ class BasicAdapterTest extends \PHPUnit\Framework\TestCase
 
         $this->container->name = 'container-name';
         $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
-        $this->adapter = new OVHSwiftAdapter($this->container, $this->urlVars);
+        $this->adapter = new OVHSwiftAdapter($this->container, $urlVars);
     }
 
     public function tearDown()
@@ -48,7 +54,7 @@ class BasicAdapterTest extends \PHPUnit\Framework\TestCase
 
         $url = $this->adapter->getUrlConfirm('hello');
 
-        $this->assertEquals($url, 'https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello');
+        $this->assertEquals('https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello', $url);
     }
 
     public function testUrlMethod()
@@ -58,7 +64,7 @@ class BasicAdapterTest extends \PHPUnit\Framework\TestCase
 
         $url = $this->adapter->getUrl('hello');
 
-        $this->assertEquals($url, 'https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello');
+        $this->assertEquals('https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello', $url);
     }
 
     public function testAutoDeleteObjectsWork()
@@ -67,39 +73,39 @@ class BasicAdapterTest extends \PHPUnit\Framework\TestCase
         $this->container->shouldReceive('createObject')->once()->with([
             'name' => 'hello',
             'content' => 'world',
-            'deleteAt' => 651234
+            'deleteAt' => 651234,
         ])->andReturn($this->object);
 
         $this->config->set('deleteAt', 651234);
         $response = $this->adapter->write('hello', 'world', $this->config);
 
-        $this->assertEquals($response, [
+        $this->assertEquals([
             'type' => 'file',
             'dirname' => null,
             'path' => null,
             'timestamp' =>  null,
             'mimetype' => null,
             'size' => null,
-        ]);
+        ], $response);
 
         // test for deleteAfter property
         $this->container->shouldReceive('createObject')->once()->with([
             'name' => 'hello',
             'content' => 'world',
-            'deleteAfter' => 60
+            'deleteAfter' => 60,
         ])->andReturn($this->object);
 
         $this->config->set('deleteAfter', 60);
         $response = $this->adapter->write('hello', 'world', $this->config);
 
-        $this->assertEquals($response, [
+        $this->assertEquals([
             'type' => 'file',
             'dirname' => null,
             'path' => null,
             'timestamp' =>  null,
             'mimetype' => null,
             'size' => null,
-        ]);
+        ], $response);
     }
 
     public function testTemporaryUrlMethod()

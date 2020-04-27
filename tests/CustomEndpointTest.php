@@ -5,14 +5,24 @@ namespace Sausin\LaravelOvh\Tests;
 use Carbon\Carbon;
 use League\Flysystem\Config;
 use Mockery;
+use OpenStack\ObjectStore\v1\Models\Container;
+use OpenStack\ObjectStore\v1\Models\StorageObject;
 use Sausin\LaravelOvh\OVHSwiftAdapter;
 
 class CustomEndpointTest extends \PHPUnit\Framework\TestCase
 {
+    /** @var Mockery\LegacyMockInterface|Mockery\MockInterface|Container */
+    private $container;
+
+    /** @var Mockery\LegacyMockInterface|Mockery\MockInterface|StorageObject */
+    private $object;
+
+    /** @var OVHSwiftAdapter */
+    private $adapter;
+
     public function setUp()
     {
-        $this->config = new Config([]);
-        $this->urlVars = [
+        $urlVars = [
             'region' => 'region',
             'projectId' => 'projectId',
             'container' => 'container',
@@ -24,7 +34,7 @@ class CustomEndpointTest extends \PHPUnit\Framework\TestCase
 
         $this->container->name = 'container-name';
         $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
-        $this->adapter = new OVHSwiftAdapter($this->container, $this->urlVars);
+        $this->adapter = new OVHSwiftAdapter($this->container, $urlVars);
     }
 
     public function tearDown()
@@ -48,7 +58,7 @@ class CustomEndpointTest extends \PHPUnit\Framework\TestCase
 
         $url = $this->adapter->getUrlConfirm('hello');
 
-        $this->assertEquals($url, 'http://custom.endpoint/hello');
+        $this->assertEquals('http://custom.endpoint/hello', $url);
     }
 
     public function testUrlMethod()
@@ -58,7 +68,7 @@ class CustomEndpointTest extends \PHPUnit\Framework\TestCase
 
         $url = $this->adapter->getUrl('hello');
 
-        $this->assertEquals($url, 'http://custom.endpoint/hello');
+        $this->assertEquals('http://custom.endpoint/hello', $url);
     }
 
     public function testTemporaryUrlMethod()
