@@ -12,7 +12,7 @@ Laravel `Storage` facade provides support for many different filesystems.
 
 This is a wrapper to provide support in Laravel for [OVH Object Storage](https://www.ovh.ie/public-cloud/storage/object-storage/).
 
-# Installing
+# Installation
 
 Install via composer:
 ```
@@ -21,13 +21,13 @@ composer require sausin/laravel-ovh
 
 Please see below for the details on various branches. You can choose the version of the package which is suitable for your development. Also take note of the upgrade
 
-| Package version   | PHP compatibility | Laravel versions  | Special features of OVH               | Status        |
-| ----------------- | :---------------: | :---------------: | :-----------------------------------: | :------------ |
-| `1.2.x`           | `7.0 - 7.1`       | `>=5.4`, `<=5.8`  | `temporaryUrl()`                      | Deprecated    |
-| `2.x`             | `>=7.1`           | `>=5.4`, `<=6.x`  | Above + `expiring objects`            | Deprecated    |
-| `3.x`             | `>=7.1`           | `>=5.4`, `<=7.x`  | Above                                 | Deprecated    |
-| `4.x`             | `>=7.2`           | `>=5.4`           | Above + Set private key on container  | Maintained    |
-| `5.x`             | `>=7.4`           | `>=5.4`           | Above + Better Parameter Parity       | Active        |
+| Package version | PHP compatibility | Laravel versions | Special features of OVH                   | Status     |
+| --------------- | :---------------: | :--------------: | :---------------------------------------: | :--------- |
+| `1.2.x`         | `^7.0 - ^7.1`     | `>=5.4`, `<=5.8` | Temporary Url Support                     | Deprecated |
+| `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | Above + Expiring Objects + Custom Domains | Deprecated |
+| `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | Above + Keystone v3 API                   | Deprecated |
+| `4.x`           | `>=7.2`           | `>=5.4`          | Above + Set private key on container      | Maintained |
+| `5.x`           | `>=7.4`           | `>=5.4`          | Above + Config-based Expiring Objects     | Active     |
 
 If you are using Laravel versions older than 5.5, add the service provider to the `providers` array in `config/app.php`:
 ```php
@@ -47,15 +47,17 @@ as below
     'password' => env('OS_PASSWORD'),
     'container' => env('OS_CONTAINER_NAME'),
 
+    // Since v1.2
     // Optional variable and only if you are using temporary signed urls.
     // You can also set a new key using the command 'php artisan ovh:set-temp-url-key'.
     'tempUrlKey' => env('OS_TEMP_URL_KEY'),
 
+    // Since v2.1
     // Optional variable and only if you have setup a custom endpoint.
     'endpoint' => env('OS_CUSTOM_ENDPOINT'),
 
     // Optional variables for handling large objects.
-    // Defaults below are 300MB & 100MB.
+    // Defaults below are 300MB threshold & 100MB segments.
     'swiftLargeObjectThreshold' => env('OS_LARGE_OBJECT_THRESHOLD', 300 * 1024 * 1024),
     'swiftSegmentSize' => env('OS_SEGMENT_SIZE', 100 * 1024 * 1024),
     'swiftSegmentContainer' => env('OS_SEGMENT_CONTAINER', null),
@@ -88,12 +90,10 @@ be specified. To get the values for remaining variables (like `user`, `region`, 
 etc), you can download the configuration file with details in your OVH control panel
 (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`). 
 
-Be sure to run
+Be sure to clear your app's config cache after finishing this library's configuration:
 ```sh
 php artisan config:cache
 ```
-again if you've been using the caching on your config file.
-
 
 # Usage
 
@@ -105,7 +105,7 @@ Storage::url()
 Storage::temporaryUrl()
 ```
 
-The temporary url is relevant for private containers where files are not publicly accessible
+The `temporaryUrl()` method is relevant for private containers where files are not publicly accessible
 under normal conditions. This generates a temporary signed url. For more details, please refer
 to [OVH's Temporary URL Documentation](https://docs.ovh.com/gb/en/public-cloud/share_an_object_via_a_temporary_url/).
 
@@ -122,11 +122,11 @@ php artisan ovh:set-temp-url-key
 # Set a specific key
 php artisan ovh:set-temp-url-key --key=your-private-key
 ```
-The package will then set the relevant key on your container. If a key has already been
-set up previously, the package will warn you before overriding the existing key.
-If you'd like to set up a new key anyway, you may use the `--force` flag with the command.
+The package will then set the relevant key on your container and present it to you. If a key
+has already been set up previously, the package will warn you before overriding the existing
+key. If you'd like to force a new key anyway, you may use the `--force` flag with the command.
 
-Once you got your newly generated key, you must add it to your `.env` file:
+Once you got your key configured in your container, you must add it to your `.env` file:
 ```dotenv
 OS_TEMP_URL_KEY='your-private-key'
 ``` 
@@ -144,28 +144,61 @@ OS_CUSTOM_ENDPOINT="http://my-endpoint.example.com"
 
 For more information, please refer to [OVH's Custom Domain Documentation](https://docs.ovh.com/gb/en/storage/pcs/link-domain/).
 
-## Uploading expiring objects
+## Uploading Automatically Expiring Objects
 
 This library allows you to add expiration time to uploaded objects. There are 2 ways to do it:
 
 1. Specifying expiration time programmatically:
-    
-2. Specifying default expiration time via `.env` file:
-If you would like to upload objects which expire (i.e. get auto deleted) at a certain time
-in the future, you can add `deleteAt` or `deleteAfter` configuration options when uploading
-the object.
+    - You can either specify the number of seconds after which the uploaded object should be deleted:
+        ```php
+        // Automatically expire after 1 hour of being uploaded.
+        Storage::disk('ovh')->put('path/to/file.jpg', $contents, ['deleteAfter' => 60*60]);
+        ```
+    - Or, you can also specify a timestamp after which the uploaded object should be deleted:
+        ```php
+        // Automatically delete at the beginning of next month.
+        Storage::disk('ovh')->put('path/to/file.jpg', $contents, ['deleteAt' => now()->addMonth()->startOfMonth()])
+        ```
 
-For eg, below code will upload a file which expires after one hour:
-```php
-Storage::disk('ovh')->put('path/to/file.jpg', $contents, ['deleteAfter' => 60*60])
+2. Specifying default expiration time via `.env` file. This will set an expiration time (in seconds)
+to every newly uploaded object by default:
+    ```dotenv
+    # Delete every object after 3 days of being uploaded
+    OS_DELETE_AFTER=259200
+    ```
+
+For more information about these variables,  please refer to [OVH's Automatic Object Deletion Documentation](https://docs.ovh.com/gb/en/storage/configure_automatic_object_deletion/)
+
+## Large Object Support
+
+This library can help you optimize the upload speeds of large objects (such as videos or disk images)
+automatically by detecting file size thresholds and splitting the file into lighter segments. This will
+improve upload speeds by writing multiple segments into multiple Object Storage nodes simultaneously.
+
+By default, the size threshold to detect a Large Object is set to 300MB, and the segment size to split
+the file is set to 100MB. If you would like to change these values, you must specify the following
+variables in your `.env` file (in Bytes):
+```dotenv
+# Set size threshold to 1GB
+OS_LARGE_OBJECT_THRESHOLD=1073741824
+# Set segment size to 200MB
+OS_SEGMENT_SIZE=209715200
 ```
 
-Usage of these variables is explained in [OVH's Documentation](https://docs.ovh.com/gb/en/storage/configure_automatic_object_deletion/)
+If you would like to use a separate container for storing your Large Object Segments,
+you can do so by specifing the following variable in your `.env` file:
+```dotenv
+OS_SEGMENT_CONTAINER="large-object-container-name"
+```
 
-If you would like to automatically add an expiration time to every new object being uploaded to
-your container, you can specify
+Using a separate container for storing the segments of your Large Objects can be beneficial in
+some cases, to learn more about this, please refer to [OpenStack's Last Note on Using Swift for Large Objects](https://docs.openstack.org/swift/stein/overview_large_objects.html#using-swift)
+
+To learn more about segmented uploads for large objects, please refer to:
+- [OVH's Optimizing Large Object Uploads Documentation](https://docs.ovh.com/gb/en/storage/optimised_method_for_uploading_files_to_object_storage/)
+- [OpenStack's Large Object Support Documentation](https://docs.openstack.org/swift/latest/overview_large_objects.html)
 
 # Credits
 - ThePHPLeague for the awesome [Flysystem](https://github.com/thephpleague/flysystem)!
-- Nimbusoft for their [SwiftAdapter](https://github.com/nimbusoftltd/flysystem-openstack-swift).
+- [Chris Harvey](https://github.com/chrisnharvey) for the [Flysystem OpenStack SwiftAdapter](https://github.com/nimbusoftltd/flysystem-openstack-swift).
 - Rackspace for maintaining the [PHP OpenStack Repo](https://github.com/php-opencloud/openstack).
