@@ -118,6 +118,14 @@ The package will then set the relevant key on your container. If a key has alrea
 set up previously, the package will warn you before overriding the existing key.
 If you'd like to set up a new key anyway, you may use the `--force` flag with the command. 
 
+## Configuring a Custom Domain Name (Custom Endpoint)
+
+OVH's Object Storage allows you to point a Custom Domain Name or Endpoint to an individual
+container. For this, you must setup some records with your DNS provider, which will authorize
+the forwarded requests coming from your Endpoint to OVH's servers.
+
+For more information, please refer to [OVH's Custom Domain Documentation](https://docs.ovh.com/gb/en/storage/pcs/link-domain/).
+
 ## Uploading expiring objects
 
 If you would like to upload objects which expire (i.e. get auto deleted) at a certain time
