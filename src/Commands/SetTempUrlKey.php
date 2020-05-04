@@ -26,7 +26,7 @@ class SetTempUrlKey extends Command
     protected $description = 'Set temp url key on the private container, making the use of Storage::temporaryUrl() possible';
 
     /**
-     * The Object Storage Container
+     * The Object Storage Container.
      *
      * @var Container
      */
@@ -73,7 +73,7 @@ class SetTempUrlKey extends Command
      */
     protected function askIfShouldOverrideExistingKey(): bool
     {
-        if (!array_key_exists('Temp-Url-Key', $this->container->getMetadata())) {
+        if (! array_key_exists('Temp-Url-Key', $this->container->getMetadata())) {
             return true; // Yeah, override the non-existing key.
         }
 
@@ -111,6 +111,6 @@ class SetTempUrlKey extends Command
             $this->error($e->getMessage());
         }
 
-        $this->info('Successfully set Temp URL Key to: ' . $key);
+        $this->info('Successfully set Temp URL Key to: '.$key);
     }
 }

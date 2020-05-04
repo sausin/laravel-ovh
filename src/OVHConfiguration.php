@@ -71,8 +71,7 @@ class OVHConfiguration
         ?string $swiftLargeObjectThreshold,
         ?string $swiftSegmentSize,
         ?string $swiftSegmentContainer
-    )
-    {
+    ) {
         $this->authUrl = $authUrl;
         $this->projectId = $projectId;
         $this->region = $region;
@@ -99,7 +98,7 @@ class OVHConfiguration
         $missingKeys = array_diff($neededKeys, array_keys($config));
 
         if (count($missingKeys) > 0) {
-            throw new BadMethodCallException('The following keys must be provided: ' . implode(', ', $missingKeys));
+            throw new BadMethodCallException('The following keys must be provided: '.implode(', ', $missingKeys));
         }
 
         return new self(
@@ -147,6 +146,7 @@ class OVHConfiguration
      *  - SBG
      *  - UK
      *  - WAW
+     * Make sure to check your container's region at OVH's Dashboard.
      *
      * @return string
      */

@@ -38,9 +38,9 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function getEndpoint(?string $path = null): string
     {
-        $url = !empty($this->config->getEndpoint())
+        $url = ! empty($this->config->getEndpoint())
             // Allows assigning custom endpoint url
-            ? rtrim($this->config->getEndpoint(), '/') . '/'
+            ? rtrim($this->config->getEndpoint(), '/').'/'
             // If no custom endpoint assigned, use traditional swift v1 endpoint
             : sprintf(
                 'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
@@ -49,7 +49,7 @@ class OVHSwiftAdapter extends SwiftAdapter
                 $this->config->getContainer()
             );
 
-        if (!empty($path)) {
+        if (! empty($path)) {
             $url .= ltrim($path, '/');
         }
 

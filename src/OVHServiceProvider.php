@@ -28,7 +28,9 @@ class OVHServiceProvider extends ServiceProvider
      */
     protected function configureCommands(): void
     {
-        if (!$this->app->runningInConsole()) return;
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
 
         $this->commands([
             Commands\SetTempUrlKey::class,
@@ -79,7 +81,7 @@ class OVHServiceProvider extends ServiceProvider
     }
 
     /**
-     * Creates a Filesystem instance for interaction with the Object Storage
+     * Creates a Filesystem instance for interaction with the Object Storage.
      *
      * @param Container $container
      * @return Filesystem
