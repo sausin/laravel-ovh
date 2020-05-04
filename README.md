@@ -2,7 +2,7 @@
 
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sausin/laravel-ovh.svg?style=flat-square)](https://packagist.org/packages/sausin/laravel-ovh)
-[![](https://github.com/sausin/laravel-ovh/workflows/CI%20laravel-ovh/badge.svg?branch=master)](https://github.com/sausin/laravel-ovh/actions?query=workflow%3A%22CI+laravel-ovh%22)
+[![Continuous Integration](https://github.com/sausin/laravel-ovh/workflows/CI%20laravel-ovh/badge.svg?branch=master)](https://github.com/sausin/laravel-ovh/actions?query=workflow%3A%22CI+laravel-ovh%22)
 [![Quality Score](https://img.shields.io/scrutinizer/g/sausin/laravel-ovh.svg?style=flat-square)](https://scrutinizer-ci.com/g/sausin/laravel-ovh)
 [![Total Downloads](https://img.shields.io/packagist/dt/sausin/laravel-ovh.svg?style=flat-square)](https://packagist.org/packages/sausin/laravel-ovh)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -58,7 +58,15 @@ as below
     // Defaults below are 300MB & 100MB.
     'swiftLargeObjectThreshold' => env('OS_LARGE_OBJECT_THRESHOLD', 300 * 1024 * 1024),
     'swiftSegmentSize' => env('OS_SEGMENT_SIZE', 100 * 1024 * 1024),
-    'swiftSegmentContainer' => env('OS_SEGMENT_CONTAINER'),
+    'swiftSegmentContainer' => env('OS_SEGMENT_CONTAINER', null),
+
+    // Optional variable and only if you would like to DELETE all uploaded object by DEFAULT.
+    // This allows you to set an 'expiration' time for every new uploaded object to
+    // your container. This will not affect objects already in your container.
+    //
+    // If you're not willing to DELETE uploaded objects by DEFAULT, leave it empty.
+    // Really, if you don't know what you're doing, you should leave this empty as well.
+    'deleteAfter' => env('OS_DEFAULT_DELETE_AFTER'. null)
 ],
 ```
 Define the correct env variables above in your .env file (to correspond to the values above),
@@ -116,7 +124,12 @@ php artisan ovh:set-temp-url-key --key=your-private-key
 ```
 The package will then set the relevant key on your container. If a key has already been
 set up previously, the package will warn you before overriding the existing key.
-If you'd like to set up a new key anyway, you may use the `--force` flag with the command. 
+If you'd like to set up a new key anyway, you may use the `--force` flag with the command.
+
+Once you got your newly generated key, you must add it to your `.env` file:
+```dotenv
+OS_TEMP_URL_KEY='your-private-key'
+``` 
 
 ## Configuring a Custom Domain Name (Custom Endpoint)
 
@@ -124,10 +137,20 @@ OVH's Object Storage allows you to point a Custom Domain Name or Endpoint to an 
 container. For this, you must setup some records with your DNS provider, which will authorize
 the forwarded requests coming from your Endpoint to OVH's servers.
 
+In order to use a Custom Domain Name, you must specify it in your `.env` file:
+```dotenv
+OS_CUSTOM_ENDPOINT="http://my-endpoint.example.com"
+```
+
 For more information, please refer to [OVH's Custom Domain Documentation](https://docs.ovh.com/gb/en/storage/pcs/link-domain/).
 
 ## Uploading expiring objects
 
+This library allows you to add expiration time to uploaded objects. There are 2 ways to do it:
+
+1. Specifying expiration time programmatically:
+    
+2. Specifying default expiration time via `.env` file:
 If you would like to upload objects which expire (i.e. get auto deleted) at a certain time
 in the future, you can add `deleteAt` or `deleteAfter` configuration options when uploading
 the object.
@@ -138,6 +161,9 @@ Storage::disk('ovh')->put('path/to/file.jpg', $contents, ['deleteAfter' => 60*60
 ```
 
 Usage of these variables is explained in [OVH's Documentation](https://docs.ovh.com/gb/en/storage/configure_automatic_object_deletion/)
+
+If you would like to automatically add an expiration time to every new object being uploaded to
+your container, you can specify
 
 # Credits
 - ThePHPLeague for the awesome [Flysystem](https://github.com/thephpleague/flysystem)!

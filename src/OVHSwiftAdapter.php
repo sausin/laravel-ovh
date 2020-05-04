@@ -10,11 +10,8 @@ use OpenStack\ObjectStore\v1\Models\Container;
 
 class OVHSwiftAdapter extends SwiftAdapter
 {
-    /** Variables from the Filesystem class will be temporarily stored here */
-    protected $specialParams;
-
     /** @var OVHConfiguration */
-    protected $config;
+    protected OVHConfiguration $config;
 
     /**
      * OVHSwiftAdapter constructor.
@@ -38,15 +35,15 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function getEndpoint(?string $path = null): string
     {
-        $url = ! empty($this->config->getEndpoint())
+        $url = ! empty($this->config->endpoint)
             // Allows assigning custom endpoint url
-            ? rtrim($this->config->getEndpoint(), '/').'/'
+            ? rtrim($this->config->endpoint, '/').'/'
             // If no custom endpoint assigned, use traditional swift v1 endpoint
             : sprintf(
                 'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
-                $this->config->getRegion(),
-                $this->config->getProjectId(),
-                $this->config->getContainer()
+                $this->config->region,
+                $this->config->projectId,
+                $this->config->container
             );
 
         if (! empty($path)) {
@@ -111,8 +108,8 @@ class OVHSwiftAdapter extends SwiftAdapter
         // The url on the OVH host
         $codePath = sprintf(
             '/v1/AUTH_%s/%s/%s',
-            $this->config->getProjectId(),
-            $this->config->getContainer(),
+            $this->config->projectId,
+            $this->config->container,
             $path
         );
 
@@ -120,7 +117,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         $body = sprintf("%s\n%s\n%s", $method, $expiresAt->timestamp, $codePath);
 
         // The actual hash signature
-        $signature = hash_hmac('sha1', $body, $this->config->getTempUrlKey());
+        $signature = hash_hmac('sha1', $body, $this->config->tempUrlKey);
 
         // Return signed url
         return sprintf(
@@ -154,9 +151,11 @@ class OVHSwiftAdapter extends SwiftAdapter
         $data = ['name' => $path];
 
         if ($config->has('deleteAfter')) {
-            return $data += ['deleteAfter' => $config->get('deleteAfter')];
+            $data['deleteAfter'] = $config->get('deleteAfter');
         } elseif ($config->has('deleteAt')) {
-            return $data += ['deleteAt' => $config->get('deleteAt')];
+            $data['deleteAt'] = $config->get('deleteAt');
+        } elseif (! empty($this->config->deleteAfter)) {
+            $data['deleteAfter'] = $this->config->deleteAfter;
         }
 
         return $data;

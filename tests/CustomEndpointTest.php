@@ -8,22 +8,11 @@ use Sausin\LaravelOvh\OVHConfiguration;
 
 class CustomEndpointTest extends TestCase
 {
-    public function getConfig()
+    public function setUp()
     {
-        return new OVHConfiguration(
-            '',
-            'projectId',
-            'region',
-            '',
-            '',
-            '',
-            'container',
-            'mykey',
-            'http://custom.endpoint',
-            null,
-            null,
-            null
-        );
+        parent::setUp();
+
+        $this->config->endpoint = 'http://custom.endpoint';
     }
 
     public function tearDown()

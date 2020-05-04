@@ -11,7 +11,7 @@ use OpenStack\OpenStack;
 class OVHServiceProvider extends ServiceProvider
 {
     /** @var OVHConfiguration */
-    private $config;
+    private OVHConfiguration $config;
 
     /**
      * Bootstrap the application services.
@@ -49,7 +49,7 @@ class OVHServiceProvider extends ServiceProvider
             $client = $this->makeOpenStackClient();
 
             // Get the Object Storage container.
-            $container = $client->objectStoreV1()->getContainer($this->config->getContainer());
+            $container = $client->objectStoreV1()->getContainer($this->config->container);
 
             return $this->makeFileSystem($container);
         });
@@ -63,18 +63,18 @@ class OVHServiceProvider extends ServiceProvider
     protected function makeOpenStackClient(): OpenStack
     {
         return new OpenStack([
-            'authUrl' => $this->config->getAuthUrl(),
-            'region' => $this->config->getRegion(),
+            'authUrl' => $this->config->authUrl,
+            'region' => $this->config->region,
             'user' => [
-                'name' => $this->config->getUsername(),
-                'password' => $this->config->getPassword(),
+                'name' => $this->config->username,
+                'password' => $this->config->password,
                 'domain' => [
-                    'name' => $this->config->getUserDomain(),
+                    'name' => $this->config->userDomain,
                 ],
             ],
             'scope' => [
                 'project' => [
-                    'id' => $this->config->getProjectId(),
+                    'id' => $this->config->projectId,
                 ],
             ],
         ]);
@@ -91,9 +91,9 @@ class OVHServiceProvider extends ServiceProvider
         return new Filesystem(
             new OVHSwiftAdapter($container, $this->config),
             [
-                'swiftLargeObjectThreshold' => $this->config->getSwiftLargeObjectThreshold(),
-                'swiftSegmentSize' => $this->config->getSwiftSegmentSize(),
-                'swiftSegmentContainer' => $this->config->getSwiftSegmentContainer(),
+                'swiftLargeObjectThreshold' => $this->config->swiftLargeObjectThreshold,
+                'swiftSegmentSize' => $this->config->swiftSegmentSize,
+                'swiftSegmentContainer' => $this->config->swiftSegmentContainer,
             ]
         );
     }

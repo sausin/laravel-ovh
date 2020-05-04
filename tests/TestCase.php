@@ -11,6 +11,9 @@ use Sausin\LaravelOvh\OVHSwiftAdapter;
 
 class TestCase extends PHPUnitTestCase
 {
+    /** @var OVHConfiguration */
+    protected OVHConfiguration $config;
+
     /** @var Mockery\LegacyMockInterface|Mockery\MockInterface|Container */
     protected $container;
 
@@ -18,20 +21,11 @@ class TestCase extends PHPUnitTestCase
     protected $object;
 
     /** @var OVHSwiftAdapter */
-    protected $adapter;
+    protected OVHSwiftAdapter $adapter;
 
     public function setUp()
     {
-        $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
-
-        $this->container->name = 'container-name';
-        $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
-        $this->adapter = new OVHSwiftAdapter($this->container, $this->getConfig());
-    }
-
-    protected function getConfig()
-    {
-        return new OVHConfiguration(
+        $this->config = $this->config = new OVHConfiguration(
             '',
             'projectId',
             'region',
@@ -43,7 +37,14 @@ class TestCase extends PHPUnitTestCase
             null,
             null,
             null,
+            null,
             null
         );
+
+        $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
+
+        $this->container->name = 'container-name';
+        $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
+        $this->adapter = new OVHSwiftAdapter($this->container, $this->config);
     }
 }

@@ -46,6 +46,27 @@ class BasicAdapterTest extends TestCase
     {
         $config = new Config([]);
 
+        // test for default config-based deleteAfter property
+        $this->container->shouldReceive('createObject')->once()->with([
+            'name' => 'hello',
+            'content' => 'world',
+            'deleteAfter' => 60*60,
+        ])->andReturn($this->object);
+
+        $this->config->deleteAfter = 60*60;
+        $response = $this->adapter->write('hello', 'world', $config);
+
+        $this->assertEquals([
+            'type' => 'file',
+            'dirname' => null,
+            'path' => null,
+            'timestamp' => null,
+            'mimetype' => null,
+            'size' => null,
+        ], $response);
+
+        $this->config->deleteAfter = null;
+
         // test for deleteAt property
         $this->container->shouldReceive('createObject')->once()->with([
             'name' => 'hello',
