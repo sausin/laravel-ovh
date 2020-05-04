@@ -32,7 +32,7 @@ class OVHServiceProvider extends ServiceProvider
                 $this->getLargeObjectConfig($config)
             );
         });
-        
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Commands\SetTempUrlKey::class,

@@ -66,6 +66,7 @@ class SetTempUrlKey extends Command
             ->resetMetadata(['Temp-Url-Key' => $key]);
 
             $this->info('Success! The key has been set as: '.$key);
+
             return 0;
         } catch (\Exception $e) {
             $this->info($e->getMessage());
