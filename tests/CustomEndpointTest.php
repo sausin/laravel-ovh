@@ -3,7 +3,6 @@
 namespace Sausin\LaravelOvh\Tests;
 
 use Carbon\Carbon;
-use League\Flysystem\Config;
 use Mockery;
 use OpenStack\ObjectStore\v1\Models\Container;
 use OpenStack\ObjectStore\v1\Models\StorageObject;
