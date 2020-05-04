@@ -3,38 +3,27 @@
 namespace Sausin\LaravelOvh\Tests;
 
 use Carbon\Carbon;
-use League\Flysystem\Config;
 use Mockery;
-use OpenStack\ObjectStore\v1\Models\Container;
-use OpenStack\ObjectStore\v1\Models\StorageObject;
-use Sausin\LaravelOvh\OVHSwiftAdapter;
+use Sausin\LaravelOvh\OVHConfiguration;
 
-class CustomEndpointTest extends \PHPUnit\Framework\TestCase
+class CustomEndpointTest extends TestCase
 {
-    /** @var Mockery\LegacyMockInterface|Mockery\MockInterface|Container */
-    private $container;
-
-    /** @var Mockery\LegacyMockInterface|Mockery\MockInterface|StorageObject */
-    private $object;
-
-    /** @var OVHSwiftAdapter */
-    private $adapter;
-
-    public function setUp()
+    public function getConfig()
     {
-        $urlVars = [
-            'region' => 'region',
-            'projectId' => 'projectId',
-            'container' => 'container',
-            'urlKey' => 'meykey',
-            'endpoint' => 'http://custom.endpoint',
-        ];
-
-        $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
-
-        $this->container->name = 'container-name';
-        $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
-        $this->adapter = new OVHSwiftAdapter($this->container, $urlVars);
+        return new OVHConfiguration(
+            '',
+            'projectId',
+            'region',
+            '',
+            '',
+            '',
+            'container',
+            'mykey',
+            'http://custom.endpoint',
+            null,
+            null,
+            null
+        );
     }
 
     public function tearDown()
@@ -51,10 +40,10 @@ class CustomEndpointTest extends \PHPUnit\Framework\TestCase
         $this->object->contentLength = 1234;
 
         $this->container
-                ->shouldReceive('getObject')
-                ->once()
-                ->with('hello')
-                ->andReturn($this->object);
+            ->shouldReceive('getObject')
+            ->once()
+            ->with('hello')
+            ->andReturn($this->object);
 
         $url = $this->adapter->getUrlConfirm('hello');
 

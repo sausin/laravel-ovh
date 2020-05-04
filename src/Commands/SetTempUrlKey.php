@@ -2,8 +2,10 @@
 
 namespace Sausin\LaravelOvh\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use OpenStack\ObjectStore\v1\Models\Container;
 
 class SetTempUrlKey extends Command
 {
@@ -24,6 +26,13 @@ class SetTempUrlKey extends Command
     protected $description = 'Set temp url key on the private container, making the use of Storage::temporaryUrl() possible';
 
     /**
+     * The Object Storage Container
+     *
+     * @var Container
+     */
+    protected $container;
+
+    /**
      * Create a new command instance.
      *
      * @return void
@@ -31,58 +40,77 @@ class SetTempUrlKey extends Command
     public function __construct()
     {
         parent::__construct();
+
+        $this->container = Storage::disk('ovh')->getAdapter()->getContainer();
     }
 
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * If the '--force' flag is provided, a new Temp URL Key will be generated and
+     * forcefully set in the Container's metadata, overriding any existing keys.
+     *
+     * If the command is not forced and there's an existing key, the User will be
+     * prompted to override the existing keys.
+     *
+     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
-        if ($this->option('force')) {
+        if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey()) {
             $this->setContainerKey();
-
-            return 0;
         }
-
-        if ($this->checkContainerHasKey()) {
-            $this->info('Container already has a key');
-
-            return 1;
-        }
-
-        $this->setContainerKey();
     }
 
-    protected function setContainerKey()
+    /**
+     * If there's no existing Temp URL Key present in the Container, continue.
+     *
+     * Otherwise, if there's already an existing Temp URL Key present in the
+     * Container, the User will be prompted to choose if we should override it
+     * or not.
+     *
+     * @return bool
+     */
+    protected function askIfShouldOverrideExistingKey(): bool
     {
-        $key = $this->option('key') ?? $this->getRandomKey();
-
-        try {
-            Storage::disk('ovh')
-            ->getAdapter()
-            ->getContainer()
-            ->resetMetadata(['Temp-Url-Key' => $key]);
-
-            $this->info('Success! The key has been set as: '.$key);
-            return 0;
-        } catch (\Exception $e) {
-            $this->info($e->getMessage());
-
-            return 1;
+        if (!array_key_exists('Temp-Url-Key', $this->container->getMetadata())) {
+            return true; // Yeah, override the non-existing key.
         }
+
+        return $this->confirm(
+            'A Temp URL Key already exists in your container, would you like to override it?',
+            false
+        );
     }
 
-    protected function getRandomKey()
+    /**
+     * Generates a random Temp URL Key.
+     *
+     * For more details, please refer to:
+     *  - https://docs.ovh.com/gb/en/public-cloud/share_an_object_via_a_temporary_url/#generate-the-temporary-address-tempurl
+     *
+     * @return string
+     */
+    protected function getRandomKey(): string
     {
         return hash('sha512', time());
     }
 
-    protected function checkContainerHasKey()
+    /**
+     * Updates the Temp URL Key for the Container.
+     *
+     * @return void
+     */
+    protected function setContainerKey(): void
     {
-        $data = Storage::disk('ovh')->getAdapter()->getContainer()->getMetaData();
+        $key = $this->option('key') ?? $this->getRandomKey();
 
-        return array_key_exists('Temp-Url-Key', $data);
+        try {
+            $this->container->resetMetadata(['Temp-Url-Key' => $key]);
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+
+        $this->info('Successfully set Temp URL Key to: ' . $key);
     }
 }

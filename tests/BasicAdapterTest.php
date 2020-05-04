@@ -5,34 +5,9 @@ namespace Sausin\LaravelOvh\Tests;
 use Carbon\Carbon;
 use League\Flysystem\Config;
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use Sausin\LaravelOvh\OVHSwiftAdapter;
 
 class BasicAdapterTest extends TestCase
 {
-    private $config;
-    private $container;
-    private $object;
-    private $adapter;
-
-    public function setUp()
-    {
-        $this->config = new Config([]);
-        $urlVars = [
-            'region' => 'region',
-            'projectId' => 'projectId',
-            'container' => 'container',
-            'urlKey' => 'meykey',
-            'endpoint' => null,
-        ];
-
-        $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
-
-        $this->container->name = 'container-name';
-        $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
-        $this->adapter = new OVHSwiftAdapter($this->container, $urlVars);
-    }
-
     public function tearDown()
     {
         Mockery::close();
@@ -47,10 +22,10 @@ class BasicAdapterTest extends TestCase
         $this->object->contentLength = 1234;
 
         $this->container
-                ->shouldReceive('getObject')
-                ->once()
-                ->with('hello')
-                ->andReturn($this->object);
+            ->shouldReceive('getObject')
+            ->once()
+            ->with('hello')
+            ->andReturn($this->object);
 
         $url = $this->adapter->getUrlConfirm('hello');
 
@@ -69,6 +44,8 @@ class BasicAdapterTest extends TestCase
 
     public function testAutoDeleteObjectsWork()
     {
+        $config = new Config([]);
+
         // test for deleteAt property
         $this->container->shouldReceive('createObject')->once()->with([
             'name' => 'hello',
@@ -76,14 +53,14 @@ class BasicAdapterTest extends TestCase
             'deleteAt' => 651234,
         ])->andReturn($this->object);
 
-        $this->config->set('deleteAt', 651234);
-        $response = $this->adapter->write('hello', 'world', $this->config);
+        $config->set('deleteAt', 651234);
+        $response = $this->adapter->write('hello', 'world', $config);
 
         $this->assertEquals([
             'type' => 'file',
             'dirname' => null,
             'path' => null,
-            'timestamp' =>  null,
+            'timestamp' => null,
             'mimetype' => null,
             'size' => null,
         ], $response);
@@ -95,14 +72,14 @@ class BasicAdapterTest extends TestCase
             'deleteAfter' => 60,
         ])->andReturn($this->object);
 
-        $this->config->set('deleteAfter', 60);
-        $response = $this->adapter->write('hello', 'world', $this->config);
+        $config->set('deleteAfter', 60);
+        $response = $this->adapter->write('hello', 'world', $config);
 
         $this->assertEquals([
             'type' => 'file',
             'dirname' => null,
             'path' => null,
-            'timestamp' =>  null,
+            'timestamp' => null,
             'mimetype' => null,
             'size' => null,
         ], $response);

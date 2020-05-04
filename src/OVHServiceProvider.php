@@ -2,130 +2,97 @@
 
 namespace Sausin\LaravelOvh;
 
-use BadMethodCallException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
+use OpenStack\ObjectStore\v1\Models\Container;
 use OpenStack\OpenStack;
 
 class OVHServiceProvider extends ServiceProvider
 {
+    /** @var OVHConfiguration */
+    private $config;
+
     /**
      * Bootstrap the application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
-        Storage::extend('ovh', function ($app, $config) {
-            // check if the config is complete
-            $this->checkConfig($config);
+        $this->configureCommands();
 
-            // create the client
-            $client = $this->makeClient($config);
-
-            // get the container
-            $container = $client->objectStoreV1()->getContainer($config['container']);
-
-            return new Filesystem(
-                new OVHSwiftAdapter($container, $this->getVars($config)),
-                $this->getLargeObjectConfig($config)
-            );
-        });
-        
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                Commands\SetTempUrlKey::class,
-            ]);
-        }
+        $this->configureStorage();
     }
 
     /**
-     * Checks that the config is properly setup.
-     *
-     * @param  array $config
-     * @throws BadMethodCallException
-     * @return void
+     * Configures available commands.
      */
-    protected function checkConfig($config): void
+    protected function configureCommands(): void
     {
-        // needed keys
-        $needKeys = ['server', 'region', 'user', 'pass', 'userDomain', 'projectId', 'container'];
+        if (!$this->app->runningInConsole()) return;
 
-        if (count(array_intersect($needKeys, array_keys($config))) === count($needKeys)) {
-            return;
-        }
-
-        // if the configuration wasn't complete, throw an exception
-        throw new BadMethodCallException('Need following keys '.implode(', ', $needKeys));
+        $this->commands([
+            Commands\SetTempUrlKey::class,
+        ]);
     }
 
     /**
-     * Make the client needed for interaction with OVH OpenStack.
+     * Configures extended filesystem storage for interaction with OVH Object Storage.
+     */
+    protected function configureStorage(): void
+    {
+        Storage::extend('ovh', function ($app, array $config) {
+            // Creates a Configuration instance.
+            $this->config = OVHConfiguration::make($config);
+
+            $client = $this->makeOpenStackClient();
+
+            // Get the Object Storage container.
+            $container = $client->objectStoreV1()->getContainer($this->config->getContainer());
+
+            return $this->makeFileSystem($container);
+        });
+    }
+
+    /**
+     * Creates an OpenStack client instance, needed for interaction with OVH OpenStack.
      *
-     * @param  array $config
      * @return OpenStack
      */
-    protected function makeClient($config): OpenStack
+    protected function makeOpenStackClient(): OpenStack
     {
-        // setup the client for OpenStack
         return new OpenStack([
-            'authUrl' => $config['server'],
-            'region' => $config['region'],
+            'authUrl' => $this->config->getAuthUrl(),
+            'region' => $this->config->getRegion(),
             'user' => [
-                'name' => $config['user'],
-                'password' => $config['pass'],
+                'name' => $this->config->getUsername(),
+                'password' => $this->config->getPassword(),
                 'domain' => [
-                    'name' => $config['userDomain'],
+                    'name' => $this->config->getUserDomain(),
                 ],
             ],
             'scope' => [
                 'project' => [
-                    'id' => $config['projectId'],
+                    'id' => $this->config->getProjectId(),
                 ],
             ],
         ]);
     }
 
     /**
-     * Return the config variables required by the adapter.
+     * Creates a Filesystem instance for interaction with the Object Storage
      *
-     * @param  array &$config
-     * @return array
+     * @param Container $container
+     * @return Filesystem
      */
-    protected function getVars(&$config)
+    protected function makeFileSystem(Container $container): Filesystem
     {
-        return [
-            'region' => $config['region'],
-            'projectId' => $config['projectId'],
-            'container' => $config['container'],
-            'urlKey' => $config['urlKey'] ?? null,
-            'endpoint' => $config['endpoint'] ?? null,
-        ];
-    }
-
-    /**
-     * Return the config variables required for large objects.
-     *
-     * @param  array &$config
-     * @return array
-     */
-    protected function getLargeObjectConfig(&$config)
-    {
-        $largeObjConfig = [];
-
-        $largeObjVars = [
-            'swiftLargeObjectThreshold',
-            'swiftSegmentSize',
-            'swiftSegmentContainer',
-        ];
-
-        foreach ($largeObjVars as $key) {
-            if (isset($config[$key])) {
-                $largeObjConfig[$key] = $config[$key];
-            }
-        }
-
-        return $largeObjConfig;
+        return new Filesystem(
+            new OVHSwiftAdapter($container, $this->config),
+            [
+                'swiftLargeObjectThreshold' => $this->config->getSwiftLargeObjectThreshold(),
+                'swiftSegmentSize' => $this->config->getSwiftSegmentSize(),
+                'swiftSegmentContainer' => $this->config->getSwiftSegmentContainer(),
+            ]
+        );
     }
 }
