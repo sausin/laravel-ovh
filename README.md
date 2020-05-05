@@ -68,25 +68,14 @@ as below
     //
     // If you're not willing to DELETE uploaded objects by DEFAULT, leave it empty.
     // Really, if you don't know what you're doing, you should leave this empty as well.
-    'deleteAfter' => env('OS_DEFAULT_DELETE_AFTER'. null)
+    'deleteAfter' => env('OS_DEFAULT_DELETE_AFTER', null)
 ],
 ```
 Define the correct env variables above in your .env file (to correspond to the values above),
 and you should now have a working OVH Object Storage setup :smile:.
 
-**IMPORTANT:** Starting with `4.x` branch, the variables to be defined in the `.env` file
-have been renamed to reflect the names used by OpenStack in their configuration file. This is to
-remove any discrepancy in understanding which variable should go where. This also means that
-the package might fail to work unless the variable names in the `.env` file are updated.
-
-**IMPORTANT:** Starting with `5.x` branch, the variables to be defined in the `config/filesystems.php`
-file have been renamed to reflect the names used by OpenStack in their configuration file. This
-is intended to give the developer a better understanding of the contents of each configuration
-key. This also means that the package might fail to work unless the variable names in the `.env`
-file are updated.
-
-The URL is normally not going to be any different for OVH users and hence doesn't need to
-be specified. To get the values for remaining variables (like `user`, `region`, `container`,
+The environment variable `OS_AUTH_URL` is normally not going to be any different for OVH users and hence doesn't need to
+be specified. To get the values for remaining variables (like `OS_USERNAME`, `OS_REGION_NAME`, `OS_CONTAINER_NAME`,
 etc), you can download the configuration file with details in your OVH control panel
 (`Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`). 
 
@@ -94,6 +83,20 @@ Be sure to clear your app's config cache after finishing this library's configur
 ```sh
 php artisan config:cache
 ```
+
+## Upgrade Notes
+
+### From 3.x to 4.x
+Starting with `4.x` branch, the variables to be defined in the `.env` file
+have been renamed to reflect the names used by OpenStack in their configuration file. This is to
+remove any discrepancy in understanding which variable should go where. This also means that
+the package might fail to work unless the variable names in the `.env` file are updated.
+
+### From 4.x to 5.x
+Starting with `5.x` branch, the variables to be defined in the `config/filesystems.php`
+file have been renamed to better correspond with the names used by OpenStack in their configuration file. This
+is intended to give the developer a better understanding of the contents of each configuration
+key. If you're coming from `3.x`, updating the variable names in the `.env` might be essential to prevent failure.
 
 # Usage
 
