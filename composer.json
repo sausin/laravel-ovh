@@ -25,8 +25,8 @@
     },
     "require": {
         "php": "^7.4",
-        "illuminate/console": "^5.4|^6.0|^7.0",
-        "illuminate/support": "^5.4|^6.0|^7.0",
+        "illuminate/console": "^5.8|^6.0|^7.0",
+        "illuminate/support": "^5.8|^6.0|^7.0",
         "league/flysystem": "^1.0",
         "nimbusoft/flysystem-openstack-swift": "^0.3.1",
         "nesbot/carbon": "^1.26.3 || ^2.0"
