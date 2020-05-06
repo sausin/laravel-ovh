@@ -1,34 +1,28 @@
 name: CI laravel-ovh
-on: [push]
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        php: [7.2, 7.3, 7.4]
-        illuminate: [5.4.*, 5.5.*, 5.6.*, 5.7.*, 5.8.*, 6.*, 7.*]
+        php: [7.4]
+        illuminate: [5.8.*, 6.*, 7.*]
         dependency-version: [prefer-lowest, prefer-stable]
-        exclude:
-          - illuminate: 5.7.*
-            php: 7.4
-          - illuminate: 5.6.*
-            php: 7.4
-          - illuminate: 5.5.*
-            php: 7.4
-          - illuminate: 5.4.*
-            php: 7.4
 
-    name: P${{ matrix.php }} - L${{ matrix.illuminate }}
+    name: P${{ matrix.php }} - L${{ matrix.illuminate }} - ${{ matrix.dependency-version }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
 
-      - name: Cache dependencies
+      - name: Detect Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Setup Composer Cache
         uses: actions/cache@v1
         with:
-          path: ~/.composer/cache/files
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: dependencies-illuminate-${{ matrix.illuminate }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
@@ -37,10 +31,13 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
 
-      - name: Install dependencies
+      - name: Install Composer Packages
         run: |
           composer require "illuminate/support:${{ matrix.illuminate }}" --no-interaction --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
 
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: vendor/bin/phpunit
+      - name: Execute PHP Linter
+        run: composer test:lint
+
+      - name: Execute PHPUnit Tests
+        run: composer test:unit
