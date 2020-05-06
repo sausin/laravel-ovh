@@ -73,7 +73,7 @@ class SetTempUrlKey extends Command
      */
     protected function askIfShouldOverrideExistingKey(): bool
     {
-        if (! array_key_exists('Temp-Url-Key', $this->container->getMetadata())) {
+        if (!array_key_exists('Temp-Url-Key', $this->container->getMetadata())) {
             return true; // Yeah, override the non-existing key.
         }
 

@@ -28,7 +28,7 @@ class OVHServiceProvider extends ServiceProvider
      */
     protected function configureCommands(): void
     {
-        if (! $this->app->runningInConsole()) {
+        if (!$this->app->runningInConsole()) {
             return;
         }
 

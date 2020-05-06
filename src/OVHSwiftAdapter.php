@@ -35,7 +35,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function getEndpoint(?string $path = null): string
     {
-        $url = ! empty($this->config->endpoint)
+        $url = !empty($this->config->endpoint)
             // Allows assigning custom endpoint url
             ? rtrim($this->config->endpoint, '/').'/'
             // If no custom endpoint assigned, use traditional swift v1 endpoint
@@ -46,7 +46,7 @@ class OVHSwiftAdapter extends SwiftAdapter
                 $this->config->container
             );
 
-        if (! empty($path)) {
+        if (!empty($path)) {
             $url .= ltrim($path, '/');
         }
 
@@ -154,7 +154,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             $data['deleteAfter'] = $config->get('deleteAfter');
         } elseif ($config->has('deleteAt')) {
             $data['deleteAt'] = $config->get('deleteAt');
-        } elseif (! empty($this->config->deleteAfter)) {
+        } elseif (!empty($this->config->deleteAfter)) {
             $data['deleteAfter'] = $this->config->deleteAfter;
         }
 

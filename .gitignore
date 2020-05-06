@@ -4,3 +4,5 @@ laravel-ovh.sublime-project
 laravel-ovh.sublime-workspace
 composer.lock
 .idea/
+cghooks.lock
+.php_cs.cache

@@ -4,7 +4,6 @@ namespace Sausin\LaravelOvh\Tests;
 
 use Carbon\Carbon;
 use Mockery;
-use Sausin\LaravelOvh\OVHConfiguration;
 
 class CustomEndpointTest extends TestCase
 {

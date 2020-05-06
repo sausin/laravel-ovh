@@ -50,10 +50,10 @@ class BasicAdapterTest extends TestCase
         $this->container->shouldReceive('createObject')->once()->with([
             'name' => 'hello',
             'content' => 'world',
-            'deleteAfter' => 60*60,
+            'deleteAfter' => 60 * 60,
         ])->andReturn($this->object);
 
-        $this->config->deleteAfter = 60*60;
+        $this->config->deleteAfter = 60 * 60;
         $response = $this->adapter->write('hello', 'world', $config);
 
         $this->assertEquals([
