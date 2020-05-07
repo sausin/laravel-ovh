@@ -15,6 +15,7 @@ class SetTempUrlKey extends Command
      * @var string
      */
     protected $signature = 'ovh:set-temp-url-key
+                            {--disk=ovh : The disk using your OVH container}
                             {--key= : The key you want to set up on your container}
                             {--force : Forcibly set a new key on the container}';
 
@@ -24,25 +25,6 @@ class SetTempUrlKey extends Command
      * @var string
      */
     protected $description = 'Set temp url key on the private container, making the use of Storage::temporaryUrl() possible';
-
-    /**
-     * The Object Storage Container.
-     *
-     * @var Container
-     */
-    protected $container;
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->container = Storage::disk('ovh')->getAdapter()->getContainer();
-    }
 
     /**
      * Execute the console command.
@@ -57,8 +39,10 @@ class SetTempUrlKey extends Command
      */
     public function handle(): void
     {
-        if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey()) {
-            $this->setContainerKey();
+        $container = Storage::disk($this->option('disk'))->getAdapter()->getContainer();
+
+        if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey($container)) {
+            $this->setContainerKey($container);
         }
     }
 
@@ -69,11 +53,12 @@ class SetTempUrlKey extends Command
      * Container, the User will be prompted to choose if we should override it
      * or not.
      *
+     * @param Container $container
      * @return bool
      */
-    protected function askIfShouldOverrideExistingKey(): bool
+    protected function askIfShouldOverrideExistingKey(Container $container): bool
     {
-        if (!array_key_exists('Temp-Url-Key', $this->container->getMetadata())) {
+        if (!array_key_exists('Temp-Url-Key', $container->getMetadata())) {
             return true; // Yeah, override the non-existing key.
         }
 
@@ -99,14 +84,15 @@ class SetTempUrlKey extends Command
     /**
      * Updates the Temp URL Key for the Container.
      *
+     * @param Container $container
      * @return void
      */
-    protected function setContainerKey(): void
+    protected function setContainerKey(Container $container): void
     {
         $key = $this->option('key') ?? $this->getRandomKey();
 
         try {
-            $this->container->resetMetadata(['Temp-Url-Key' => $key]);
+            $container->resetMetadata(['Temp-Url-Key' => $key]);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
