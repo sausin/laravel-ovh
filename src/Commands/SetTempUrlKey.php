@@ -27,6 +27,13 @@ class SetTempUrlKey extends Command
     protected $description = 'Set temp url key on the private container, making the use of Storage::temporaryUrl() possible';
 
     /**
+     * The Object Storage Container.
+     *
+     * @var Container
+     */
+    protected $container;
+
+    /**
      * Execute the console command.
      *
      * If the '--force' flag is provided, a new Temp URL Key will be generated and
@@ -39,10 +46,10 @@ class SetTempUrlKey extends Command
      */
     public function handle(): void
     {
-        $container = Storage::disk($this->option('disk'))->getAdapter()->getContainer();
+        $this->container = Storage::disk($this->option('disk'))->getAdapter()->getContainer();
 
-        if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey($container)) {
-            $this->setContainerKey($container);
+        if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey()) {
+            $this->setContainerKey();
         }
     }
 
@@ -53,12 +60,11 @@ class SetTempUrlKey extends Command
      * Container, the User will be prompted to choose if we should override it
      * or not.
      *
-     * @param Container $container
      * @return bool
      */
-    protected function askIfShouldOverrideExistingKey(Container $container): bool
+    protected function askIfShouldOverrideExistingKey(): bool
     {
-        if (!array_key_exists('Temp-Url-Key', $container->getMetadata())) {
+        if (!array_key_exists('Temp-Url-Key', $this->container->getMetadata())) {
             return true; // Yeah, override the non-existing key.
         }
 
@@ -84,15 +90,14 @@ class SetTempUrlKey extends Command
     /**
      * Updates the Temp URL Key for the Container.
      *
-     * @param Container $container
      * @return void
      */
-    protected function setContainerKey(Container $container): void
+    protected function setContainerKey(): void
     {
         $key = $this->option('key') ?? $this->getRandomKey();
 
         try {
-            $container->resetMetadata(['Temp-Url-Key' => $key]);
+            $this->container->resetMetadata(['Temp-Url-Key' => $key]);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
