@@ -15,6 +15,7 @@ class SetTempUrlKey extends Command
      * @var string
      */
     protected $signature = 'ovh:set-temp-url-key
+                            {--disk=ovh : The disk using your OVH container}
                             {--key= : The key you want to set up on your container}
                             {--force : Forcibly set a new key on the container}';
 
@@ -33,18 +34,6 @@ class SetTempUrlKey extends Command
     protected $container;
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->container = Storage::disk('ovh')->getAdapter()->getContainer();
-    }
-
-    /**
      * Execute the console command.
      *
      * If the '--force' flag is provided, a new Temp URL Key will be generated and
@@ -57,6 +46,8 @@ class SetTempUrlKey extends Command
      */
     public function handle(): void
     {
+        $this->container = Storage::disk($this->option('disk'))->getAdapter()->getContainer();
+
         if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey()) {
             $this->setContainerKey();
         }

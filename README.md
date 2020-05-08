@@ -122,6 +122,9 @@ Alternatively, since version 4.x you can use the following commands:
 # Automatically generate a key
 php artisan ovh:set-temp-url-key
 
+# Generate a key for a specific disk
+php artisan ovh:set-temp-url-key --disk="other-ovh-disk"
+
 # Set a specific key
 php artisan ovh:set-temp-url-key --key=your-private-key
 ```
