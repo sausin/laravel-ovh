@@ -25,21 +25,15 @@ class TestCase extends PHPUnitTestCase
 
     public function setUp()
     {
-        $this->config = $this->config = new OVHConfiguration(
-            '',
-            'projectId',
-            'region',
-            '',
-            '',
-            '',
-            'container',
-            'mykey',
-            null,
-            null,
-            null,
-            null,
-            null
-        );
+        $this->config = OVHConfiguration::make([
+            'authUrl' => '',
+            'projectId' => 'AwesomeProject',
+            'region' => 'TestingGround',
+            'userDomain' => 'Default',
+            'username' => '',
+            'password' => '',
+            'container' => 'my-container',
+        ]);
 
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
 

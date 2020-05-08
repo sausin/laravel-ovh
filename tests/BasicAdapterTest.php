@@ -29,7 +29,7 @@ class BasicAdapterTest extends TestCase
 
         $url = $this->adapter->getUrlConfirm('hello');
 
-        $this->assertEquals('https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello', $url);
+        $this->assertEquals('https://storage.TestingGround.cloud.ovh.net/v1/AUTH_AwesomeProject/my-container/hello', $url);
     }
 
     public function testUrlMethod()
@@ -39,7 +39,7 @@ class BasicAdapterTest extends TestCase
 
         $url = $this->adapter->getUrl('hello');
 
-        $this->assertEquals('https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/hello', $url);
+        $this->assertEquals('https://storage.TestingGround.cloud.ovh.net/v1/AUTH_AwesomeProject/my-container/hello', $url);
     }
 
     public function testAutoDeleteObjectsWork()
@@ -53,7 +53,7 @@ class BasicAdapterTest extends TestCase
             'deleteAfter' => 60 * 60,
         ])->andReturn($this->object);
 
-        $this->config->deleteAfter = 60 * 60;
+        $this->config->setDeleteAfter(60 * 60);
         $response = $this->adapter->write('hello', 'world', $config);
 
         $this->assertEquals([
@@ -65,7 +65,7 @@ class BasicAdapterTest extends TestCase
             'size' => null,
         ], $response);
 
-        $this->config->deleteAfter = null;
+        $this->config->setDeleteAfter(null);
 
         // test for deleteAt property
         $this->container->shouldReceive('createObject')->once()->with([

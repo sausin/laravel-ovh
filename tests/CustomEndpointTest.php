@@ -11,7 +11,7 @@ class CustomEndpointTest extends TestCase
     {
         parent::setUp();
 
-        $this->config->endpoint = 'http://custom.endpoint';
+        $this->config->setEndpoint('http://custom.endpoint');
     }
 
     public function tearDown()

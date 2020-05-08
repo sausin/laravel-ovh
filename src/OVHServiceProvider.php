@@ -49,7 +49,7 @@ class OVHServiceProvider extends ServiceProvider
             $client = $this->makeOpenStackClient();
 
             // Get the Object Storage container.
-            $container = $client->objectStoreV1()->getContainer($this->config->container);
+            $container = $client->objectStoreV1()->getContainer($this->config->getContainer());
 
             return $this->makeFileSystem($container);
         });
@@ -63,18 +63,18 @@ class OVHServiceProvider extends ServiceProvider
     protected function makeOpenStackClient(): OpenStack
     {
         return new OpenStack([
-            'authUrl' => $this->config->authUrl,
-            'region' => $this->config->region,
+            'authUrl' => $this->config->getAuthUrl(),
+            'region' => $this->config->getRegion(),
             'user' => [
-                'name' => $this->config->username,
-                'password' => $this->config->password,
+                'name' => $this->config->getUsername(),
+                'password' => $this->config->getPassword(),
                 'domain' => [
-                    'name' => $this->config->userDomain,
+                    'name' => $this->config->getUserDomain(),
                 ],
             ],
             'scope' => [
                 'project' => [
-                    'id' => $this->config->projectId,
+                    'id' => $this->config->getProjectId(),
                 ],
             ],
         ]);
@@ -91,9 +91,9 @@ class OVHServiceProvider extends ServiceProvider
         return new Filesystem(
             new OVHSwiftAdapter($container, $this->config),
             [
-                'swiftLargeObjectThreshold' => $this->config->swiftLargeObjectThreshold,
-                'swiftSegmentSize' => $this->config->swiftSegmentSize,
-                'swiftSegmentContainer' => $this->config->swiftSegmentContainer,
+                'swiftLargeObjectThreshold' => $this->config->getSwiftLargeObjectThreshold(),
+                'swiftSegmentSize' => $this->config->getSwiftSegmentSize(),
+                'swiftSegmentContainer' => $this->config->getSwiftSegmentContainer(),
             ]
         );
     }
