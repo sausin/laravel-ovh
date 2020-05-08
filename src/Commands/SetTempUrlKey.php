@@ -46,7 +46,13 @@ class SetTempUrlKey extends Command
      */
     public function handle(): void
     {
-        $this->container = Storage::disk($this->option('disk'))->getAdapter()->getContainer();
+        try {
+            $this->container = Storage::disk($this->option('disk'))->getAdapter()->getContainer();
+        } catch (\InvalidArgumentException $e) {
+            $this->error($e->getMessage());
+
+            return;
+        }
 
         if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey()) {
             $this->setContainerKey();
