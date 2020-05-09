@@ -2,8 +2,6 @@
 
 namespace Sausin\LaravelOvh;
 
-use BadMethodCallException;
-
 class OVHConfiguration
 {
     /**
@@ -152,7 +150,7 @@ class OVHConfiguration
         $missingKeys = array_diff($neededKeys, array_keys($config));
 
         if (count($missingKeys) > 0) {
-            throw new BadMethodCallException('The following keys must be provided: '.implode(', ', $missingKeys));
+            throw new \BadMethodCallException('The following keys must be provided: '.implode(', ', $missingKeys));
         }
 
         return (new self())

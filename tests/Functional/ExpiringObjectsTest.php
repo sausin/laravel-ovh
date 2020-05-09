@@ -18,13 +18,15 @@ class ExpiringObjectsTest extends TestCase
 
     public function testCanBeDeletedAtTimestamp()
     {
+        $deleteAt = new \DateTime('2012-12-21');
+
         $this->container->shouldReceive('createObject')->once()->with([
             'name' => 'hello',
             'content' => 'world',
-            'deleteAt' => 651234,
+            'deleteAt' => $deleteAt->getTimestamp(),
         ])->andReturn($this->object);
 
-        $this->flySystemConfig->set('deleteAt', 651234);
+        $this->flySystemConfig->set('deleteAt', $deleteAt->getTimestamp());
         $response = $this->adapter->write('hello', 'world', $this->flySystemConfig);
 
         $this->assertEquals([
@@ -63,10 +65,10 @@ class ExpiringObjectsTest extends TestCase
         $this->container->shouldReceive('createObject')->once()->with([
             'name' => 'hello',
             'content' => 'world',
-            'deleteAfter' => 60 * 60,
+            'deleteAfter' => 1800,
         ])->andReturn($this->object);
 
-        $this->config->setDeleteAfter(60 * 60);
+        $this->config->setDeleteAfter(1800);
         $response = $this->adapter->write('hello', 'world', $this->flySystemConfig);
 
         $this->assertEquals([

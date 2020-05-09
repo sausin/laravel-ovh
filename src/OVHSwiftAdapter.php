@@ -2,8 +2,6 @@
 
 namespace Sausin\LaravelOvh;
 
-use DateTimeInterface;
-use InvalidArgumentException;
 use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
@@ -89,15 +87,15 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Generate a temporary URL for private containers.
      *
      * @param string $path
-     * @param DateTimeInterface $expiresAt
+     * @param \DateTimeInterface $expiresAt
      * @param array $options
      * @return string
      */
-    public function getTemporaryUrl(string $path, DateTimeInterface $expiresAt, array $options = []): string
+    public function getTemporaryUrl(string $path, \DateTimeInterface $expiresAt, array $options = []): string
     {
         // Ensure Temp URL Key is provided for the Disk
         if (empty($this->config->getTempUrlKey())) {
-            throw new InvalidArgumentException('No Temp URL Key provided for container \''.$this->container->name.'\'');
+            throw new \InvalidArgumentException('No Temp URL Key provided for container \''.$this->container->name.'\'');
         }
 
         // Ensure $path doesn't begin with a slash

@@ -2,7 +2,6 @@
 
 namespace Sausin\LaravelOvh\Tests\Functional;
 
-use Carbon\Carbon;
 use Sausin\LaravelOvh\Tests\TestCase;
 
 class UrlGenerationTest extends TestCase
@@ -73,7 +72,7 @@ class UrlGenerationTest extends TestCase
 
         $this->object->shouldNotReceive('retrieve', 'getObject');
 
-        $url = $this->adapter->getTemporaryUrl('hello.jpg', Carbon::now()->addMinutes(10));
+        $url = $this->adapter->getTemporaryUrl('hello.jpg', new \DateTime('2004-09-22'));
 
         $this->assertNotNull($url);
     }
@@ -86,7 +85,7 @@ class UrlGenerationTest extends TestCase
 
         $this->object->shouldNotReceive('retrieve', 'getObject');
 
-        $url = $this->adapter->getTemporaryUrl('hello.jpg', Carbon::now()->addMinutes(10));
+        $url = $this->adapter->getTemporaryUrl('hello.jpg', new \DateTime('2015-10-21'));
 
         $this->assertNotNull($url);
     }
@@ -95,6 +94,6 @@ class UrlGenerationTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
 
-        $this->adapter->getTemporaryUrl('hello.jpg', Carbon::now()->addMinutes(10));
+        $this->adapter->getTemporaryUrl('hello.jpg', new \DateTime('1979-06-13'));
     }
 }
