@@ -2,7 +2,7 @@
 
 namespace Sausin\LaravelOvh;
 
-use Carbon\Carbon;
+use DateTimeInterface;
 use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
@@ -88,19 +88,14 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Generate a temporary URL for private containers.
      *
      * @param string $path
-     * @param Carbon|null $expiresAt
+     * @param DateTimeInterface $expiresAt
      * @param array $options
      * @return string
      */
-    public function getTemporaryUrl(string $path, ?Carbon $expiresAt = null, array $options = []): string
+    public function getTemporaryUrl(string $path, DateTimeInterface $expiresAt, array $options = []): string
     {
         // Ensure $path doesn't begin with a slash
         $path = ltrim($path, '/');
-
-        // Expiry is relative to current time
-        if (empty($expiresAt)) {
-            $expiresAt = Carbon::now()->addHour();
-        }
 
         // Get the method
         $method = $options['method'] ?? 'GET';
@@ -114,7 +109,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         );
 
         // Body for the HMAC hash
-        $body = sprintf("%s\n%s\n%s", $method, $expiresAt->timestamp, $codePath);
+        $body = sprintf("%s\n%s\n%s", $method, $expiresAt->getTimestamp(), $codePath);
 
         // The actual hash signature
         $signature = hash_hmac('sha1', $body, $this->config->tempUrlKey);
@@ -124,7 +119,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             '%s?temp_url_sig=%s&temp_url_expires=%s',
             $this->getEndpoint($path),
             $signature,
-            $expiresAt
+            $expiresAt->getTimestamp()
         );
     }
 
