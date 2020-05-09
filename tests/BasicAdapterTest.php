@@ -2,7 +2,7 @@
 
 namespace Sausin\LaravelOvh\Tests;
 
-use Carbon\Carbon;
+use DateTime;
 use League\Flysystem\Config;
 use Mockery;
 
@@ -111,7 +111,7 @@ class BasicAdapterTest extends TestCase
         $this->object->shouldNotReceive('retrieve');
         $this->container->shouldNotReceive('getObject');
 
-        $url = $this->adapter->getTemporaryUrl('hello.jpg', Carbon::now()->addMinutes(10));
+        $url = $this->adapter->getTemporaryUrl('hello.jpg', new DateTime('2015-10-25'));
 
         $this->assertNotNull($url);
     }

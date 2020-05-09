@@ -2,6 +2,7 @@
 
 namespace Sausin\LaravelOvh;
 
+use DateTimeInterface;
 use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
@@ -87,11 +88,11 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Generate a temporary URL for private containers.
      *
      * @param string $path
-     * @param \DateTimeInterface $expiresAt
+     * @param DateTimeInterface $expiresAt
      * @param array $options
      * @return string
      */
-    public function getTemporaryUrl(string $path, \DateTimeInterface $expiresAt, array $options = []): string
+    public function getTemporaryUrl(string $path, DateTimeInterface $expiresAt, array $options = []): string
     {
         // Ensure $path doesn't begin with a slash
         $path = ltrim($path, '/');
