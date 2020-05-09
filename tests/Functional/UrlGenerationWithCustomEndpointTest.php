@@ -1,25 +1,30 @@
 <?php
 
-namespace Sausin\LaravelOvh\Tests;
+namespace Sausin\LaravelOvh\Tests\Functional;
 
 use Carbon\Carbon;
-use Mockery;
+use Sausin\LaravelOvh\Tests\TestCase;
 
-class CustomEndpointTest extends TestCase
+class UrlGenerationWithCustomEndpointTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->config->setEndpoint('http://custom.endpoint');
     }
 
-    public function tearDown()
+    public function testCanGenerateUrl()
     {
-        Mockery::close();
+        $this->object->shouldNotReceive('retrieve');
+        $this->container->shouldNotReceive('getObject');
+
+        $url = $this->adapter->getUrl('hello');
+
+        $this->assertEquals('http://custom.endpoint/hello', $url);
     }
 
-    public function testUrlConfirmMethod()
+    public function testCanGenerateUrlWithFileConfirmation()
     {
         $this->object->shouldReceive('retrieve')->once();
         $this->object->name = 'hello/world';
@@ -38,17 +43,7 @@ class CustomEndpointTest extends TestCase
         $this->assertEquals('http://custom.endpoint/hello', $url);
     }
 
-    public function testUrlMethod()
-    {
-        $this->object->shouldNotReceive('retrieve');
-        $this->container->shouldNotReceive('getObject');
-
-        $url = $this->adapter->getUrl('hello');
-
-        $this->assertEquals('http://custom.endpoint/hello', $url);
-    }
-
-    public function testTemporaryUrlMethod()
+    public function testCanGenerateTemporaryUrl()
     {
         $this->object->shouldNotReceive('retrieve');
         $this->container->shouldNotReceive('getObject');
