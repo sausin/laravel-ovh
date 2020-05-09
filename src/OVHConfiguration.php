@@ -62,7 +62,7 @@ class OVHConfiguration
      *
      * @return string
      */
-    protected string $container;
+    protected string $containerName;
 
     /**
      * OPTIONAL.
@@ -162,7 +162,7 @@ class OVHConfiguration
             ->setUserDomain($config['userDomain'])
             ->setUsername($config['username'])
             ->setPassword($config['password'])
-            ->setContainer($config['container'])
+            ->setContainerName($config['container'])
             ->setTempUrlKey($config['tempUrlKey'] ?? null)
             ->setEndpoint($config['endpoint'] ?? null)
             ->setSwiftLargeObjectThreshold($config['swiftLargeObjectThreshold'] ?? null)
@@ -288,18 +288,18 @@ class OVHConfiguration
     /**
      * @return string
      */
-    public function getContainer(): string
+    public function getContainerName(): string
     {
-        return $this->container;
+        return $this->containerName;
     }
 
     /**
-     * @param string $container
+     * @param string $containerName
      * @return OVHConfiguration
      */
-    public function setContainer(string $container): self
+    public function setContainerName(string $containerName): self
     {
-        $this->container = $container;
+        $this->containerName = $containerName;
 
         return $this;
     }

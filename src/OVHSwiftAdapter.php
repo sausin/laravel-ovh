@@ -3,6 +3,7 @@
 namespace Sausin\LaravelOvh;
 
 use Carbon\Carbon;
+use InvalidArgumentException;
 use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
@@ -43,7 +44,7 @@ class OVHSwiftAdapter extends SwiftAdapter
                 'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
                 $this->config->getRegion(),
                 $this->config->getProjectId(),
-                $this->config->getContainer()
+                $this->config->getContainerName()
             );
 
         if (!empty($path)) {
@@ -94,6 +95,11 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     public function getTemporaryUrl(string $path, ?Carbon $expiresAt = null, array $options = []): string
     {
+        // Ensure Temp URL Key is provided for the Disk
+        if (empty($this->config->getTempUrlKey())) {
+            throw new InvalidArgumentException('No Temp URL Key provided for container \''.$this->container->name.'\'');
+        }
+
         // Ensure $path doesn't begin with a slash
         $path = ltrim($path, '/');
 
@@ -109,7 +115,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         $codePath = sprintf(
             '/v1/AUTH_%s/%s/%s',
             $this->config->getProjectId(),
-            $this->config->getContainer(),
+            $this->config->getContainerName(),
             $path
         );
 

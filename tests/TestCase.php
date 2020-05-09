@@ -37,7 +37,7 @@ class TestCase extends PHPUnitTestCase
 
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
 
-        $this->container->name = 'container-name';
+        $this->container->name = $this->config->getContainerName();
         $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
         $this->adapter = new OVHSwiftAdapter($this->container, $this->config);
     }

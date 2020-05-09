@@ -58,7 +58,7 @@ class ExpiringObjectsTest extends TestCase
         ], $response);
     }
 
-    public function testCanBeDeleteAfterFromGlobalConfig()
+    public function testCanBeDeleteAfterSpecificTimeFromGlobalConfig()
     {
         $this->container->shouldReceive('createObject')->once()->with([
             'name' => 'hello',

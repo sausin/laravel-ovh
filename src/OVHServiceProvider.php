@@ -49,7 +49,7 @@ class OVHServiceProvider extends ServiceProvider
             $client = $this->makeOpenStackClient();
 
             // Get the Object Storage container.
-            $container = $client->objectStoreV1()->getContainer($this->config->getContainer());
+            $container = $client->objectStoreV1()->getContainer($this->config->getContainerName());
 
             return $this->makeFileSystem($container);
         });
