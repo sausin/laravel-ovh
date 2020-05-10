@@ -2,7 +2,6 @@
 
 namespace Sausin\LaravelOvh;
 
-use DateTimeInterface;
 use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
@@ -35,15 +34,15 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function getEndpoint(?string $path = null): string
     {
-        $url = !empty($this->config->endpoint)
+        $url = !empty($this->config->getEndpoint())
             // Allows assigning custom endpoint url
-            ? rtrim($this->config->endpoint, '/').'/'
+            ? rtrim($this->config->getEndpoint(), '/').'/'
             // If no custom endpoint assigned, use traditional swift v1 endpoint
             : sprintf(
                 'https://storage.%s.cloud.ovh.net/v1/AUTH_%s/%s/',
-                $this->config->region,
-                $this->config->projectId,
-                $this->config->container
+                $this->config->getRegion(),
+                $this->config->getProjectId(),
+                $this->config->getContainerName()
             );
 
         if (!empty($path)) {
@@ -88,12 +87,17 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Generate a temporary URL for private containers.
      *
      * @param string $path
-     * @param DateTimeInterface $expiresAt
+     * @param \DateTimeInterface $expiresAt
      * @param array $options
      * @return string
      */
-    public function getTemporaryUrl(string $path, DateTimeInterface $expiresAt, array $options = []): string
+    public function getTemporaryUrl(string $path, \DateTimeInterface $expiresAt, array $options = []): string
     {
+        // Ensure Temp URL Key is provided for the Disk
+        if (empty($this->config->getTempUrlKey())) {
+            throw new \InvalidArgumentException('No Temp URL Key provided for container \''.$this->container->name.'\'');
+        }
+
         // Ensure $path doesn't begin with a slash
         $path = ltrim($path, '/');
 
@@ -103,8 +107,8 @@ class OVHSwiftAdapter extends SwiftAdapter
         // The url on the OVH host
         $codePath = sprintf(
             '/v1/AUTH_%s/%s/%s',
-            $this->config->projectId,
-            $this->config->container,
+            $this->config->getProjectId(),
+            $this->config->getContainerName(),
             $path
         );
 
@@ -112,7 +116,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         $body = sprintf("%s\n%s\n%s", $method, $expiresAt->getTimestamp(), $codePath);
 
         // The actual hash signature
-        $signature = hash_hmac('sha1', $body, $this->config->tempUrlKey);
+        $signature = hash_hmac('sha1', $body, $this->config->getTempUrlKey());
 
         // Return signed url
         return sprintf(
@@ -143,14 +147,14 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function getWriteData($path, $config): array
     {
-        $data = ['name' => $path];
+        $data = parent::getWriteData($path, $config);
 
         if ($config->has('deleteAfter')) {
             $data['deleteAfter'] = $config->get('deleteAfter');
         } elseif ($config->has('deleteAt')) {
             $data['deleteAt'] = $config->get('deleteAt');
-        } elseif (!empty($this->config->deleteAfter)) {
-            $data['deleteAfter'] = $this->config->deleteAfter;
+        } elseif (!empty($this->config->getDeleteAfter())) {
+            $data['deleteAfter'] = $this->config->getDeleteAfter();
         }
 
         return $data;

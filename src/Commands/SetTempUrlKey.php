@@ -5,6 +5,7 @@ namespace Sausin\LaravelOvh\Commands;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 use OpenStack\ObjectStore\v1\Models\Container;
 
 class SetTempUrlKey extends Command
@@ -46,7 +47,13 @@ class SetTempUrlKey extends Command
      */
     public function handle(): void
     {
-        $this->container = Storage::disk($this->option('disk'))->getAdapter()->getContainer();
+        try {
+            $this->container = Storage::disk($this->option('disk'))->getAdapter()->getContainer();
+        } catch (InvalidArgumentException $e) {
+            $this->error($e->getMessage());
+
+            return;
+        }
 
         if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey()) {
             $this->setContainerKey();

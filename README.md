@@ -45,7 +45,7 @@ as below
     'userDomain' => env('OS_USER_DOMAIN_NAME', 'Default'),
     'username' => env('OS_USERNAME'),
     'password' => env('OS_PASSWORD'),
-    'container' => env('OS_CONTAINER_NAME'),
+    'containerName' => env('OS_CONTAINER_NAME'),
 
     // Since v1.2
     // Optional variable and only if you are using temporary signed urls.

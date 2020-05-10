@@ -2,8 +2,6 @@
 
 namespace Sausin\LaravelOvh;
 
-use BadMethodCallException;
-
 class OVHConfiguration
 {
     /**
@@ -11,14 +9,14 @@ class OVHConfiguration
      *
      * @return string
      */
-    public string $authUrl;
+    protected string $authUrl;
 
     /**
      * Returns the Project ID.
      *
      * @return string
      */
-    public string $projectId;
+    protected string $projectId;
 
     /**
      * Returns the Project Region.
@@ -33,7 +31,7 @@ class OVHConfiguration
      *
      * @return string
      */
-    public string $region;
+    protected string $region;
 
     /**
      * Returns the User Domain in the Project.
@@ -41,30 +39,32 @@ class OVHConfiguration
      *
      * @return string
      */
-    public string $userDomain;
+    protected string $userDomain;
 
     /**
      * Returns the Project Username.
      *
      * @return string
      */
-    public string $username;
+    protected string $username;
 
     /**
      * Returns the Password for the current User.
      *
      * @return string
      */
-    public string $password;
+    protected string $password;
 
     /**
      * Returns the name of the desired Container.
      *
      * @return string
      */
-    public string $container;
+    protected string $containerName;
 
     /**
+     * OPTIONAL.
+     *
      * Returns the pre-assigned Temp Url Key of either the Container or Project.
      * This is used to generate Temporary Access Urls for files in the container.
      *
@@ -72,45 +72,55 @@ class OVHConfiguration
      *
      * @return string|null
      */
-    public ?string $tempUrlKey;
+    protected ?string $tempUrlKey;
 
     /**
+     * OPTIONAL.
+     *
      * Returns the Custom Endpoint configured for the container.
      *
      * Returns NULL if there's no Custom Endpoint.
      *
      * @return string|null
      */
-    public ?string $endpoint;
+    protected ?string $endpoint;
 
     /**
+     * OPTIONAL.
+     *
      * Returns Object Threshold, used while uploading large files.
      *
      * Returns NULL if disabled.
      *
      * @return string|null
      */
-    public ?string $swiftLargeObjectThreshold;
+    protected ?string $swiftLargeObjectThreshold;
 
     /**
+     * OPTIONAL.
+     *
      * Returns Object Segment Size, used while uploading large files.
      *
      * Returns NULL if disabled.
      *
      * @return string|null
      */
-    public ?string $swiftSegmentSize;
+    protected ?string $swiftSegmentSize;
 
     /**
+     * OPTIONAL.
+     *
      * Returns Segment Container Name, used while uploading large files.
      *
      * Returns NULL if disabled. Will use Container Name.
      *
      * @return string|null
      */
-    public ?string $swiftSegmentContainer;
+    protected ?string $swiftSegmentContainer;
 
     /**
+     * OPTIONAL.
+     *
      * Returns the time in seconds on which an object should
      * be deleted from de Container after being uploaded.
      *
@@ -119,53 +129,13 @@ class OVHConfiguration
      *
      * @return int|null
      */
-    public ?int $deleteAfter;
+    protected ?int $deleteAfter;
 
     /**
      * OVHConfiguration constructor.
-     *
-     * @param string $authUrl
-     * @param string $projectId
-     * @param string $region
-     * @param string $userDomain
-     * @param string $username
-     * @param string $password
-     * @param string $container
-     * @param string|null $tempUrlKey
-     * @param string|null $endpoint
-     * @param string|null $swiftLargeObjectThreshold
-     * @param string|null $swiftSegmentSize
-     * @param string|null $swiftSegmentContainer
-     * @param int|null $deleteAfter
      */
-    public function __construct(
-        string $authUrl,
-        string $projectId,
-        string $region,
-        string $userDomain,
-        string $username,
-        string $password,
-        string $container,
-        ?string $tempUrlKey,
-        ?string $endpoint,
-        ?string $swiftLargeObjectThreshold,
-        ?string $swiftSegmentSize,
-        ?string $swiftSegmentContainer,
-        ?int $deleteAfter
-    ) {
-        $this->authUrl = $authUrl;
-        $this->projectId = $projectId;
-        $this->region = $region;
-        $this->userDomain = $userDomain;
-        $this->username = $username;
-        $this->password = $password;
-        $this->container = $container;
-        $this->tempUrlKey = $tempUrlKey;
-        $this->endpoint = $endpoint;
-        $this->swiftLargeObjectThreshold = $swiftLargeObjectThreshold;
-        $this->swiftSegmentSize = $swiftSegmentSize;
-        $this->swiftSegmentContainer = $swiftSegmentContainer;
-        $this->deleteAfter = $deleteAfter;
+    protected function __construct()
+    {
     }
 
     /**
@@ -176,27 +146,273 @@ class OVHConfiguration
      */
     public static function make(array $config): self
     {
-        $neededKeys = ['authUrl', 'projectId', 'region', 'userDomain', 'username', 'password', 'container', 'tempUrlKey', 'endpoint'];
+        $neededKeys = ['authUrl', 'projectId', 'region', 'userDomain', 'username', 'password', 'container'];
         $missingKeys = array_diff($neededKeys, array_keys($config));
 
         if (count($missingKeys) > 0) {
-            throw new BadMethodCallException('The following keys must be provided: '.implode(', ', $missingKeys));
+            throw new \BadMethodCallException('The following keys must be provided: '.implode(', ', $missingKeys));
         }
 
-        return new self(
-            $config['authUrl'],
-            $config['projectId'],
-            $config['region'],
-            $config['userDomain'],
-            $config['username'],
-            $config['password'],
-            $config['container'],
-            $config['tempUrlKey'],
-            $config['endpoint'],
-            $config['swiftLargeObjectThreshold'] ?? null,
-            $config['swiftSegmentSize'] ?? null,
-            $config['swiftSegmentContainer'] ?? null,
-            $config['deleteAfter'] ?? null
-        );
+        return (new self())
+            ->setAuthUrl($config['authUrl'])
+            ->setProjectId($config['projectId'])
+            ->setRegion($config['region'])
+            ->setUserDomain($config['userDomain'])
+            ->setUsername($config['username'])
+            ->setPassword($config['password'])
+            ->setContainerName($config['container'])
+            ->setTempUrlKey($config['tempUrlKey'] ?? null)
+            ->setEndpoint($config['endpoint'] ?? null)
+            ->setSwiftLargeObjectThreshold($config['swiftLargeObjectThreshold'] ?? null)
+            ->setSwiftSegmentSize($config['swiftSegmentSize'] ?? null)
+            ->setSwiftSegmentContainer($config['swiftSegmentContainer'] ?? null)
+            ->setDeleteAfter($config['deleteAfter'] ?? null);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthUrl(): string
+    {
+        return $this->authUrl;
+    }
+
+    /**
+     * @param string $authUrl
+     * @return OVHConfiguration
+     */
+    public function setAuthUrl(string $authUrl): self
+    {
+        $this->authUrl = $authUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectId(): string
+    {
+        return $this->projectId;
+    }
+
+    /**
+     * @param string $projectId
+     * @return OVHConfiguration
+     */
+    public function setProjectId(string $projectId): self
+    {
+        $this->projectId = $projectId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRegion(): string
+    {
+        return $this->region;
+    }
+
+    /**
+     * @param string $region
+     * @return OVHConfiguration
+     */
+    public function setRegion(string $region): self
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserDomain(): string
+    {
+        return $this->userDomain;
+    }
+
+    /**
+     * @param string $userDomain
+     * @return OVHConfiguration
+     */
+    public function setUserDomain(string $userDomain): self
+    {
+        $this->userDomain = $userDomain;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param string $username
+     * @return OVHConfiguration
+     */
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     * @return OVHConfiguration
+     */
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContainerName(): string
+    {
+        return $this->containerName;
+    }
+
+    /**
+     * @param string $containerName
+     * @return OVHConfiguration
+     */
+    public function setContainerName(string $containerName): self
+    {
+        $this->containerName = $containerName;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTempUrlKey(): ?string
+    {
+        return $this->tempUrlKey;
+    }
+
+    /**
+     * @param string|null $tempUrlKey
+     * @return OVHConfiguration
+     */
+    public function setTempUrlKey(?string $tempUrlKey): self
+    {
+        $this->tempUrlKey = $tempUrlKey;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEndpoint(): ?string
+    {
+        return $this->endpoint;
+    }
+
+    /**
+     * @param string|null $endpoint
+     * @return OVHConfiguration
+     */
+    public function setEndpoint(?string $endpoint): self
+    {
+        $this->endpoint = $endpoint;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSwiftLargeObjectThreshold(): ?string
+    {
+        return $this->swiftLargeObjectThreshold;
+    }
+
+    /**
+     * @param string|null $swiftLargeObjectThreshold
+     * @return OVHConfiguration
+     */
+    public function setSwiftLargeObjectThreshold(?string $swiftLargeObjectThreshold): self
+    {
+        $this->swiftLargeObjectThreshold = $swiftLargeObjectThreshold;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSwiftSegmentSize(): ?string
+    {
+        return $this->swiftSegmentSize;
+    }
+
+    /**
+     * @param string|null $swiftSegmentSize
+     * @return OVHConfiguration
+     */
+    public function setSwiftSegmentSize(?string $swiftSegmentSize): self
+    {
+        $this->swiftSegmentSize = $swiftSegmentSize;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSwiftSegmentContainer(): ?string
+    {
+        return $this->swiftSegmentContainer;
+    }
+
+    /**
+     * @param string|null $swiftSegmentContainer
+     * @return OVHConfiguration
+     */
+    public function setSwiftSegmentContainer(?string $swiftSegmentContainer): self
+    {
+        $this->swiftSegmentContainer = $swiftSegmentContainer;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getDeleteAfter(): ?int
+    {
+        return $this->deleteAfter;
+    }
+
+    /**
+     * @param int|null $deleteAfter
+     * @return OVHConfiguration
+     */
+    public function setDeleteAfter(?int $deleteAfter): self
+    {
+        $this->deleteAfter = $deleteAfter;
+
+        return $this;
     }
 }

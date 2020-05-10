@@ -14,8 +14,8 @@
          verbose="false"
     >
     <testsuites>
-        <testsuite name="OpenStack Swift Flysystem Adapter for OVH">
-            <directory suffix="Test.php">./tests/</directory>
+        <testsuite name="Functional Tests">
+            <directory suffix="Test.php">./tests/Functional</directory>
         </testsuite>
     </testsuites>
 </phpunit>

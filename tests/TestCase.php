@@ -23,28 +23,27 @@ class TestCase extends PHPUnitTestCase
     /** @var OVHSwiftAdapter */
     protected OVHSwiftAdapter $adapter;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->config = $this->config = new OVHConfiguration(
-            '',
-            'projectId',
-            'region',
-            '',
-            '',
-            '',
-            'container',
-            'mykey',
-            null,
-            null,
-            null,
-            null,
-            null
-        );
+        $this->config = OVHConfiguration::make([
+            'authUrl' => '',
+            'projectId' => 'AwesomeProject',
+            'region' => 'TestingGround',
+            'userDomain' => 'Default',
+            'username' => '',
+            'password' => '',
+            'container' => 'my-container',
+        ]);
 
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
 
-        $this->container->name = 'container-name';
+        $this->container->name = $this->config->getContainerName();
         $this->object = Mockery::mock('OpenStack\ObjectStore\v1\Models\StorageObject');
         $this->adapter = new OVHSwiftAdapter($this->container, $this->config);
+    }
+
+    public function tearDown(): void
+    {
+        Mockery::close();
     }
 }
