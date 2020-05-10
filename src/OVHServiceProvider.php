@@ -2,8 +2,12 @@
 
 namespace Sausin\LaravelOvh;
 
+use Illuminate\Filesystem\Cache;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use League\Flysystem\Cached\CachedAdapter;
+use League\Flysystem\Cached\Storage\Memory as MemoryStore;
 use League\Flysystem\Filesystem;
 use OpenStack\ObjectStore\v1\Models\Container;
 use OpenStack\OpenStack;
@@ -43,6 +47,8 @@ class OVHServiceProvider extends ServiceProvider
     protected function configureStorage(): void
     {
         Storage::extend('ovh', function ($app, array $config) {
+            $cache = Arr::pull($config, 'cache');
+
             // Creates a Configuration instance.
             $this->config = OVHConfiguration::make($config);
 
@@ -51,7 +57,7 @@ class OVHServiceProvider extends ServiceProvider
             // Get the Object Storage container.
             $container = $client->objectStoreV1()->getContainer($this->config->getContainerName());
 
-            return $this->makeFileSystem($container);
+            return $this->makeFileSystem($container, $cache);
         });
     }
 
@@ -84,17 +90,45 @@ class OVHServiceProvider extends ServiceProvider
      * Creates a Filesystem instance for interaction with the Object Storage.
      *
      * @param Container $container
+     * @param array|bool|null
      * @return Filesystem
      */
-    protected function makeFileSystem(Container $container): Filesystem
+    protected function makeFileSystem(Container $container, $cache): Filesystem
     {
+        $adapter = new OVHSwiftAdapter($container, $this->config);
+
+        if ($cache) {
+            $adapter = new CachedAdapter($adapter, $this->createCacheStore($cache));
+        }
+
         return new Filesystem(
-            new OVHSwiftAdapter($container, $this->config),
+            $adapter,
             [
                 'swiftLargeObjectThreshold' => $this->config->getSwiftLargeObjectThreshold(),
                 'swiftSegmentSize' => $this->config->getSwiftSegmentSize(),
                 'swiftSegmentContainer' => $this->config->getSwiftSegmentContainer(),
             ]
+        );
+    }
+
+    /**
+     * Create a cache store instance.
+     *
+     * @param array|bool $config
+     * @return \League\Flysystem\Cached\CacheInterface
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function createCacheStore($config)
+    {
+        if ($config === true) {
+            return new MemoryStore;
+        }
+
+        return new Cache(
+            $this->app['cache']->store($config['store']),
+            $config['prefix'] ?? 'flysystem',
+            $config['expire'] ?? null
         );
     }
 }

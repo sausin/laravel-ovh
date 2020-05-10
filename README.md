@@ -68,7 +68,15 @@ as below
     //
     // If you're not willing to DELETE uploaded objects by DEFAULT, leave it empty.
     // Really, if you don't know what you're doing, you should leave this empty as well.
-    'deleteAfter' => env('OS_DEFAULT_DELETE_AFTER', null)
+    'deleteAfter' => env('OS_DEFAULT_DELETE_AFTER', null),
+
+    // Optional variable to cache your items like https://laravel.com/docs/7.x/filesystem#caching
+    // Can be set to true to cache your storage items in memory
+    'cache' => [
+        'store' => 'memcached',
+        'expire' => 600,
+        'prefix' => 'cache-prefix',
+    ],
 ],
 ```
 Define the correct env variables above in your .env file (to correspond to the values above),
