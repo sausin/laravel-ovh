@@ -32,7 +32,7 @@ class TestCase extends PHPUnitTestCase
             'userDomain' => 'Default',
             'username' => '',
             'password' => '',
-            'container' => 'my-container',
+            'containerName' => 'my-container',
         ]);
 
         $this->container = Mockery::mock('OpenStack\ObjectStore\v1\Models\Container');
