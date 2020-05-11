@@ -35,8 +35,7 @@
         "mockery/mockery": "^1.0",
         "friendsofphp/php-cs-fixer": "^2.16.1",
         "brainmaestro/composer-git-hooks": "^2.8",
-        "league/flysystem-cached-adapter": "^1.0",
-        "illuminate/filesystem": "^5.8|^6.0|^7.0"
+        "league/flysystem-cached-adapter": "^1.0"
     },
     "extra": {
         "laravel": {
