@@ -146,7 +146,7 @@ class OVHConfiguration
      */
     public static function make(array $config): self
     {
-        $neededKeys = ['authUrl', 'projectId', 'region', 'userDomain', 'username', 'password', 'container'];
+        $neededKeys = ['authUrl', 'projectId', 'region', 'userDomain', 'username', 'password', 'containerName'];
         $missingKeys = array_diff($neededKeys, array_keys($config));
 
         if (count($missingKeys) > 0) {
@@ -160,7 +160,7 @@ class OVHConfiguration
             ->setUserDomain($config['userDomain'])
             ->setUsername($config['username'])
             ->setPassword($config['password'])
-            ->setContainerName($config['container'])
+            ->setContainerName($config['containerName'])
             ->setTempUrlKey($config['tempUrlKey'] ?? null)
             ->setEndpoint($config['endpoint'] ?? null)
             ->setSwiftLargeObjectThreshold($config['swiftLargeObjectThreshold'] ?? null)
