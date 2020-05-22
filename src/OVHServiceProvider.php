@@ -102,11 +102,11 @@ class OVHServiceProvider extends ServiceProvider
 
         return new Filesystem(
             $adapter,
-            [
+            array_filter([
                 'swiftLargeObjectThreshold' => $this->config->getSwiftLargeObjectThreshold(),
                 'swiftSegmentSize' => $this->config->getSwiftSegmentSize(),
                 'swiftSegmentContainer' => $this->config->getSwiftSegmentContainer(),
-            ]
+            ])
         );
     }
 }
