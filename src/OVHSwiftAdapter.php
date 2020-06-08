@@ -127,6 +127,38 @@ class OVHSwiftAdapter extends SwiftAdapter
         );
     }
 
+    public function getFormPostSignature(string $path, array $options = []): string
+    {
+        // Ensure Temp URL Key is provided for the Disk
+        if (empty($this->config->getTempUrlKey())) {
+            throw new \InvalidArgumentException('No Temp URL Key provided for container \''.$this->container->name.'\'');
+        }
+
+        // Ensure $path doesn't begin with a slash
+        $path = ltrim($path, '/');
+
+        // Get the method
+        $method = 'POST';
+        $redirectUrl = $options['redirect'] ?? '';
+        $maxFileSize = $options['max_file_size'] ?? 25 * 1024 * 1024;
+        $maxFileCount = $options['max_file_count'] ?? 1;
+        $linkExpiry = $options['expires'] ?? time() + 600;
+
+        // The url on the OVH host
+        $codePath = sprintf(
+            '/v1/AUTH_%s/%s/%s',
+            $this->config->getProjectId(),
+            $this->config->getContainerName(),
+            $path
+        );
+
+        // Body for the HMAC hash
+        $body = sprintf("%s\n%s\n%s\n%s\n%s", $codePath, $redirectUrl, $maxFileSize, $maxFileCount, $linkExpiry);
+
+        // The actual hash signature
+        return hash_hmac('sha1', $body, $this->config->getTempUrlKey());
+    }
+
     /**
      * Expose the container to allow for modification to metadata.
      *
