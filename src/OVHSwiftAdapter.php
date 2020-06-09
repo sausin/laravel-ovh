@@ -95,7 +95,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         // Ensure Temp URL Key is provided for the Disk
         if (empty($this->config->getTempUrlKey())) {
-            throw new \InvalidArgumentException('No Temp URL Key provided for container \''.$this->container->name.'\'');
+            throw new \InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
         }
 
         // Ensure $path doesn't begin with a slash
@@ -131,7 +131,17 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         // Ensure Temp URL Key is provided for the Disk
         if (empty($this->config->getTempUrlKey())) {
-            throw new \InvalidArgumentException('No Temp URL Key provided for container \''.$this->container->name.'\'');
+            throw new \InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
+        }
+
+        // expires is required otherwise a valid request will not be possible to be formed
+        if (! isset($options['expires'])) {
+            throw new \InvalidArgumentException("Missing 'expires' key in options");
+        }
+        
+        // check if the 'expires' values is in the past
+        if (($options['expires'] ?? 0) < time()) {
+            throw new \InvalidArgumentException("Value of 'expires' cannot be in the past");
         }
 
         // Ensure $path doesn't begin with a slash
@@ -142,7 +152,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         $redirectUrl = $options['redirect'] ?? '';
         $maxFileSize = $options['max_file_size'] ?? 25 * 1024 * 1024;
         $maxFileCount = $options['max_file_count'] ?? 1;
-        $linkExpiry = $options['expires'] ?? time() + 600;
+        $linkExpiry = $options['expires'];
 
         // The url on the OVH host
         $codePath = sprintf(
