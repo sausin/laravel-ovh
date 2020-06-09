@@ -135,10 +135,10 @@ class OVHSwiftAdapter extends SwiftAdapter
         }
 
         // expires is required otherwise a valid request will not be possible to be formed
-        if (! isset($options['expires'])) {
+        if (!isset($options['expires'])) {
             throw new \InvalidArgumentException("Missing 'expires' key in options");
         }
-        
+
         // check if the 'expires' values is in the past
         if (($options['expires'] ?? 0) < time()) {
             throw new \InvalidArgumentException("Value of 'expires' cannot be in the past");
