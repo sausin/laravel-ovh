@@ -19,7 +19,8 @@ Install via composer:
 composer require sausin/laravel-ovh
 ```
 
-Please see below for the details on various branches. You can choose the version of the package which is suitable for your development. Also take note of the upgrade
+Please see below for the details on various branches. You can choose the version of the package which is suitable for your development.
+Also, take note of the upgrade.
 
 | Package version | PHP compatibility | Laravel versions | Special features of OVH                   | Status     |
 | --------------- | :---------------: | :--------------: | :---------------------------------------: | :--------- |
@@ -177,7 +178,8 @@ to every newly uploaded object by default:
     OS_DELETE_AFTER=259200
     ```
 
-For more information about these variables,  please refer to [OVH's Automatic Object Deletion Documentation](https://docs.ovh.com/gb/en/storage/configure_automatic_object_deletion/)
+For more information about these variables,  please refer to
+[OVH's Automatic Object Deletion Documentation](https://docs.ovh.com/gb/en/storage/configure_automatic_object_deletion/)
 
 ## Large Object Support
 
@@ -202,24 +204,71 @@ OS_SEGMENT_CONTAINER="large-object-container-name"
 ```
 
 Using a separate container for storing the segments of your Large Objects can be beneficial in
-some cases, to learn more about this, please refer to [OpenStack's Last Note on Using Swift for Large Objects](https://docs.openstack.org/swift/stein/overview_large_objects.html#using-swift)
+some cases, to learn more about this, please refer to
+[OpenStack's Last Note on Using Swift for Large Objects](https://docs.openstack.org/swift/stein/overview_large_objects.html#using-swift)
 
 To learn more about segmented uploads for large objects, please refer to:
 - [OVH's Optimizing Large Object Uploads Documentation](https://docs.ovh.com/gb/en/storage/optimised_method_for_uploading_files_to_object_storage/)
 - [OpenStack's Large Object Support Documentation](https://docs.openstack.org/swift/latest/overview_large_objects.html)
+
 ## Form Post Middleware
 
-While this feature in not documented by the OVH team, it's explained in the openstack [documentation](https://docs.openstack.org/swift/latest/api/form_post_middleware.html). This setup allows for uploading of files _directly_ to the OVH servers rather than going through the application servers (which is quite inefficient).
+While this feature in not documented by the OVH team, it's explained in the
+[OpenStack's Documentation](https://docs.openstack.org/swift/latest/api/form_post_middleware.html).
 
-The signature can be obtained by using the following command:
+This feature allows for uploading of files _directly_ to the OVH servers rather than going through the application servers
+(which is quite inefficient).
+
+You must generate a valid FormPost signature, for which you can use the following function:
 ```php
-Storage::disk('ovh')->getAdapter()->getFormPostSignature('path', time() + 600, 1, 50*1024*1024)
+Storage::disk('ovh')->getAdapter()->getFormPostSignature($path, $expiresAt, $redirect, $maxFileCount, $maxFileSize);
 ```
-The above example will generate a signature which is valid of 600 seconds, allows for 1 file to be uploaded with a maximum size of 50 MB. Parameters can be tweaked as desired.
+Where:
+- `$path` is the directory path in which you would like to store the files.
+- `$expiresAt` is a `DateTimeInterface` object that specifies a date in which the FormPost signature will expire.
+- `$redirect` is the URL to which the user will be redirected once all files finish uploading. Defaults to `null` to prevent redirects.
+- `$maxFileCount` is the max quantity of files that the user will be able to upload using the signature. Defaults to `1` file.
+- `$maxFileSize` is the size limit that each uploaded file can have. Defaults to `25 MB` (`25*1024*1024`).
 
-The upload form can then use this signature as described in the openstack documentation.
+After obtaining the signature, you need to pass the signature data to your HTML form:
+```blade
+<form action="{{ $url }}" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="redirect" value="{{ $redirect }}">
+    <input type="hidden" name="max_file_count" value="{{ $maxFileCount }}">
+    <input type="hidden" name="max_file_size" value="{{ $maxFileSize }}">
 
-Important note:- The upload method in the form _must_ be of the type POST. 
+    <input type="hidden" name="expires" value="{{ $expiresAt->getTimestamp() }}">
+    <input type="hidden" name="signature" value="{{ $signature }}">
+
+    <input type="file">
+</form>
+```
+
+> **NOTE**: The upload method in the form _must_ be type of `POST`. 
+
+The `$url` variable refers to the path URL to your container, you can get it by passing the path to the adapter `getUrl`:
+```php
+$url = Storage::disk('ovh')->getAdapter()->getUrl($path);
+```
+
+> **NOTE**: If you've setup a custom domain for your Object Storage container, you can use that domain (along with the corresponding path)
+> to upload your files without exposing your OVH's URL scheme.
+
+### Examples
+
+```php
+// Generate a signature that allows an upload to the 'images' directory for the next 10 minutes.
+Storage::disk('ovh')->getAdapter()->getFormPostSignature('images', now()->addMinutes(10));
+
+// Generate a signature that redirects to a url after successful file upload to the root of the container.
+Storage::disk('ovh')->getAdapter()->getFormPostSignature('', now()->addMinutes(5), route('file-uploaded'));
+
+// Generate a signature that allows upload of 3 files until next day.
+Storage::disk('ovh')->getAdapter()->getFormPostSignature('', now()->addDay(), null, 3);
+
+// Generate a signature that allows to upload 1 file of 1GB until the next hour.
+Storage::disk('ovh')->getAdapter()->getFormPostSignature('', now()->addHour(), null, 1, 1 * 1024 * 1024 * 1024);
+```
 
 
 # Credits

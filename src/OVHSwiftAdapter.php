@@ -3,6 +3,7 @@
 namespace Sausin\LaravelOvh;
 
 use DateTimeInterface;
+use InvalidArgumentException;
 use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
@@ -87,8 +88,11 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * Generate a temporary URL for private containers.
      *
+     * For more information, refer to OpenStack's documentation on Temporary URL middleware:
+     * https://docs.openstack.org/swift/stein/api/temporary_url_middleware.html
+     *
      * @param string $path
-     * @param \DateTimeInterface $expiresAt
+     * @param DateTimeInterface $expiresAt
      * @param array $options
      * @return string
      */
@@ -96,7 +100,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         // Ensure Temp URL Key is provided for the Disk
         if (empty($this->config->getTempUrlKey())) {
-            throw new \InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
+            throw new InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
         }
 
         // Ensure $path doesn't begin with a slash
@@ -128,16 +132,29 @@ class OVHSwiftAdapter extends SwiftAdapter
         );
     }
 
-    public function getFormPostSignature(string $path, DateTimeInterface $expiresAt, string $redirect = '', int $maxFileCount = 1, int $maxFileSize = 26214400): string
+    /**
+     * Generate a FormPost signature to upload files directly to your OVH container.
+     *
+     * For more information, refer to OpenStack's documentation on FormPost middleware:
+     * https://docs.openstack.org/swift/stein/api/form_post_middleware.html
+     *
+     * @param string $path
+     * @param DateTimeInterface $expiresAt
+     * @param string|null $redirect
+     * @param int $maxFileCount
+     * @param int $maxFileSize Defaults to 25MB (25 * 1024 * 1024)
+     * @return string
+     */
+    public function getFormPostSignature(string $path, DateTimeInterface $expiresAt, ?string $redirect = null, int $maxFileCount = 1, int $maxFileSize = 26214400): string
     {
         // Ensure Temp URL Key is provided for the Disk
         if (empty($this->config->getTempUrlKey())) {
-            throw new \InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
+            throw new InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
         }
 
-        // check if the 'expires' values is in the past
-        if (($expiresAt->getTimestamp() ?? 0) < time()) {
-            throw new \InvalidArgumentException("Value of 'expires' cannot be in the past");
+        // Ensure that 'expires' timestamp is in the future
+        if (!now()->isBefore($expiresAt)) {
+            throw new InvalidArgumentException('Expiration time of FormPost signature must be in the future.');
         }
 
         // Ensure $path doesn't begin with a slash
@@ -152,7 +169,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         );
 
         // Body for the HMAC hash
-        $body = sprintf("%s\n%s\n%s\n%s\n%s", $codePath, $redirect, $maxFileSize, $maxFileCount, $expiresAt->getTimestamp());
+        $body = sprintf("%s\n%s\n%s\n%s\n%s", $codePath, $redirect ?? '', $maxFileSize, $maxFileCount, $expiresAt->getTimestamp());
 
         // The actual hash signature
         return hash_hmac('sha1', $body, $this->config->getTempUrlKey());
@@ -181,10 +198,13 @@ class OVHSwiftAdapter extends SwiftAdapter
         $data = parent::getWriteData($path, $config);
 
         if ($config->has('deleteAfter')) {
+            // Apply object expiration timestamp if given
             $data['deleteAfter'] = $config->get('deleteAfter');
         } elseif ($config->has('deleteAt')) {
+            // Apply object expiration time if given
             $data['deleteAt'] = $config->get('deleteAt');
         } elseif (!empty($this->config->getDeleteAfter())) {
+            // Apply default object expiration time from package config
             $data['deleteAfter'] = $this->config->getDeleteAfter();
         }
 
