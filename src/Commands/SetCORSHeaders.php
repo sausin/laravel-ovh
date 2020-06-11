@@ -42,11 +42,8 @@ class SetCORSHeaders extends Command
     /**
      * Execute the console command.
      *
-     * If the '--force' flag is provided, a new Temp URL Key will be generated and
-     * forcefully set in the Container's metadata, overriding any existing keys.
-     *
-     * If the command is not forced and there's an existing key, the User will be
-     * prompted to override the existing keys.
+     * If the '--force' flag is provided, the specified keys will be set on the container.
+     * This excludes any 'Temp-Url-Key' already present on the container.
      *
      * @return void
      */
@@ -106,7 +103,7 @@ class SetCORSHeaders extends Command
      */
     protected function setHeaders(): void
     {
-        $origins = implode(' ', $this->option('origins'));
+        $origins = implode(' ', $this->hasOption('origins') ? $this->option('origins') : ['*']);
         $maxAge = $this->option('max-age');
         $meta = ['Access-Control-Allow-Origin' => $origins, 'Access-Control-Max-Age' => $maxAge];
 
