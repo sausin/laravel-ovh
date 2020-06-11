@@ -153,7 +153,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         }
 
         // Ensure that 'expires' timestamp is in the future
-        if (!now()->isBefore($expiresAt)) {
+        if (!now()->lt($expiresAt)) {
             throw new InvalidArgumentException('Expiration time of FormPost signature must be in the future.');
         }
 
