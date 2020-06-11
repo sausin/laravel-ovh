@@ -37,6 +37,7 @@ class OVHServiceProvider extends ServiceProvider
 
         $this->commands([
             Commands\SetTempUrlKey::class,
+            Commands\SetCORSHeaders::class,
         ]);
     }
 
