@@ -20,7 +20,7 @@ class SetCORSHeaders extends Command
                             {--disk=ovh : The disk using your OVH container}
                             {--origins=* : The origins to be allowed on the containers (multiple allowed)}
                             {--max-age=3600 : The maximum cache validity of pre-flight requests}
-                            {--force : Forcibly set the new keys}';
+                            {--force : Forcibly set the new headers}';
 
     /**
      * The console command description.
@@ -37,7 +37,7 @@ class SetCORSHeaders extends Command
     protected $container;
 
     /** array */
-    protected $tempUrlKeyMeta = [];
+    protected $containerMeta = [];
 
     /**
      * Execute the console command.
@@ -63,7 +63,9 @@ class SetCORSHeaders extends Command
             return;
         }
 
-        if ($this->hasOption('force') || $this->askIfShouldOverrideExistingParams()) {
+        $this->containerMeta = $this->container->getMetadata();
+
+        if ($this->option('force') || $this->askIfShouldOverrideExistingParams()) {
             $this->setHeaders();
         }
     }
@@ -80,13 +82,8 @@ class SetCORSHeaders extends Command
     protected function askIfShouldOverrideExistingParams(): bool
     {
         $metaKeys = ['Access-Control-Allow-Origin', 'Access-Control-Max-Age'];
-        $containerMeta = $this->container->getMetadata();
 
-        if (array_key_exists('Temp-Url-Key', $containerMeta)) {
-            $this->tempUrlKeyMeta = ['Temp-Url-Key' => $containerMeta['Temp-Url-Key']];
-        }
-
-        if (count(array_intersect($metaKeys, array_keys($containerMeta))) === 0) {
+        if (count(array_intersect($metaKeys, array_keys($this->containerMeta))) === 0) {
             return true;
         }
 
@@ -103,12 +100,17 @@ class SetCORSHeaders extends Command
      */
     protected function setHeaders(): void
     {
-        $origins = implode(' ', $this->hasOption('origins') ? $this->option('origins') : ['*']);
+        $origins = '*';
+
+        if (count($this->option('origins')) !== 0) {
+            $origins = implode(' ', $this->option('origins'));
+        }
+
         $maxAge = $this->option('max-age');
         $meta = ['Access-Control-Allow-Origin' => $origins, 'Access-Control-Max-Age' => $maxAge];
 
-        if ($this->tempUrlKeyMeta) {
-            $meta += $this->tempUrlKeyMeta;
+        if (array_key_exists('Temp-Url-Key', $this->containerMeta)) {
+            $meta += ['Temp-Url-Key' => $this->containerMeta['Temp-Url-Key']];
         }
 
         try {
