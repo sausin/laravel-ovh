@@ -35,6 +35,9 @@ class SetTempUrlKey extends Command
      */
     protected $container;
 
+    /** array */
+    protected $containerMeta = [];
+
     /**
      * Execute the console command.
      *
