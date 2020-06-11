@@ -207,6 +207,20 @@ some cases, to learn more about this, please refer to [OpenStack's Last Note on 
 To learn more about segmented uploads for large objects, please refer to:
 - [OVH's Optimizing Large Object Uploads Documentation](https://docs.ovh.com/gb/en/storage/optimised_method_for_uploading_files_to_object_storage/)
 - [OpenStack's Large Object Support Documentation](https://docs.openstack.org/swift/latest/overview_large_objects.html)
+## Form Post Middleware
+
+While this feature in not documented by the OVH team, it's explained in the openstack [documentation](https://docs.openstack.org/swift/latest/api/form_post_middleware.html). This setup allows for uploading of files _directly_ to the OVH servers rather than going through the application servers (which is quite inefficient).
+
+The signature can be obtained by using the following command:
+```php
+Storage::disk('ovh')->getAdapter()->getFormPostSignature('path', time() + 600, 1, 50*1024*1024)
+```
+The above example will generate a signature which is valid of 600 seconds, allows for 1 file to be uploaded with a maximum size of 50 MB. Parameters can be tweaked as desired.
+
+The upload form can then use this signature as described in the openstack documentation.
+
+Important note:- The upload method in the form _must_ be of the type POST. 
+
 
 # Credits
 - ThePHPLeague for the awesome [Flysystem](https://github.com/thephpleague/flysystem)!

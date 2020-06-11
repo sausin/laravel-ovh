@@ -83,7 +83,7 @@ class UrlGenerationTest extends TestCase
 
         $this->object->shouldNotReceive('retrieve', 'getObject');
 
-        $signature = $this->adapter->getFormPostSignature('/prefix', ['expires' => time() + 600]);
+        $signature = $this->adapter->getFormPostSignature('/prefix', now()->addSeconds(60));
 
         $this->assertNotNull($signature);
     }

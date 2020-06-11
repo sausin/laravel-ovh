@@ -2,6 +2,7 @@
 
 namespace Sausin\LaravelOvh;
 
+use DateTimeInterface;
 use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
@@ -91,7 +92,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      * @param array $options
      * @return string
      */
-    public function getTemporaryUrl(string $path, \DateTimeInterface $expiresAt, array $options = []): string
+    public function getTemporaryUrl(string $path, DateTimeInterface $expiresAt, array $options = []): string
     {
         // Ensure Temp URL Key is provided for the Disk
         if (empty($this->config->getTempUrlKey())) {
@@ -127,32 +128,20 @@ class OVHSwiftAdapter extends SwiftAdapter
         );
     }
 
-    public function getFormPostSignature(string $path, array $options = []): string
+    public function getFormPostSignature(string $path, DateTimeInterface $expiresAt, string $redirect = '', int $maxFileCount = 1, int $maxFileSize = 26214400): string
     {
         // Ensure Temp URL Key is provided for the Disk
         if (empty($this->config->getTempUrlKey())) {
             throw new \InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
         }
 
-        // expires is required otherwise a valid request will not be possible to be formed
-        if (!isset($options['expires'])) {
-            throw new \InvalidArgumentException("Missing 'expires' key in options");
-        }
-
         // check if the 'expires' values is in the past
-        if (($options['expires'] ?? 0) < time()) {
+        if (($expiresAt->getTimestamp() ?? 0) < time()) {
             throw new \InvalidArgumentException("Value of 'expires' cannot be in the past");
         }
 
         // Ensure $path doesn't begin with a slash
         $path = ltrim($path, '/');
-
-        // Get the method
-        $method = 'POST';
-        $redirectUrl = $options['redirect'] ?? '';
-        $maxFileSize = $options['max_file_size'] ?? 25 * 1024 * 1024;
-        $maxFileCount = $options['max_file_count'] ?? 1;
-        $linkExpiry = $options['expires'];
 
         // The url on the OVH host
         $codePath = sprintf(
@@ -163,7 +152,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         );
 
         // Body for the HMAC hash
-        $body = sprintf("%s\n%s\n%s\n%s\n%s", $codePath, $redirectUrl, $maxFileSize, $maxFileCount, $linkExpiry);
+        $body = sprintf("%s\n%s\n%s\n%s\n%s", $codePath, $redirect, $maxFileSize, $maxFileCount, $expiresAt->getTimestamp());
 
         // The actual hash signature
         return hash_hmac('sha1', $body, $this->config->getTempUrlKey());
