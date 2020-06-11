@@ -16,9 +16,9 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * OVHSwiftAdapter constructor.
      *
-     * @param Container $container
-     * @param OVHConfiguration $config
-     * @param string|null $prefix
+     * @param  Container $container
+     * @param  OVHConfiguration $config
+     * @param  string|null $prefix
      */
     public function __construct(Container $container, OVHConfiguration $config, ?string $prefix = null)
     {
@@ -30,7 +30,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * Gets the endpoint url of the bucket.
      *
-     * @param string|null $path
+     * @param  string|null $path
      * @return string
      */
     protected function getEndpoint(?string $path = null): string
@@ -57,7 +57,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      * Custom function to comply with the Storage::url() function in laravel
      * without checking the existence of a file (faster).
      *
-     * @param string $path
+     * @param  string $path
      * @return string
      */
     public function getUrl($path)
@@ -68,7 +68,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * Custom function to get an url with confirmed file existence.
      *
-     * @param string $path
+     * @param  string $path
      * @return string
      * @throws BadResponseError
      */
@@ -87,9 +87,9 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * Generate a temporary URL for private containers.
      *
-     * @param string $path
-     * @param \DateTimeInterface $expiresAt
-     * @param array $options
+     * @param  string $path
+     * @param  \DateTimeInterface $expiresAt
+     * @param  array $options
      * @return string
      */
     public function getTemporaryUrl(string $path, DateTimeInterface $expiresAt, array $options = []): string
@@ -128,6 +128,16 @@ class OVHSwiftAdapter extends SwiftAdapter
         );
     }
 
+    /**
+     * Get form post signature. See Form POST middleware documentation.
+     *
+     * @param  string $path
+     * @param  DateTimeInterface $expiresAt
+     * @param  string $redirect
+     * @param  int $maxFileCount
+     * @param  int $maxFileSize
+     * @return string
+     */
     public function getFormPostSignature(string $path, DateTimeInterface $expiresAt, string $redirect = '', int $maxFileCount = 1, int $maxFileSize = 26214400): string
     {
         // Ensure Temp URL Key is provided for the Disk
@@ -171,8 +181,8 @@ class OVHSwiftAdapter extends SwiftAdapter
     /**
      * Include support for object deletion.
      *
-     * @param string $path
-     * @param Config $config
+     * @param  string $path
+     * @param  Config $config
      * @return array
      * @see SwiftAdapter
      */
