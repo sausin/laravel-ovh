@@ -77,6 +77,17 @@ class UrlGenerationTest extends TestCase
         $this->assertNotNull($url);
     }
 
+    public function testCanGenerateFormPostSignature()
+    {
+        $this->config->setTempUrlKey('my-key');
+
+        $this->object->shouldNotReceive('retrieve', 'getObject');
+
+        $signature = $this->adapter->getFormPostSignature('/prefix', now()->addSeconds(60));
+
+        $this->assertNotNull($signature);
+    }
+
     public function testCanGenerateTemporaryUrlOnCustomEndpoint()
     {
         $this->config

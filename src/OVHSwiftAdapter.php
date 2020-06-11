@@ -2,6 +2,7 @@
 
 namespace Sausin\LaravelOvh;
 
+use DateTimeInterface;
 use League\Flysystem\Config;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
 use OpenStack\Common\Error\BadResponseError;
@@ -91,11 +92,11 @@ class OVHSwiftAdapter extends SwiftAdapter
      * @param array $options
      * @return string
      */
-    public function getTemporaryUrl(string $path, \DateTimeInterface $expiresAt, array $options = []): string
+    public function getTemporaryUrl(string $path, DateTimeInterface $expiresAt, array $options = []): string
     {
         // Ensure Temp URL Key is provided for the Disk
         if (empty($this->config->getTempUrlKey())) {
-            throw new \InvalidArgumentException('No Temp URL Key provided for container \''.$this->container->name.'\'');
+            throw new \InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
         }
 
         // Ensure $path doesn't begin with a slash
@@ -125,6 +126,36 @@ class OVHSwiftAdapter extends SwiftAdapter
             $signature,
             $expiresAt->getTimestamp()
         );
+    }
+
+    public function getFormPostSignature(string $path, DateTimeInterface $expiresAt, string $redirect = '', int $maxFileCount = 1, int $maxFileSize = 26214400): string
+    {
+        // Ensure Temp URL Key is provided for the Disk
+        if (empty($this->config->getTempUrlKey())) {
+            throw new \InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
+        }
+
+        // check if the 'expires' values is in the past
+        if (($expiresAt->getTimestamp() ?? 0) < time()) {
+            throw new \InvalidArgumentException("Value of 'expires' cannot be in the past");
+        }
+
+        // Ensure $path doesn't begin with a slash
+        $path = ltrim($path, '/');
+
+        // The url on the OVH host
+        $codePath = sprintf(
+            '/v1/AUTH_%s/%s/%s',
+            $this->config->getProjectId(),
+            $this->config->getContainerName(),
+            $path
+        );
+
+        // Body for the HMAC hash
+        $body = sprintf("%s\n%s\n%s\n%s\n%s", $codePath, $redirect, $maxFileSize, $maxFileCount, $expiresAt->getTimestamp());
+
+        // The actual hash signature
+        return hash_hmac('sha1', $body, $this->config->getTempUrlKey());
     }
 
     /**
