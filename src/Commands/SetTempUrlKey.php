@@ -62,7 +62,9 @@ class SetTempUrlKey extends Command
             return;
         }
 
-        if ($this->hasOption('force') || $this->askIfShouldOverrideExistingKey()) {
+        $this->containerMeta = $this->container->getMetadata();
+
+        if ($this->option('force') || $this->askIfShouldOverrideExistingKey()) {
             $this->setContainerKey();
         }
     }
@@ -78,7 +80,7 @@ class SetTempUrlKey extends Command
      */
     protected function askIfShouldOverrideExistingKey(): bool
     {
-        if (!array_key_exists('Temp-Url-Key', $this->container->getMetadata())) {
+        if (!array_key_exists('Temp-Url-Key', $this->containerMeta)) {
             return true; // Yeah, override the non-existing key.
         }
 
@@ -109,13 +111,33 @@ class SetTempUrlKey extends Command
     protected function setContainerKey(): void
     {
         $key = $this->option('key') ?? $this->getRandomKey();
+        $meta = $this->getMeta();
 
         try {
-            $this->container->resetMetadata(['Temp-Url-Key' => $key]);
+            $this->container->resetMetadata($meta + ['Temp-Url-Key' => $key]);
+
+            $this->info('Successfully set Temp URL Key to: '.$key);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
+    }
 
-        $this->info('Successfully set Temp URL Key to: '.$key);
+    /**
+     * If other meta keys exist, get them.
+     *
+     * @return array
+     */
+    protected function getMeta(): array
+    {
+        $meta = [];
+        $metaKeys = ['Access-Control-Allow-Origin', 'Access-Control-Max-Age'];
+
+        foreach ($metaKeys as $key) {
+            if (array_key_exists($key, $this->containerMeta)) {
+                $meta += [$key => $this->containerMeta[$key]];
+            }
+        }
+
+        return $meta;
     }
 }
