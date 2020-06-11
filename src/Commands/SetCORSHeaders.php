@@ -27,7 +27,7 @@ class SetCORSHeaders extends Command
      *
      * @var string
      */
-    protected $description = 'Set CORS headers on the container to make Form POST signaure work flawlessly';
+    protected $description = 'Set CORS headers on the container to make Form POST signature work flawlessly';
 
     /**
      * The Object Storage Container.
