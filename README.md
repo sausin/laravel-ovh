@@ -73,6 +73,9 @@ as below
     // Optional variable to cache your storage objects in memory
     // You must require league/flysystem-cached-adapter to enable caching
     'cache' => true, // Defaults to false
+    
+    // Optional variable to set a prefix on all paths
+    'prefix' => null,
 ],
 ```
 Define the correct env variables above in your .env file (to correspond to the values above),
@@ -221,6 +224,21 @@ The upload form can then use this signature as described in the openstack docume
 
 Important note:- The upload method in the form _must_ be of the type POST. 
 
+## Prefix & Multi-tenancy
+
+As noted above, `prefix` parameter was introduced in release 5.3.0. This means that any path specified when using the package will be prefixed with the given string. Nothing is added by default (or if the parameter has not been set at all).
+
+For example, if a `prefix` has been set as `foo`:
+```php
+Storage::disk('ovh')->url('/');
+```
+will give a url as if it was requested as `/foo` when no prefix was set.
+
+This is particularly powerful in a multi-tenant setup. The same container can be used for all tenants and each tenant can have its own folder. This can be set in the middleware where the tenant is being set by using the below command:
+```php
+Config::set('filesystems.disks.ovh.prefix', 'someprefixvalue')
+```
+The disk name should correspond to yours.
 
 # Credits
 - ThePHPLeague for the awesome [Flysystem](https://github.com/thephpleague/flysystem)!
