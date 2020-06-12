@@ -95,7 +95,7 @@ class OVHServiceProvider extends ServiceProvider
      */
     protected function makeFileSystem(Container $container, bool $cache): Filesystem
     {
-        $adapter = new OVHSwiftAdapter($container, $this->config);
+        $adapter = new OVHSwiftAdapter($container, $this->config, $this->config->getPrefix());
 
         if ($cache) {
             $adapter = new CachedAdapter($adapter, new MemoryStore);
