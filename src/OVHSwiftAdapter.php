@@ -99,9 +99,6 @@ class OVHSwiftAdapter extends SwiftAdapter
             throw new \InvalidArgumentException("No Temp URL Key provided for container '".$this->container->name."'");
         }
 
-        // Ensure $path doesn't begin with a slash
-        $path = $this->applyPathPrefix($path);
-
         // Get the method
         $method = $options['method'] ?? 'GET';
 
@@ -110,7 +107,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             '/v1/AUTH_%s/%s/%s',
             $this->config->getProjectId(),
             $this->config->getContainerName(),
-            $path
+            $this->applyPathPrefix($path)
         );
 
         // Body for the HMAC hash
