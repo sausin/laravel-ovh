@@ -47,7 +47,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             );
 
         if (!empty($path)) {
-            $url .= ltrim($path, '/');
+            $url .= $this->applyPathPrefix($path);
         }
 
         return $url;
@@ -100,7 +100,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         }
 
         // Ensure $path doesn't begin with a slash
-        $path = ltrim($path, '/');
+        $path = $this->applyPathPrefix($path);
 
         // Get the method
         $method = $options['method'] ?? 'GET';
@@ -151,7 +151,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         }
 
         // Ensure $path doesn't begin with a slash
-        $path = ltrim($path, '/');
+        $path = $this->applyPathPrefix($path);
 
         // The url on the OVH host
         $codePath = sprintf(
