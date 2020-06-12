@@ -4,6 +4,7 @@ namespace Sausin\LaravelOvh\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use League\Flysystem\Cached\CachedAdapter;
@@ -50,7 +51,9 @@ class SetCORSHeaders extends Command
     public function handle(): void
     {
         try {
-            $adapter = Storage::disk($this->option('disk'))->getAdapter();
+            $disk = $this->getDisk();
+
+            $adapter = Storage::disk($disk)->getAdapter();
 
             if ($adapter instanceof CachedAdapter) {
                 $adapter = $adapter->getAdapter();
@@ -120,5 +123,28 @@ class SetCORSHeaders extends Command
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
+    }
+
+    /**
+     * Check if selected disk is correct. If not, provide options to user.
+     *
+     * @return string
+     */
+    public function getDisk(): string
+    {
+        $available = array_keys(array_filter(Config::get('filesystems.disks'), function ($d) {
+            return $d['driver'] === 'ovh';
+        }));
+
+        $selected = $this->option('disk');
+
+        if (in_array($selected, $available)) {
+            return $selected;
+        }
+
+        return $this->choice(
+            'Selected disk not correct. Please choose from below options:',
+            $available,
+        );
     }
 }

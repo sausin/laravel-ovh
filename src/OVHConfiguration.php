@@ -134,6 +134,17 @@ class OVHConfiguration
     protected ?int $deleteAfter;
 
     /**
+     * OPTIONAL.
+     *
+     * Prefixes all paths with this valus. Useful in multi-tenant setups
+     *
+     * Returns NULL if disabled.
+     *
+     * @return string|null
+     */
+    protected ?string $prefix;
+
+    /**
      * OVHConfiguration constructor.
      */
     protected function __construct()
@@ -168,7 +179,8 @@ class OVHConfiguration
             ->setSwiftLargeObjectThreshold($config['swiftLargeObjectThreshold'] ?? null)
             ->setSwiftSegmentSize($config['swiftSegmentSize'] ?? null)
             ->setSwiftSegmentContainer($config['swiftSegmentContainer'] ?? null)
-            ->setDeleteAfter($config['deleteAfter'] ?? null);
+            ->setDeleteAfter($config['deleteAfter'] ?? null)
+            ->setPrefix($config['prefix'] ?? null);
     }
 
     /**
@@ -414,6 +426,25 @@ class OVHConfiguration
     public function setDeleteAfter(?int $deleteAfter): self
     {
         $this->deleteAfter = $deleteAfter;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string|null $prefix
+     * @return OVHConfiguration
+     */
+    public function setPrefix(?string $prefix): self
+    {
+        $this->prefix = $prefix;
 
         return $this;
     }
