@@ -2,6 +2,7 @@
 
 namespace Sausin\LaravelOvh;
 
+use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
 use League\Flysystem\Config;
@@ -155,7 +156,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         }
 
         // Ensure that 'expires' timestamp is in the future
-        if (!now()->lt($expiresAt)) {
+        if ((new DateTime()) >= $expiresAt) {
             throw new InvalidArgumentException('Expiration time of FormPost signature must be in the future.');
         }
 

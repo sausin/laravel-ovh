@@ -2,6 +2,7 @@
 
 namespace Sausin\LaravelOvh\Tests\Functional;
 
+use DateInterval;
 use DateTime;
 use Sausin\LaravelOvh\Tests\TestCase;
 
@@ -104,9 +105,16 @@ class UrlGenerationTest extends TestCase
 
         $this->object->shouldNotReceive('retrieve', 'getObject');
 
-        $signature = $this->adapter->getFormPostSignature('images', now()->addMinute());
+        $signature = $this->adapter->getFormPostSignature('images', (new DateTime())->add(new DateInterval('PT5M')));
 
         $this->assertNotNull($signature);
+    }
+
+    public function testFormPostSignatureWillFailIfNoKeyProvided()
+    {
+        $this->expectException('InvalidArgumentException');
+
+        $this->adapter->getFormPostSignature('images', new DateTime());
     }
 
     public function testFormPostWillFailIfExpirationIsNotInTheFuture()
@@ -116,12 +124,5 @@ class UrlGenerationTest extends TestCase
         $this->expectException('InvalidArgumentException');
 
         $this->adapter->getFormPostSignature('images', new DateTime('2010-07-28'));
-    }
-
-    public function testFormPostSignatureWillFailIfNoKeyProvided()
-    {
-        $this->expectException('InvalidArgumentException');
-
-        $this->adapter->getFormPostSignature('images', now()->addMinute());
     }
 }
