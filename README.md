@@ -210,6 +210,7 @@ some cases, to learn more about this, please refer to [OpenStack's Last Note on 
 To learn more about segmented uploads for large objects, please refer to:
 - [OVH's Optimizing Large Object Uploads Documentation](https://docs.ovh.com/gb/en/storage/optimised_method_for_uploading_files_to_object_storage/)
 - [OpenStack's Large Object Support Documentation](https://docs.openstack.org/swift/latest/overview_large_objects.html)
+
 ## Form Post Middleware
 
 While this feature in not documented by the OVH team, it's explained in the openstack [documentation](https://docs.openstack.org/swift/latest/api/form_post_middleware.html). This setup allows for uploading of files _directly_ to the OVH servers rather than going through the application servers (which is quite inefficient).
@@ -228,17 +229,19 @@ Important note:- The upload method in the form _must_ be of the type POST.
 
 As noted above, `prefix` parameter was introduced in release 5.3.0. This means that any path specified when using the package will be prefixed with the given string. Nothing is added by default (or if the parameter has not been set at all).
 
-For example, if a `prefix` has been set as `foo`:
+For example, when `prefix` has been set as `foo` in the config, the following command:
 ```php
 Storage::disk('ovh')->url('/');
 ```
-will give a url as if it was requested as `/foo` when no prefix was set.
+will generate a url as if it was requested with a path of `/foo` (i.e. the specified prefix has been used).
 
-This is particularly powerful in a multi-tenant setup. The same container can be used for all tenants and each tenant can have its own folder. This can be set in the middleware where the tenant is being set by using the below command:
+This is particularly powerful in a multi-tenant setup. The same container can be used for all tenants and yet each tenant can have its own folder, almost automatically. The middleware where the tenant is being set can be updated, and using the below command:
 ```php
 Config::set('filesystems.disks.ovh.prefix', 'someprefixvalue')
 ```
-The disk name should correspond to yours.
+a separate custom prefix will be set for each tenant!
+
+Both examples above assume the disk has been named as `ovh` in the config. Replace with the correct name for your case.
 
 # Credits
 - ThePHPLeague for the awesome [Flysystem](https://github.com/thephpleague/flysystem)!
