@@ -27,7 +27,7 @@ Please see below for the details on various branches. You can choose the version
 | `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | Above + Expiring Objects + Custom Domains | Deprecated |
 | `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | Above + Keystone v3 API                   | Deprecated |
 | `4.x`           | `>=7.2`           | `>=5.4`          | Above + Set private key on container      | Maintained |
-| `5.x`           | `>=7.4`           | `>=5.8`          | Above + Config-based Expiring Objects     | Active     |
+| `5.x`           | `>=7.4`           | `>=5.8`          | Above + Config-based Expiring Objects + Form Post Signature + Prefix     | Active     |
 
 If you are using Laravel versions older than 5.5, add the service provider to the `providers` array in `config/app.php`:
 ```php
