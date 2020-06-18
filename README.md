@@ -28,7 +28,7 @@ Also, take note of the upgrade.
 | `2.x`           | `>=7.1`           | `>=5.4`, `<=6.x` | Above + Expiring Objects + Custom Domains | Deprecated |
 | `3.x`           | `>=7.1`           | `>=5.4`, `<=7.x` | Above + Keystone v3 API                   | Deprecated |
 | `4.x`           | `>=7.2`           | `>=5.4`          | Above + Set private key on container      | Maintained |
-| `5.x`           | `>=7.4`           | `>=5.8`          | Above + Config-based Expiring Objects     | Active     |
+| `5.x`           | `>=7.4`           | `>=5.8`          | Above + Config-based Expiring Objects + Form Post Signature + Prefix     | Active     |
 
 If you are using Laravel versions older than 5.5, add the service provider to the `providers` array in `config/app.php`:
 ```php
@@ -74,6 +74,9 @@ as below
     // Optional variable to cache your storage objects in memory
     // You must require league/flysystem-cached-adapter to enable caching
     'cache' => true, // Defaults to false
+    
+    // Optional variable to set a prefix on all paths
+    'prefix' => null,
 ],
 ```
 Define the correct env variables above in your .env file (to correspond to the values above),
@@ -270,6 +273,23 @@ Storage::disk('ovh')->getAdapter()->getFormPostSignature('', now()->addDay(), nu
 Storage::disk('ovh')->getAdapter()->getFormPostSignature('', now()->addHour(), null, 1, 1 * 1024 * 1024 * 1024);
 ```
 
+## Prefix & Multi-tenancy
+
+As noted above, `prefix` parameter was introduced in release 5.3.0. This means that any path specified when using the package will be prefixed with the given string. Nothing is added by default (or if the parameter has not been set at all).
+
+For example, when `prefix` has been set as `foo` in the config, the following command:
+```php
+Storage::disk('ovh')->url('/');
+```
+will generate a url as if it was requested with a path of `/foo` (i.e. the specified prefix has been used).
+
+This is particularly powerful in a multi-tenant setup. The same container can be used for all tenants and yet each tenant can have its own folder, almost automatically. The middleware where the tenant is being set can be updated, and using the below command:
+```php
+Config::set('filesystems.disks.ovh.prefix', 'someprefixvalue')
+```
+a separate custom prefix will be set for each tenant!
+
+Both examples above assume the disk has been named as `ovh` in the config. Replace with the correct name for your case.
 
 # Credits
 - ThePHPLeague for the awesome [Flysystem](https://github.com/thephpleague/flysystem)!
