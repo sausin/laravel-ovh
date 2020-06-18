@@ -2,6 +2,8 @@
 
 namespace Sausin\LaravelOvh\Tests\Functional;
 
+use DateInterval;
+use DateTime;
 use Sausin\LaravelOvh\Tests\TestCase;
 
 class UrlGenerationTest extends TestCase
@@ -72,20 +74,9 @@ class UrlGenerationTest extends TestCase
 
         $this->object->shouldNotReceive('retrieve', 'getObject');
 
-        $url = $this->adapter->getTemporaryUrl('hello.jpg', new \DateTime('2004-09-22'));
+        $url = $this->adapter->getTemporaryUrl('hello.jpg', new DateTime('2004-09-22'));
 
         $this->assertNotNull($url);
-    }
-
-    public function testCanGenerateFormPostSignature()
-    {
-        $this->config->setTempUrlKey('my-key');
-
-        $this->object->shouldNotReceive('retrieve', 'getObject');
-
-        $signature = $this->adapter->getFormPostSignature('/prefix', now()->addSeconds(60));
-
-        $this->assertNotNull($signature);
     }
 
     public function testCanGenerateTemporaryUrlOnCustomEndpoint()
@@ -96,7 +87,7 @@ class UrlGenerationTest extends TestCase
 
         $this->object->shouldNotReceive('retrieve', 'getObject');
 
-        $url = $this->adapter->getTemporaryUrl('hello.jpg', new \DateTime('2015-10-21'));
+        $url = $this->adapter->getTemporaryUrl('hello.jpg', new DateTime('2015-10-21'));
 
         $this->assertNotNull($url);
     }
@@ -105,6 +96,33 @@ class UrlGenerationTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
 
-        $this->adapter->getTemporaryUrl('hello.jpg', new \DateTime('1979-06-13'));
+        $this->adapter->getTemporaryUrl('hello.jpg', new DateTime('1979-06-13'));
+    }
+
+    public function testCanGenerateFormPostSignature()
+    {
+        $this->config->setTempUrlKey('my-key');
+
+        $this->object->shouldNotReceive('retrieve', 'getObject');
+
+        $signature = $this->adapter->getFormPostSignature('images', (new DateTime())->add(new DateInterval('PT5M')));
+
+        $this->assertNotNull($signature);
+    }
+
+    public function testFormPostSignatureWillFailIfNoKeyProvided()
+    {
+        $this->expectException('InvalidArgumentException');
+
+        $this->adapter->getFormPostSignature('images', new DateTime());
+    }
+
+    public function testFormPostWillFailIfExpirationIsNotInTheFuture()
+    {
+        $this->config->setTempUrlKey('my-key');
+
+        $this->expectException('InvalidArgumentException');
+
+        $this->adapter->getFormPostSignature('images', new DateTime('2010-07-28'));
     }
 }
