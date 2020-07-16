@@ -220,7 +220,7 @@ While this feature in not documented by the OVH team, it's explained in the
 [OpenStack's Documentation](https://docs.openstack.org/swift/latest/api/form_post_middleware.html).
 
 This feature allows for uploading of files _directly_ to the OVH servers rather than going through the application servers
-(which is quite inefficient).
+(thus improving the efficiency in the upload cycle).
 
 You must generate a valid FormPost signature, for which you can use the following function:
 ```php
@@ -247,7 +247,9 @@ After obtaining the signature, you need to pass the signature data to your HTML 
 </form>
 ```
 
-> **NOTE**: The upload method in the form _must_ be type of `POST`. 
+> **NOTE**: The upload method in the form _must_ be type of `POST`.
+
+> **NOTE**: As this will be a cross origin request, appropriate headers are needed on the container. See the use of command `php artisan ovh:set-cors-headers` further.
 
 The `$url` variable refers to the path URL to your container, you can get it by passing the path to the adapter `getUrl`:
 ```php
@@ -272,6 +274,14 @@ Storage::disk('ovh')->getAdapter()->getFormPostSignature('', now()->addDay(), nu
 // Generate a signature that allows to upload 1 file of 1GB until the next hour.
 Storage::disk('ovh')->getAdapter()->getFormPostSignature('', now()->addHour(), null, 1, 1 * 1024 * 1024 * 1024);
 ```
+## Setting up Access Control headers on the container
+For the setup above to work correctly, the container must have the correct headers set on it. This package provides a convenient way to set them up using the below command
+```php
+php artisan ovh:set-cors-headers
+```
+By default this will allow all origins to be able to upload on the container. However, if you would like to allow only specific origin(s) you may use the `--origins` flag.
+
+If these headers were already set previously, the command will seek confirmation before overriding the existing headers.
 
 ## Prefix & Multi-tenancy
 
