@@ -14,7 +14,8 @@ class SetTempUrlKey extends Command
      */
     protected $signature = 'ovh:set-temp-url-key
                             {--key= : The key you want to set up on your container}
-                            {--force : Forcibly set a new key on the container}';
+                            {--force : Forcibly set a new key on the container} 
+                            {--disk=ovh} Select the ovh disk';
 
     /**
      * The console command description.
@@ -40,27 +41,34 @@ class SetTempUrlKey extends Command
      */
     public function handle()
     {
+        $key = $this->option('key') ?: $this->getRandomKey();
+
         if ($this->option('force')) {
-            $this->setContainerKey();
+
+            $this->setContainerKey($key);
 
             return 0;
         }
 
         if ($this->checkContainerHasKey()) {
+
             $this->info('Container already has a key');
 
             return 1;
         }
 
-        $this->setContainerKey();
+
+
+
+        $this->setContainerKey($key);
     }
 
-    protected function setContainerKey()
+    protected function setContainerKey($key)
     {
-        $key = $this->option('key') ?? $this->getRandomKey();
 
         try {
-            Storage::disk('ovh')
+
+            $this->getDisk()
             ->getAdapter()
             ->getContainer()
             ->resetMetadata(['Temp-Url-Key' => $key]);
@@ -69,6 +77,7 @@ class SetTempUrlKey extends Command
 
             return 0;
         } catch (\Exception $e) {
+
             $this->info($e->getMessage());
 
             return 1;
@@ -82,8 +91,13 @@ class SetTempUrlKey extends Command
 
     protected function checkContainerHasKey()
     {
-        $data = Storage::disk('ovh')->getAdapter()->getContainer()->getMetaData();
+        $data = $this->getDisk()->getAdapter()->getContainer()->getMetaData();
 
         return array_key_exists('Temp-Url-Key', $data);
+    }
+
+    protected function getDisk()
+    {
+        return Storage::disk($this->option('disk'));
     }
 }

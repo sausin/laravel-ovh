@@ -117,4 +117,25 @@ class BasicAdapterTest extends TestCase
 
         $this->assertNotNull($url);
     }
+
+
+    public function testPrefix()
+    {
+        $urlVars = [        
+            'region'    => 'region',
+            'projectId' => 'projectId',
+            'container' => 'container',
+            'urlKey'    => 'meykey',
+            'endpoint'  => null,
+        ];
+
+        $this->adapter = new OVHSwiftAdapter($this->container, $urlVars, 'prefix');
+
+        $url = $this->adapter->getUrl('hello');
+
+        $this->assertEquals('https://storage.region.cloud.ovh.net/v1/AUTH_projectId/container/prefix/hello', $url);
+
+
+        //echo $this->adapter->getTemporaryUrl('hello', strtotime('+10 minutes'));
+    }
 }
