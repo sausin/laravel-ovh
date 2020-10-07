@@ -84,7 +84,7 @@ and you should now have a working OVH Object Storage setup :smile:.
 
 The environment variable `OS_AUTH_URL` is normally not going to be any different for OVH users and hence doesn't need to
 be specified. To get the values for remaining variables (like `OS_USERNAME`, `OS_REGION_NAME`, `OS_CONTAINER_NAME`,
-etc... `OS_PROJECT_ID` is equivalent to `OS_TENANT_ID`), you can download the configuration file with details from OVH's Horizon or Control Panel:
+etc...), you can download the configuration file with details from OVH's Horizon or Control Panel:
 - **OVH Control Panel**: `Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`
 - **OVH Horizon**: `Project -> API Access -> Download OpenStack RC File -> Identity API v3`
 
@@ -92,6 +92,16 @@ Be sure to clear your app's config cache after finishing this library's configur
 ```sh
 php artisan config:cache
 ```
+
+**NOTE**: Downloading your RC config file from **OVH Control Panel** will provide **Identity v2** variable names.
+However, for this package, the following variables are equivalent:
+
+| `laravel-ovh` variable name | OVH's RC variable name |
+| --------------------------- | ---------------------- |
+| `OS_PROJECT_ID`             | `OS_TENANT_ID`         |
+| `OS_PROJECT_NAME`           | `OS_TENANT_NAME`       |
+
+You can safely place the values from the Identity v2 variables and place them in the corresponding variable for this package.
 
 ## Upgrade Notes
 
