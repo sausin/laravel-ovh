@@ -84,7 +84,7 @@ and you should now have a working OVH Object Storage setup :smile:.
 
 The environment variable `OS_AUTH_URL` is normally not going to be any different for OVH users and hence doesn't need to
 be specified. To get the values for remaining variables (like `OS_USERNAME`, `OS_REGION_NAME`, `OS_CONTAINER_NAME`,
-etc), you can download the configuration file with details from OVH's Horizon or Control Panel:
+etc... `OS_PROJECT_ID` is equivalent to `OS_TENANT_ID`), you can download the configuration file with details from OVH's Horizon or Control Panel:
 - **OVH Control Panel**: `Public cloud -> Project Management -> Users & Roles -> Download Openstack's RC file`
 - **OVH Horizon**: `Project -> API Access -> Download OpenStack RC File -> Identity API v3`
 
