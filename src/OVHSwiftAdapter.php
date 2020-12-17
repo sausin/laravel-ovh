@@ -87,11 +87,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         $path = $this->applyPathPrefix($path);
 
         // expiry is relative to current time
-        $expiresAt = $expiration;
-
-        if ($expiration instanceof Carbon) {
-            $expiresAt = $expiration->timestamp;
-        }
+        $expiresAt = $expiration instanceof Carbon ? $expiration->timestamp : (int) (time() + 60 * 60);
 
         // get the method
         $method = isset($options['method']) ? $options['method'] : 'GET';
