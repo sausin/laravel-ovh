@@ -15,7 +15,7 @@ class SetTempUrlKey extends Command
     protected $signature = 'ovh:set-temp-url-key
                             {--key= : The key you want to set up on your container}
                             {--force : Forcibly set a new key on the container} 
-                            {--disk=ovh} Select the ovh disk';
+                            {--disk=ovh : Select the ovh disk}';
 
     /**
      * The console command description.
