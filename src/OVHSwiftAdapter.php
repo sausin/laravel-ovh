@@ -47,7 +47,7 @@ class OVHSwiftAdapter extends SwiftAdapter
     {
         $this->checkParams();
 
-        return $this->getEndpoint().$path;
+        return $this->getEndpoint() . $this->applyPathPrefix($path);
     }
 
     /**
@@ -59,7 +59,8 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     public function getUrlConfirm($path): string
     {
-        // check if object exists
+        $path = $this->applyPathPrefix($path);
+
         try {
             $this->getTimestamp($path);
         } catch (BadResponseError $e) {
@@ -82,6 +83,8 @@ class OVHSwiftAdapter extends SwiftAdapter
     public function getTemporaryUrl($path, $expiration, $options = []): string
     {
         $this->checkParams();
+
+        $path = $this->applyPathPrefix($path);
 
         // expiry is relative to current time
         $expiresAt = $expiration instanceof Carbon ? $expiration->timestamp : (int) (time() + 60 * 60);
@@ -106,7 +109,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         // return the url
         return sprintf(
             '%s?temp_url_sig=%s&temp_url_expires=%s',
-            $this->getEndpoint().$path,
+            $this->getEndpoint() . $path,
             $signature,
             $expiresAt
         );
@@ -159,7 +162,9 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     protected function getWriteData($path, $config): array
     {
-        $data = ['name' => $path];
+        $data = [ 
+            'name' => $path
+        ];
 
         if ($config->has('deleteAfter')) {
             return $data += ['deleteAfter' => $config->get('deleteAfter')];

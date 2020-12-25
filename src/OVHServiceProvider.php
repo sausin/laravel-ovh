@@ -28,7 +28,7 @@ class OVHServiceProvider extends ServiceProvider
             $container = $client->objectStoreV1()->getContainer($config['container']);
 
             return new Filesystem(
-                new OVHSwiftAdapter($container, $this->getVars($config)),
+                new OVHSwiftAdapter($container, $this->getVars($config), $config['prefix']),
                 $this->getLargeObjectConfig($config)
             );
         });
