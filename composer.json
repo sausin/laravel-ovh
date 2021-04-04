@@ -25,8 +25,8 @@
     },
     "require": {
         "php": "^7.4|^8.0",
-        "illuminate/console": "^5.8|^6.0|^7.0|^8.0",
-        "illuminate/support": "^5.8|^6.0|^7.0|^8.0",
+        "illuminate/console": "^7.0|^8.0",
+        "illuminate/support": "^7.0|^8.0",
         "nimbusoft/flysystem-openstack-swift": "^0.3.3"
     },
     "require-dev": {
@@ -35,7 +35,7 @@
         "friendsofphp/php-cs-fixer": "^2.18",
         "brainmaestro/composer-git-hooks": "^2.8",
         "league/flysystem-cached-adapter": "^1.0 >= 1.0.2",
-        "orchestra/testbench": "^3.8|^4.0|^5.0|^6.0"
+        "orchestra/testbench": "^5.0|^6.0"
     },
     "extra": {
         "laravel": {
