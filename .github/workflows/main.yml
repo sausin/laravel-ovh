@@ -11,7 +11,7 @@ jobs:
         exclude:
           - illuminate: 7.*
             php: 8.0
-        dependency-version: [prefer-lowest, prefer-stable]
+        dependency-version: [prefer-stable]
 
     name: P${{ matrix.php }} - L${{ matrix.illuminate }} - ${{ matrix.dependency-version }}
 
