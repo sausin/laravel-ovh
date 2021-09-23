@@ -105,9 +105,9 @@ class OVHConfiguration
      *
      * Returns NULL if disabled.
      *
-     * @return string|null
+     * @return int|null
      */
-    protected ?string $swiftSegmentSize;
+    protected ?int $swiftSegmentSize;
 
     /**
      * OPTIONAL.
@@ -374,18 +374,18 @@ class OVHConfiguration
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getSwiftSegmentSize(): ?string
+    public function getSwiftSegmentSize(): ?int
     {
         return $this->swiftSegmentSize;
     }
 
     /**
-     * @param string|null $swiftSegmentSize
+     * @param int|null $swiftSegmentSize
      * @return OVHConfiguration
      */
-    public function setSwiftSegmentSize(?string $swiftSegmentSize): self
+    public function setSwiftSegmentSize(?int $swiftSegmentSize): self
     {
         $this->swiftSegmentSize = $swiftSegmentSize;
 
