@@ -6,11 +6,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.4, 8.0]
-        illuminate: [7.*, 8.*]
-        exclude:
-          - illuminate: 7.*
-            php: 8.0
+        php: [8.0, 8.1]
+        illuminate: [9.*]
         dependency-version: [prefer-stable]
 
     name: P${{ matrix.php }} - L${{ matrix.illuminate }} - ${{ matrix.dependency-version }}
