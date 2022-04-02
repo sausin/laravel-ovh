@@ -71,10 +71,6 @@ as below
     // If you're not willing to DELETE uploaded objects by DEFAULT, leave it empty.
     // Really, if you don't know what you're doing, you should leave this empty as well.
     'deleteAfter' => env('OS_DEFAULT_DELETE_AFTER', null),
-
-    // Optional variable to cache your storage objects in memory
-    // You must require league/flysystem-cached-adapter to enable caching
-    'cache' => true, // Defaults to false
     
     // Optional variable to set a prefix on all paths
     'prefix' => null,
