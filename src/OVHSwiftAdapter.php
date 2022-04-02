@@ -24,7 +24,7 @@ class OVHSwiftAdapter extends SwiftAdapter
      */
     public function __construct(Container $container, OVHConfiguration $config, ?string $prefix = null)
     {
-        parent::__construct($container, $prefix);
+        parent::__construct($container, $prefix ?? '');
 
         $this->config = $config;
     }
@@ -49,7 +49,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             );
 
         if (!empty($path)) {
-            $url .= $this->applyPathPrefix($path);
+            $url .= $this->prefixer->prefixPath($path);
         }
 
         return $url;
