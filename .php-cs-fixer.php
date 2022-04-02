@@ -63,7 +63,7 @@ $rules = [
     'normalize_index_brace' => true,
     'not_operator_with_successor_space' => false,
     'object_operator_without_whitespace' => true,
-    'ordered_imports' => ['sortAlgorithm' => 'alpha'],
+    'ordered_imports' => ['sort_algorithm' => 'alpha'],
     'phpdoc_indent' => true,
     'general_phpdoc_tag_rename' => true,
     'phpdoc_inline_tag_normalizer' => true,
