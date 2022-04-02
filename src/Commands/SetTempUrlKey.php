@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
-use League\Flysystem\Cached\CachedAdapter;
 use OpenStack\ObjectStore\v1\Models\Container;
 
 class SetTempUrlKey extends Command
@@ -56,10 +55,6 @@ class SetTempUrlKey extends Command
             $disk = $this->getDisk();
 
             $adapter = Storage::disk($disk)->getAdapter();
-
-            if ($adapter instanceof CachedAdapter) {
-                $adapter = $adapter->getAdapter();
-            }
 
             $this->container = $adapter->getContainer();
         } catch (InvalidArgumentException $e) {
