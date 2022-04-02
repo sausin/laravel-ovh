@@ -6,8 +6,9 @@ use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
 use League\Flysystem\Config;
+use League\Flysystem\UnableToCheckFileExistence;
+use League\Flysystem\UnableToReadFile;
 use Nimbusoft\Flysystem\OpenStack\SwiftAdapter;
-use OpenStack\Common\Error\BadResponseError;
 use OpenStack\ObjectStore\v1\Models\Container;
 
 class OVHSwiftAdapter extends SwiftAdapter
@@ -72,15 +73,13 @@ class OVHSwiftAdapter extends SwiftAdapter
      *
      * @param  string $path
      * @return string
-     * @throws BadResponseError
+     * @throws UnableToReadFile|UnableToCheckFileExistence
      */
     public function getUrlConfirm($path): string
     {
         // check if object exists
-        try {
-            $this->has($path);
-        } catch (BadResponseError $e) {
-            throw $e;
+        if (!$this->fileExists($path)) {
+            throw UnableToReadFile::fromLocation($path, 'File does not exist.');
         }
 
         return $this->getEndpoint($path);
@@ -114,7 +113,7 @@ class OVHSwiftAdapter extends SwiftAdapter
             '/v1/AUTH_%s/%s/%s',
             $this->config->getProjectId(),
             $this->config->getContainerName(),
-            $this->applyPathPrefix($path)
+            $this->prefixer->prefixPath($path)
         );
 
         // Body for the HMAC hash
@@ -158,7 +157,7 @@ class OVHSwiftAdapter extends SwiftAdapter
         }
 
         // Ensure $path doesn't begin with a slash
-        $path = $this->applyPathPrefix($path);
+        $path = $this->prefixer->prefixPath($path);
 
         // The url on the OVH host
         $codePath = sprintf(
@@ -193,14 +192,14 @@ class OVHSwiftAdapter extends SwiftAdapter
      * @return array
      * @see SwiftAdapter
      */
-    protected function getWriteData($path, $config): array
+    protected function getWriteData(string $path, Config $config): array
     {
         $data = parent::getWriteData($path, $config);
 
-        if ($config->has('deleteAfter')) {
+        if (null !== $config->get('deleteAfter')) {
             // Apply object expiration timestamp if given
             $data['deleteAfter'] = $config->get('deleteAfter');
-        } elseif ($config->has('deleteAt')) {
+        } elseif (null !== $config->get('deleteAt')) {
             // Apply object expiration time if given
             $data['deleteAt'] = $config->get('deleteAt');
         } elseif (!empty($this->config->getDeleteAfter())) {
