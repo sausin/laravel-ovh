@@ -57,11 +57,11 @@
     "scripts": {
         "post-install-cmd": [
             "Sausin\\LaravelOvh\\Composer\\Scripts::devOnly",
-            "cghooks add --ignore-lock"
+            "# cghooks add --ignore-lock"
         ],
         "post-update-cmd": [
             "Sausin\\LaravelOvh\\Composer\\Scripts::devOnly",
-            "cghooks update"
+            "# cghooks update"
         ],
 
         "lint": "php-cs-fixer fix",
