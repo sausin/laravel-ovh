@@ -31,6 +31,9 @@ class ExpiringObjectsTest extends TestCase
         ]);
 
         $this->adapter->write('hello', 'world', $this->flySystemConfig);
+
+        // Prevent "no assertion error", we're just checking that the deleteAt is correctly passed to the container
+        $this->assertTrue(true);
     }
 
     public function testCanBeDeletedAfterSpecificTime()
@@ -46,6 +49,9 @@ class ExpiringObjectsTest extends TestCase
         ]);
 
         $this->adapter->write('hello', 'world', $this->flySystemConfig);
+
+        // Prevent "no assertion error", we're just checking that the deleteAfter is correctly passed to the container
+        $this->assertTrue(true);
     }
 
     public function testCanBeDeleteAfterSpecificTimeFromGlobalConfig()
@@ -59,5 +65,8 @@ class ExpiringObjectsTest extends TestCase
         $this->config->setDeleteAfter(1800);
 
         $this->adapter->write('hello', 'world', $this->flySystemConfig);
+
+        // Prevent "no assertion error", we're just checking that the deleteAfter is correctly passed to the container
+        $this->assertTrue(true);
     }
 }

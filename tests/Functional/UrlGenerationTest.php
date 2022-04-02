@@ -30,17 +30,11 @@ class UrlGenerationTest extends TestCase
 
     public function testCanGenerateUrlWithFileConfirmation()
     {
-        $this->object->shouldReceive('retrieve')->once();
-        $this->object->name = 'hello/world';
-        $this->object->lastModified = date('Y-m-d');
-        $this->object->contentType = 'mimetype';
-        $this->object->contentLength = 1234;
-
         $this->container
-            ->shouldReceive('getObject')
+            ->shouldReceive('objectExists')
             ->once()
             ->with('hello')
-            ->andReturn($this->object);
+            ->andReturnTrue();
 
         $url = $this->adapter->getUrlConfirm('hello');
 
@@ -51,17 +45,11 @@ class UrlGenerationTest extends TestCase
     {
         $this->config->setEndpoint('http://custom.endpoint');
 
-        $this->object->shouldReceive('retrieve')->once();
-        $this->object->name = 'hello/world';
-        $this->object->lastModified = date('Y-m-d');
-        $this->object->contentType = 'mimetype';
-        $this->object->contentLength = 1234;
-
         $this->container
-            ->shouldReceive('getObject')
+            ->shouldReceive('objectExists')
             ->once()
             ->with('hello')
-            ->andReturn($this->object);
+            ->andReturnTrue();
 
         $url = $this->adapter->getUrlConfirm('hello');
 
