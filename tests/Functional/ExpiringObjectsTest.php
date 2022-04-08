@@ -26,17 +26,14 @@ class ExpiringObjectsTest extends TestCase
             'deleteAt' => $deleteAt->getTimestamp(),
         ])->andReturn($this->object);
 
-        $this->flySystemConfig->set('deleteAt', $deleteAt->getTimestamp());
-        $response = $this->adapter->write('hello', 'world', $this->flySystemConfig);
+        $this->flySystemConfig = $this->flySystemConfig->extend([
+            'deleteAt' => $deleteAt->getTimestamp(),
+        ]);
 
-        $this->assertEquals([
-            'type' => 'file',
-            'dirname' => null,
-            'path' => null,
-            'timestamp' => null,
-            'mimetype' => null,
-            'size' => null,
-        ], $response);
+        $this->adapter->write('hello', 'world', $this->flySystemConfig);
+
+        // Prevent "no assertion error", we're just checking that the deleteAt is correctly passed to the container
+        $this->assertTrue(true);
     }
 
     public function testCanBeDeletedAfterSpecificTime()
@@ -47,17 +44,14 @@ class ExpiringObjectsTest extends TestCase
             'deleteAfter' => 60,
         ])->andReturn($this->object);
 
-        $this->flySystemConfig->set('deleteAfter', 60);
-        $response = $this->adapter->write('hello', 'world', $this->flySystemConfig);
+        $this->flySystemConfig = $this->flySystemConfig->extend([
+            'deleteAfter' => 60,
+        ]);
 
-        $this->assertEquals([
-            'type' => 'file',
-            'dirname' => null,
-            'path' => null,
-            'timestamp' => null,
-            'mimetype' => null,
-            'size' => null,
-        ], $response);
+        $this->adapter->write('hello', 'world', $this->flySystemConfig);
+
+        // Prevent "no assertion error", we're just checking that the deleteAfter is correctly passed to the container
+        $this->assertTrue(true);
     }
 
     public function testCanBeDeleteAfterSpecificTimeFromGlobalConfig()
@@ -69,15 +63,10 @@ class ExpiringObjectsTest extends TestCase
         ])->andReturn($this->object);
 
         $this->config->setDeleteAfter(1800);
-        $response = $this->adapter->write('hello', 'world', $this->flySystemConfig);
 
-        $this->assertEquals([
-            'type' => 'file',
-            'dirname' => null,
-            'path' => null,
-            'timestamp' => null,
-            'mimetype' => null,
-            'size' => null,
-        ], $response);
+        $this->adapter->write('hello', 'world', $this->flySystemConfig);
+
+        // Prevent "no assertion error", we're just checking that the deleteAfter is correctly passed to the container
+        $this->assertTrue(true);
     }
 }

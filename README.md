@@ -30,6 +30,7 @@ Also, take note of the upgrade.
 | `4.x`           | `>=7.2`           | `>=5.4`          | Above + Set private key on container      | Deprecated |
 | `5.x`           | `>=7.4`           | `>=5.8`          | Above + Config-based Expiring Objects + Form Post Signature + Prefix     | Maintained     |
 | `6.x`           | `>=7.4`           | `>=7.x`          | PHP 8 support     | Active     |
+| `7.x`           | `>=8.0`           | `>=9.x`          | Laravel 9 support     | Active     |
 
 If you are using Laravel versions older than 5.5, add the service provider to the `providers` array in `config/app.php`:
 ```php
@@ -71,9 +72,10 @@ as below
     // If you're not willing to DELETE uploaded objects by DEFAULT, leave it empty.
     // Really, if you don't know what you're doing, you should leave this empty as well.
     'deleteAfter' => env('OS_DEFAULT_DELETE_AFTER', null),
-
+    
     // Optional variable to cache your storage objects in memory
     // You must require league/flysystem-cached-adapter to enable caching
+    // This option is not available on laravel-ovh >= 7.0
     'cache' => true, // Defaults to false
     
     // Optional variable to set a prefix on all paths
@@ -117,6 +119,10 @@ Starting with `5.x` branch, the variables to be defined in the `config/filesyste
 file have been renamed to better correspond with the names used by OpenStack in their configuration file. This
 is intended to give the developer a better understanding of the contents of each configuration
 key. If you're coming from `3.x`, updating the variable names in the `.env` might be essential to prevent failure.
+
+### From 5.x/6.x to 7.x
+Starting with `7.x` branch, only Laravel 9 and PHP 8 are supported. The `cache` option should be removed from
+your config if you previously used it since Flysystem no longer supports "cached adapters".
 
 # Usage
 
