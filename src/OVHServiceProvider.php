@@ -2,6 +2,7 @@
 
 namespace Sausin\LaravelOvh;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
@@ -52,7 +53,11 @@ class OVHServiceProvider extends ServiceProvider
             // Get the Object Storage container.
             $container = $client->objectStoreV1()->getContainer($this->config->getContainerName());
 
-            return $this->makeFileSystem($container);
+            $adapter = $this->makeAdapter($container);
+
+            $filesystem = $this->makeFileSystem($adapter);
+
+            return new FilesystemAdapter($filesystem, $adapter, $config);
         });
     }
 
@@ -81,16 +86,21 @@ class OVHServiceProvider extends ServiceProvider
         ]);
     }
 
+    protected function makeAdapter(Container $container) : OVHSwiftAdapter
+    {
+        return new OVHSwiftAdapter($container, $this->config, $this->config->getPrefix());
+    }
+
     /**
      * Creates a Filesystem instance for interaction with the Object Storage.
      *
-     * @param Container $container
+     * @param OVHSwiftAdapter $adapter
      * @return Filesystem
      */
-    protected function makeFileSystem(Container $container): Filesystem
+    protected function makeFileSystem(OVHSwiftAdapter $adapter): Filesystem
     {
         return new Filesystem(
-            new OVHSwiftAdapter($container, $this->config, $this->config->getPrefix()),
+            $adapter,
             array_filter([
                 'swiftLargeObjectThreshold' => $this->config->getSwiftLargeObjectThreshold(),
                 'swiftSegmentSize' => $this->config->getSwiftSegmentSize(),
