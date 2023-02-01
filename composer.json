@@ -2,9 +2,17 @@
     "name": "sausin/laravel-ovh",
     "description": "OVH Object Storage driver for laravel",
     "keywords": [
-        "filesystem", "filesystems", "files", "storage",
-        "flysystem", "openstack", "opencloud", "swift",
-        "ovh", "laravel", "driver"
+        "filesystem",
+        "filesystems",
+        "files",
+        "storage",
+        "flysystem",
+        "openstack",
+        "opencloud",
+        "swift",
+        "ovh",
+        "laravel",
+        "driver"
     ],
     "license": "MIT",
     "authors": [
@@ -24,16 +32,16 @@
         }
     },
     "require": {
-        "php": "^8.0",
-        "illuminate/console": "^9.0",
-        "illuminate/support": "^9.0",
-        "nimbusoft/flysystem-openstack-swift": "^1.0"
+        "php": "^8.1",
+        "illuminate/console": "^10.0",
+        "illuminate/support": "^10.0",
+        "nimbusoft/flysystem-openstack-swift": "^1.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
-        "mockery/mockery": "^1.3 >= 1.3.1",
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "orchestra/testbench": "^7.0"
+        "phpunit/phpunit": "^9.5.10",
+        "mockery/mockery": "^1.4.4",
+        "friendsofphp/php-cs-fixer": "^3.14",
+        "orchestra/testbench": "^8.0"
     },
     "extra": {
         "laravel": {
@@ -63,7 +71,6 @@
             "Sausin\\LaravelOvh\\Composer\\Scripts::devOnly",
             "# cghooks update"
         ],
-
         "lint": "php-cs-fixer fix",
         "test:lint": "@lint --dry-run",
         "test:unit": "phpunit",
