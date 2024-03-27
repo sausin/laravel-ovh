@@ -126,7 +126,7 @@ your config if you previously used it since Flysystem no longer supports "cached
 
 # Usage
 
-Refer to the extensive [Laravel Storage Documentation](https://laravel.com/docs/7.x/filesystem) for usage.
+Refer to the extensive [Laravel Storage Documentation](https://laravel.com/docs/filesystem) for usage guidelines.
 
 **NOTE:** This package includes support for the following additional methods:
 ```php
