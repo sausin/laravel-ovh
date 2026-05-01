@@ -11,22 +11,38 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [8.1, '8.2']
-        illuminate: ['10.*']
-        dependency-version: [prefer-stable]
+        include:
+          - php: '8.1'
+            illuminate: '10.*'
+          - php: '8.2'
+            illuminate: '10.*'
+          - php: '8.2'
+            illuminate: '11.*'
+          - php: '8.2'
+            illuminate: '12.*'
+          - php: '8.3'
+            illuminate: '11.*'
+          - php: '8.3'
+            illuminate: '12.*'
+          - php: '8.3'
+            illuminate: '13.*'
+          - php: '8.4'
+            illuminate: '12.*'
+          - php: '8.4'
+            illuminate: '13.*'
 
-    name: P${{ matrix.php }} - L${{ matrix.illuminate }} - ${{ matrix.dependency-version }}
+    name: P${{ matrix.php }} - L${{ matrix.illuminate }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Detect Composer Cache Directory
         id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Composer Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: dependencies-illuminate-${{ matrix.illuminate }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
@@ -40,7 +56,7 @@ jobs:
       - name: Install Composer Packages
         run: |
           composer require "illuminate/support:${{ matrix.illuminate }}" --no-interaction --no-update
-          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+          composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: Execute PHP Linter
         run: composer test:lint
