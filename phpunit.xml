@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         backupStaticAttributes="false"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
          failOnRisky="true"
          failOnWarning="true"
          processIsolation="false"
          stopOnFailure="false"
-         verbose="false"
-    >
+         cacheDirectory=".phpunit.cache"
+>
     <testsuites>
         <testsuite name="Functional Tests">
             <directory suffix="Test.php">./tests/Functional</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
 </phpunit>

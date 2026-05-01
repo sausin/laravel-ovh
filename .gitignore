@@ -6,3 +6,6 @@ composer.lock
 .idea/
 cghooks.lock
 .php_cs.cache
+.phpunit.cache/
+.phpunit.result.cache
+coverage.xml
