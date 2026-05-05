@@ -44,21 +44,33 @@ class OVHServiceProvider extends ServiceProvider
      */
     protected function configureStorage(): void
     {
-        Storage::extend('ovh', function ($app, array $config) {
-            // Creates a Configuration instance.
-            $this->config = OVHConfiguration::make($config);
+        // Laravel's FilesystemManager::extend() rebinds the closure's $this to
+        // the manager itself, so capture the provider in a use() variable and
+        // route through a public method.
+        $provider = $this;
 
-            $client = $this->makeOpenStackClient();
-
-            // Get the Object Storage container.
-            $container = $client->objectStoreV1()->getContainer($this->config->getContainerName());
-
-            $adapter = $this->makeAdapter($container);
-
-            $filesystem = $this->makeFileSystem($adapter);
-
-            return new FilesystemAdapter($filesystem, $adapter, $config);
+        Storage::extend('ovh', function ($app, array $config) use ($provider) {
+            return $provider->createDriver($config);
         });
+    }
+
+    /**
+     * Builds the FilesystemAdapter for an 'ovh' disk from its config array.
+     */
+    public function createDriver(array $config): FilesystemAdapter
+    {
+        $this->config = OVHConfiguration::make($config);
+
+        $client = $this->makeOpenStackClient();
+
+        // Get the Object Storage container.
+        $container = $client->objectStoreV1()->getContainer($this->config->getContainerName());
+
+        $adapter = $this->makeAdapter($container);
+
+        $filesystem = $this->makeFileSystem($adapter);
+
+        return new FilesystemAdapter($filesystem, $adapter, $config);
     }
 
     /**
